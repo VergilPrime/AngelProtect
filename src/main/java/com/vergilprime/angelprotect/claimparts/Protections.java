@@ -1,4 +1,4 @@
-package com.vergilprime.ar.claim_parts;
+package com.vergilprime.angelprotect.claimparts;
 
 public class Protections {
 	public boolean Fire = true;

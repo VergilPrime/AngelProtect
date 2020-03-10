@@ -1,4 +1,4 @@
-package com.vergilprime.ar;
+package com.vergilprime.angelprotect;
 
 import java.util.List;
 import java.util.UUID;
@@ -16,6 +16,8 @@ public class APTown {
 
 	// Allies can contain both players and other towns
 	public List<String> Allies;
+
+
 
 	public int getRunesAvailable(){
 		int runesAvailable = 0;
@@ -42,9 +44,7 @@ public class APTown {
 
 	public void removeMember(UUID member){
 		if(Members.contains(member)){
-			if(Assistants.contains(member)){
-				Assistants.remove(member);
-			}
+			Assistants.remove(member);
 			Members.remove(member);
 			save();
 		}

@@ -1,5 +1,6 @@
-package com.vergilprime.ar.claim_parts;
+package com.vergilprime.angelprotect.claimparts;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class Permissions {
@@ -20,23 +21,20 @@ public class Permissions {
 	public List<String> Container;
 
 	public Permissions(boolean isTown) {
+
 		if(isTown){
 			// These are only the default settings if the claim is for a town, but this can be overridden if the town has different default settings;
-			Build.add("Members");
-			Switch.add("Members");
-			Switch.add("Allies");
-			Teleport.add("Members");
-			Teleport.add("Allies");
-			Manage.add("Assistants");
-			Container.add("Members");
-			Container.add("Allies");
+			Build = Arrays.asList("Members");
+			Switch = Arrays.asList("Members", "Allies");
+			Teleport = Arrays.asList("Members", "Allies");
+			Manage = Arrays.asList("Assistants");
+			Container = Arrays.asList("Members", "Allies");
 		}else{
 			// These are the default settings for a personal claim but are overridden by the owner's default settings.
-			Build.add("Friends");
-			Switch.add("Friends");
-			Teleport.add("Friends");
-			Container.add("Friends");
-
+			Build = Arrays.asList("Friends");
+			Switch = Arrays.asList("Friends");
+			Teleport = Arrays.asList("Friends");
+			Container = Arrays.asList("Friends");
 		}
 	}
 }

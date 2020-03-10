@@ -1,14 +1,11 @@
-package com.vergilprime.ar;
-
-import com.sun.xml.internal.bind.v2.TODO;
+package com.vergilprime.angelprotect;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
 public class APPlayer {
-	public UUID UUID;
+	public java.util.UUID UUID;
 
 	// List of a players claims, the "address" of which looks like world.x.z I.E. world_the_end.53._23
 	// In MS namespaces for addresses can't contain dash (-) so we substitute an underscore.
@@ -30,7 +27,7 @@ public class APPlayer {
 	public APClaim DefaultClaim;
 
 	// TODO: this isn't right
-	public LocalDateTime LastAccessed = new LocalDateTime.now();
+	public LocalDateTime LastAccessed;// = new LocalDateTime.now();
 
 
 
