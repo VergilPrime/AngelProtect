@@ -1,4 +1,4 @@
-package com.vergilprime.angelprotect.claimparts;
+package com.vergilprime.angelprotect.models.claimparts;
 
 import java.util.Arrays;
 import java.util.List;

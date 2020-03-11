@@ -1,4 +1,6 @@
-package com.vergilprime.angelprotect;
+package com.vergilprime.angelprotect.models;
+
+import com.vergilprime.angelprotect.models.APClaim;
 
 import java.time.LocalDateTime;
 import java.util.List;
