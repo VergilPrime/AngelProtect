@@ -3,6 +3,7 @@ package com.vergilprime.angelprotect.models;
 import com.vergilprime.angelprotect.models.APClaim;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,17 +27,23 @@ public class APPlayer {
 	public String Town = null;
 
 	// This claim represents the default settings when a player claims new land.
-	public APClaim DefaultClaim;
+	public APPersonalClaim DefaultClaim;
 
 	// TODO: this isn't right
 	public LocalDateTime LastAccessed;// = new LocalDateTime.now();
 
-
+	//
+	//  Constructors
+	//
 
 	public APPlayer(UUID uuid){
 		UUID = uuid;
-		DefaultClaim = new APClaim(null,UUID,false);
+		DefaultClaim = new APPersonalClaim(null, UUID);
 	}
+
+	//
+	//  Methods
+	//
 
 	public static void LoadPlayer(UUID uuid){
 		// TODO: load the player from persistence into memory if they exist, if not create a new APPlayer
@@ -87,6 +94,20 @@ public class APPlayer {
 	public void joinTown(String town){
 		Town = town;
 		save();
+	}
+
+	//
+	//  More different methods
+	//
+
+	public HashMap<String, Object> serialize(){
+		HashMap<String, Object> output = new HashMap<String, Object>();
+		output.put("UUID",UUID);
+		output.put("Friends",Friends);
+		output.put("Runes",Runes);
+		output.put("Town",Town);
+		output.put("DefaultClaim",DefaultClaim);
+		return output;
 	}
 
 }

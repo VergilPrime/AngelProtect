@@ -10,4 +10,11 @@ public class AngelProtect {
 	List<APPlayer> LoadedPlayers;
 	List<APClaim> LoadedClaims;
 	List<APTown> Towns;
+
+	public static void Main(String[] args){
+		// TODO: Load all towns
+		// TODO: Bind all events
+		// TODO: Begin unload tasks
+
+	}
 }

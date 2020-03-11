@@ -17,7 +17,9 @@ public class APTown {
 	// Allies can contain both players and other towns
 	public List<String> Allies;
 
-
+	//
+	//  Methods
+	//
 
 	public int getRunesAvailable(){
 		int runesAvailable = 0;

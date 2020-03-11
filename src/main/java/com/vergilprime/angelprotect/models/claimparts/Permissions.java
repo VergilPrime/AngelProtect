@@ -20,6 +20,10 @@ public class Permissions {
 	// If the player can open containers in this chunk (only if container protections are enabled here).
 	public List<String> Container;
 
+	//
+	//  Constructors
+	//
+
 	public Permissions(boolean isTown) {
 
 		if(isTown){
@@ -34,6 +38,7 @@ public class Permissions {
 			Build = Arrays.asList("Friends");
 			Switch = Arrays.asList("Friends");
 			Teleport = Arrays.asList("Friends");
+			Manage = Arrays.asList();
 			Container = Arrays.asList("Friends");
 		}
 	}
