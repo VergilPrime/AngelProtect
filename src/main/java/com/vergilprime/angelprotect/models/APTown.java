@@ -1,18 +1,19 @@
 package com.vergilprime.angelprotect.models;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
 public class APTown {
-	public String TownID;
-	public String TownDisplay;
+	public String townID;
+	public String townDisplay;
 
 	// Can promote assistants and has full permission in all town owned claims.
-	public UUID Mayor;
-	public List<UUID> Members;
+	public UUID mayor;
+	public List<UUID> members;
 
 	// Assistants have the ability to claim land for the town and manage claims by default.
-	public List<UUID> Assistants;
+	public List<UUID> assistants;
 
 	// Allies can contain both players and other towns
 	public List<String> Allies;
@@ -23,7 +24,7 @@ public class APTown {
 
 	public int getRunesAvailable(){
 		int runesAvailable = 0;
-		for (UUID member : Members) {
+		for (UUID member : members) {
 			int impact = 0;
 			// Using UUID, get the player's total runes, subtract 32 and assign this to "impact"
 			impact -= 32;
@@ -38,39 +39,54 @@ public class APTown {
 	}
 
 	public void addMember(UUID nonmember){
-		if(!Members.contains(nonmember)){
-			Members.add(nonmember);
+		if(!members.contains(nonmember)){
+			members.add(nonmember);
 			save();
 		}
 	}
 
 	public void removeMember(UUID member){
-		if(Members.contains(member)){
-			Assistants.remove(member);
-			Members.remove(member);
+		if(members.contains(member)){
+			assistants.remove(member);
+			members.remove(member);
 			save();
 		}
 	}
 
 	public void promoteAssistant(UUID member){
-		if(Members.contains(member)){
-			Assistants.add(member);
+		if(members.contains(member)){
+			assistants.add(member);
 			save();
 		}
 	}
 
 	public void demoteAssistant(UUID member){
-		if(Assistants.contains(member)){
-			Assistants.remove(member);
+		if(assistants.contains(member)){
+			assistants.remove(member);
 			save();
 		}
 	}
 
 	public void makeMayor(UUID member){
-		if(Members.contains(member)){
-			Assistants.add(Mayor);
-			Mayor = member;
+		if(members.contains(member)){
+			assistants.add(mayor);
+			mayor = member;
 			save();
 		}
+	}
+
+	//
+	// Serialization
+	//
+
+	public HashMap<String, Object> serialize(){
+		HashMap<String, Object> serializedTown = new HashMap<>();
+		serializedTown.put("townID",this.townID);
+		serializedTown.put("townDisplay",this.townDisplay);
+		serializedTown.put("mayor",this.mayor);
+		serializedTown.put("assistants",this.assistants);
+		serializedTown.put("members",this.members);
+
+		return serializedTown;
 	}
 }

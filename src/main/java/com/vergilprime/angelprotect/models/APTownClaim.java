@@ -3,10 +3,10 @@ package com.vergilprime.angelprotect.models;
 import com.vergilprime.angelprotect.models.claimparts.Permissions;
 import com.vergilprime.angelprotect.models.claimparts.Protections;
 
-import java.util.UUID;
+import java.util.HashMap;
 
 public class APTownClaim extends APClaim {
-	public String Town;
+	public String town;
 
 	//
 	//  Constructors
@@ -14,9 +14,24 @@ public class APTownClaim extends APClaim {
 
 	public APTownClaim(String address, String town){
 		super(true);
-		Address = address;
-		Town = town;
-		Protections = new Protections();
-		Permissions = new Permissions(false);
+		this.address = address;
+		this.town = town;
+		protections = new Protections();
+		permissions = new Permissions(false);
+	}
+
+	//
+	// Serialization
+	//
+
+	public HashMap<String, Object> serialize(){
+		HashMap<String, Object> serializedClaim = new HashMap<>();
+		serializedClaim.put("address",this.address);
+		serializedClaim.put("permissions",this.permissions.serialize());
+		serializedClaim.put("protections",this.protections.serialize());
+		serializedClaim.put("owner",null);
+		serializedClaim.put("town",this.town);
+
+		return serializedClaim;
 	}
 }
