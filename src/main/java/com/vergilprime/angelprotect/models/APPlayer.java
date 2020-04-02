@@ -1,9 +1,4 @@
 package com.vergilprime.angelprotect.models;
-
-import com.vergilprime.angelprotect.AngelProtect;
-import org.minidns.record.A;
-
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -30,8 +25,8 @@ public class APPlayer {
 	// This claim represents the default settings when a player claims new land.
 	public APPersonalClaim defaultClaim;
 
-	// TODO: this isn't right
-	public LocalDateTime LastAccessed;// = new LocalDateTime.now();
+	// This holds the last timestamp where the player's data was accessed and is used to determine when to unload the player.
+	public Long lastAccessed = System.currentTimeMillis();
 
 	//
 	//  Constructors
@@ -46,10 +41,11 @@ public class APPlayer {
 	//  Methods
 	//
 
-	public static APPlayer loadPlayer(UUID uuid){
+	public static APPlayer loadPlayer(UUID uuid) {
 		APPlayer player;
-		if(false /* If the player data exists in persistence*/){
-			// TODO: Load the player data into memory
+
+		if(true){
+			// TODO: Load the player data from sql into memory
 			player = new APPlayer(uuid);
 		}else{
 			player = new APPlayer(uuid);
