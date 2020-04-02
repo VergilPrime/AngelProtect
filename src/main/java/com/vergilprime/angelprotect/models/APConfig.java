@@ -1,7 +1,5 @@
 package com.vergilprime.angelprotect.models;
 
-import sun.security.util.Password;
-
 public class APConfig {
 	Integer defaultRunes = 16;
 	Integer joinTownCost = 32;
@@ -12,9 +10,9 @@ public class APConfig {
 	Short protectionMobCost = 1;
 	Short protectionContainerCost = 2;
 	// database stuff
-	String hostname = "sql.host.com";
-	Short port = 3306;
-	String database = angelprotect;
-	String username = angelprotect;
-	String password = angelprotect;
+	String hostname = "localhost";
+	Integer port = 3306;
+	String database = "angelprotect";
+	String username = "angelprotect";
+	String password = "angelprotect";
 }

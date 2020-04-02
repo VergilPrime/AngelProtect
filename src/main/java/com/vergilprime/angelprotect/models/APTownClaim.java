@@ -35,3 +35,4 @@ public class APTownClaim extends APClaim {
 		return serializedClaim;
 	}
 }
+
