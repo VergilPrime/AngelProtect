@@ -30,7 +30,7 @@ public class APPersonalClaim extends APClaim {
 		serializedClaim.put("address",this.address);
 		serializedClaim.put("permissions",this.permissions.serialize());
 		serializedClaim.put("protections",this.protections.serialize());
-		serializedClaim.put("owner",this.owner);
+		serializedClaim.put("owner",this.owner.toString());
 		serializedClaim.put("town",null);
 
 		return serializedClaim;
