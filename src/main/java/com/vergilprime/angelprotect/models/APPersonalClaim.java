@@ -7,32 +7,32 @@ import java.util.HashMap;
 import java.util.UUID;
 
 public class APPersonalClaim extends APClaim {
-	public UUID owner;
 
-	//
-	//  Constructors
-	//
+    public UUID owner;
 
-	public APPersonalClaim(String address, UUID owner){
-		super(false);
-		this.address = address;
-		this.owner = owner;
-		protections = new Protections();
-		permissions = new Permissions(false);
-	}
+    public APPersonalClaim(String address, UUID owner) {
+        super(false);
+        this.address = address;
+        this.owner = owner;
+        protections = new Protections();
+        permissions = new Permissions(false);
+    }
 
-	//
-	// Serialization
-	//
 
-	public HashMap<String, Object> serialize(){
-		HashMap<String, Object> serializedClaim = new HashMap<>();
-		serializedClaim.put("address",this.address);
-		serializedClaim.put("permissions",this.permissions.serialize());
-		serializedClaim.put("protections",this.protections.serialize());
-		serializedClaim.put("owner",this.owner.toString());
-		serializedClaim.put("town",null);
+    @Override
+    public APClaim loadClaim() {
+        return null;
+    }
 
-		return serializedClaim;
-	}
+    @Override
+    public HashMap<String, Object> serialize() {
+        HashMap<String, Object> serializedClaim = new HashMap<>();
+        serializedClaim.put("address", address);
+        serializedClaim.put("permissions", permissions.serialize());
+        serializedClaim.put("protections", protections.serialize());
+        serializedClaim.put("owner", owner.toString());
+        serializedClaim.put("town", null);
+
+        return serializedClaim;
+    }
 }

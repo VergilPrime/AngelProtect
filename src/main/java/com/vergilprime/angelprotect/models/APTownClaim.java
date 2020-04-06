@@ -6,33 +6,32 @@ import com.vergilprime.angelprotect.models.claimparts.Protections;
 import java.util.HashMap;
 
 public class APTownClaim extends APClaim {
-	public String town;
 
-	//
-	//  Constructors
-	//
+    public String town;
 
-	public APTownClaim(String address, String town){
-		super(true);
-		this.address = address;
-		this.town = town;
-		protections = new Protections();
-		permissions = new Permissions(false);
-	}
+    public APTownClaim(String address, String town) {
+        super(true);
+        this.address = address;
+        this.town = town;
+        protections = new Protections();
+        permissions = new Permissions(false);
+    }
 
-	//
-	// Serialization
-	//
+    @Override
+    public APClaim loadClaim() {
+        return null;
+    }
 
-	public HashMap<String, Object> serialize(){
-		HashMap<String, Object> serializedClaim = new HashMap<>();
-		serializedClaim.put("address",this.address);
-		serializedClaim.put("permissions",this.permissions.serialize());
-		serializedClaim.put("protections",this.protections.serialize());
-		serializedClaim.put("owner",null);
-		serializedClaim.put("town",this.town);
+    @Override
+    public HashMap<String, Object> serialize() {
+        HashMap<String, Object> serializedClaim = new HashMap<>();
+        serializedClaim.put("address", address);
+        serializedClaim.put("permissions", permissions.serialize());
+        serializedClaim.put("protections", protections.serialize());
+        serializedClaim.put("owner", null);
+        serializedClaim.put("town", town);
 
-		return serializedClaim;
-	}
+        return serializedClaim;
+    }
 }
 
