@@ -18,7 +18,7 @@ public class APTownClaim extends APClaim {
     }
 
     @Override
-    public APClaim loadClaim() {
+    public APClaim loadClaim(String address) {
         return null;
     }
 

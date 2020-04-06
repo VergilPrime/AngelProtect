@@ -6,9 +6,10 @@ import com.vergilprime.angelprotect.models.claimparts.Protections;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public abstract class APClaim {
 
@@ -17,7 +18,7 @@ public abstract class APClaim {
     public Protections protections;
 
     // This holds the last timestamp where the player's data was accessed and is used to determine when to unload the player.
-    public Long lastAccessed = System.currentTimeMillis();
+    public long lastAccessed = System.currentTimeMillis();
 
     APClaim(boolean isTown) {
         protections = new Protections();
@@ -29,18 +30,18 @@ public abstract class APClaim {
         // Take the string address and chop it into a list containing coordinates.
         // Address format: world.11._23
         List<String> coordinates = Arrays.asList(address.split(".", 5));
-        Integer chunkX = Integer.parseInt(coordinates.get(1));
-        Integer chunkZ = Integer.parseInt(coordinates.get(1));
+        int chunkX = Integer.parseInt(coordinates.get(1));
+        int chunkZ = Integer.parseInt(coordinates.get(1));
 
         int regionX = (int) chunkX / 32;
         int regionZ = (int) chunkZ / 32;
 
-        return "r." + Integer.toString(regionX) + '.' + Integer.toString(regionZ);
+        return "r." + regionX + '.' + regionZ;
     }
 
-    public abstract APClaim loadClaim();
+    public abstract APClaim loadClaim(String address);
 
-    public abstract HashMap<String, Object> serialize();
+    public abstract Map<String, Object> serialize();
     // Serialized claim includes:
     // address
     // permissions
@@ -51,9 +52,8 @@ public abstract class APClaim {
     // either owner or town must be null.
 
     public void saveClaim() {
-
         // TODO: Create serialized claim
-        HashMap<String, Object> serializedClaim = serialize();
+        Map<String, Object> serializedClaim = serialize();
 
         // Determine the region folder to use
         String regionName = region();
@@ -77,7 +77,7 @@ public abstract class APClaim {
         }
 
         // construct line list
-        List<String> lines = new List<String>[];
+        List<String> lines = new ArrayList<>();
         // TODO: foreach item in list, add line here
         lines.add("permissions:");
         lines.add("    build:");
@@ -93,11 +93,10 @@ public abstract class APClaim {
         lines.add("    pvp:");
         lines.add("    container:");
 
-        // TODO: Why is this red?
-        if (serializedClaim.owner.isNull) {
-            lines.add("owner: " + serializedClaim.town);
+        if (serializedClaim.get("owner") == null) {
+            lines.add("owner: " + serializedClaim.get("town"));
         } else {
-            lines.add("owner: " + serializedClaim.owner);
+            lines.add("owner: " + serializedClaim.get("owner"));
         }
 
         // Write serialized claim to file
@@ -106,7 +105,6 @@ public abstract class APClaim {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-
-
     }
+
 }

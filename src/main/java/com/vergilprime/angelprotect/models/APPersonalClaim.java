@@ -4,6 +4,7 @@ import com.vergilprime.angelprotect.models.claimparts.Permissions;
 import com.vergilprime.angelprotect.models.claimparts.Protections;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class APPersonalClaim extends APClaim {
@@ -20,13 +21,13 @@ public class APPersonalClaim extends APClaim {
 
 
     @Override
-    public APClaim loadClaim() {
+    public APClaim loadClaim(String address) {
         return null;
     }
 
     @Override
-    public HashMap<String, Object> serialize() {
-        HashMap<String, Object> serializedClaim = new HashMap<>();
+    public Map<String, Object> serialize() {
+        Map<String, Object> serializedClaim = new HashMap<>();
         serializedClaim.put("address", address);
         serializedClaim.put("permissions", permissions.serialize());
         serializedClaim.put("protections", protections.serialize());

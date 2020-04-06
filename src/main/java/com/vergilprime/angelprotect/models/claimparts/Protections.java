@@ -1,6 +1,7 @@
 package com.vergilprime.angelprotect.models.claimparts;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class Protections {
 
@@ -11,13 +12,13 @@ public class Protections {
     public boolean container = false;
 
 
-    public HashMap<String, Boolean> serialize() {
-        HashMap<String, Boolean> serializedProtections = new HashMap<>();
-        serializedProtections.put("fire", this.fire);
-        serializedProtections.put("tnt", this.tnt);
-        serializedProtections.put("mob", this.mob);
-        serializedProtections.put("pvp", this.pvp);
-        serializedProtections.put("container", this.container);
+    public Map<String, Boolean> serialize() {
+        Map<String, Boolean> serializedProtections = new HashMap<>();
+        serializedProtections.put("fire", fire);
+        serializedProtections.put("tnt", tnt);
+        serializedProtections.put("mob", mob);
+        serializedProtections.put("pvp", pvp);
+        serializedProtections.put("container", container);
 
         return serializedProtections;
     }

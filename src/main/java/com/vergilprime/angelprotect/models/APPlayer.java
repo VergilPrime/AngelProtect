@@ -2,6 +2,7 @@ package com.vergilprime.angelprotect.models;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public class APPlayer {
@@ -27,7 +28,7 @@ public class APPlayer {
     public APPersonalClaim defaultClaim;
 
     // This holds the last timestamp where the player's data was accessed and is used to determine when to unload the player.
-    public Long lastAccessed = System.currentTimeMillis();
+    public long lastAccessed = System.currentTimeMillis();
 
     public APPlayer(UUID uuid) {
         this.uuid = uuid;
@@ -88,8 +89,8 @@ public class APPlayer {
         save();
     }
 
-    public HashMap<String, Object> serialize() {
-        HashMap<String, Object> output = new HashMap<>();
+    public Map<String, Object> serialize() {
+        Map<String, Object> output = new HashMap<>();
         output.put("UUID", uuid);
         output.put("Friends", friends);
         output.put("Runes", runes);
