@@ -5,7 +5,7 @@
 plugins {
     id 'java'
     id 'idea'
-    id 'kr.entree.spigradle' version '1.0.6'
+    id 'kr.entree.spigradle' version '1.2.4'
 }
 
 
@@ -34,6 +34,13 @@ tasks.withType(JavaCompile) {
 spigot {
     name = project.description
     description = 'AngelReaches land protection plugin'
+    commands {
+        AngelProtect {
+            aliases = ['ap']
+            description = 'Main AngelProtect command'
+            usage = '/AngelProtect <sub command> [args...]'
+        }
+    }
     apiVersion = '1.15'
     website = 'https://github.com/VergilPrime/AngelProtect'
 }

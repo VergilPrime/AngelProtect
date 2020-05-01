@@ -1,62 +1,41 @@
 package com.vergilprime.angelprotect;
 
-import com.vergilprime.angelprotect.models.APClaim;
-import com.vergilprime.angelprotect.models.APPlayer;
-import com.vergilprime.angelprotect.models.APTown;
+import com.vergilprime.angelprotect.datamodels.APConfig;
+import com.vergilprime.angelprotect.storage.FileStorageManager;
+import com.vergilprime.angelprotect.storage.StorageManager;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.Map;
-import java.util.UUID;
 
 public class AngelProtect extends JavaPlugin {
 
-    private Map<UUID, APPlayer> loadedPlayers;
-    private Map<String, APClaim> loadedClaims;
-    private Map<String, APTown> towns;
-    private String hostname, database, username, password;
-    private Integer port;
-    private File claimsDir = new File("claims");
-    private File configFile = new File("config.yml");
-    private File playersFile = new File("players.yml");
+    private static AngelProtect plugin;
+
+    private APConfig config;
+    private StorageManager storageManager;
 
     @Override
     public void onEnable() {
-        if (!claimsDir.exists()) {
-            claimsDir.mkdirs();
-        }
+        plugin = this;
 
-        if (!configFile.exists()) {
-            try {
-                configFile.createNewFile();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        }
+        getDataFolder().mkdir();
+        config = APConfig.load();
+        storageManager = new FileStorageManager(this);
 
-        if (!playersFile.exists()) {
-            try {
-                playersFile.createNewFile();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        }
+        Bukkit.getPluginManager().registerEvents(new JoinListener(), this);
 
+        new CommandManager();
 
+        // Temporary debug and testing class
+        new Tester(this);
     }
 
-    @Override
-    public void onDisable() {
+    public StorageManager getStorageManager() {
+        return storageManager;
     }
 
-    private void loadPlayer(UUID uuid) {
-        loadedPlayers.put(uuid, APPlayer.loadPlayer(uuid));
+    public static AngelProtect getInstance() {
+        return plugin;
     }
 
-    private void loadClaim(String address) {
-        loadedClaims.put(address, APClaim.loadClaim(address));
-    }
 
-    // For later: https://www.spigotmc.org/wiki/connecting-to-databases-mysql/#setting-up-a-connection
 }
