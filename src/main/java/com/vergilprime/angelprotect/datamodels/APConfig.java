@@ -14,21 +14,23 @@ public class APConfig implements Serializable {
 
     private static final long serialVersionUID = 2490389348475654296L;
 
-    public final int defaultRunes = 16;
-    public final int joinTownCost = 32;
-    // public final APClaim defaultPersonalClaim = new APPersonalClaim(null, null);
-    // public final APClaim defaultTownClaim = new APTownClaim(null, null);
-    public final short claimCost = 1;
-    public final short protectionPVPCost = 1;
-    public final short protectionMobCost = 1;
-    public final short protectionContainerCost = 2;
+    private static APConfig config;
+
+    public int defaultRunes = 16;
+    public int joinTownCost = 32;
+    // public APClaim defaultPersonalClaim = new APPersonalClaim(null, null);
+    // public APClaim defaultTownClaim = new APTownClaim(null, null);
+    public short claimCost = 1;
+    public short protectionPVPCost = 1;
+    public short protectionMobCost = 1;
+    public short protectionContainerCost = 2;
 
     // database stuff
-    public final String hostname = "localhost";
-    public final int port = 3306;
-    public final String database = "angelprotect";
-    public final String username = "root";
-    public final String password = "toor";
+    public String hostname = "localhost";
+    public int port = 3306;
+    public String database = "angelprotect";
+    public String username = "root";
+    public String password = "toor";
 
     public boolean save() {
         File f = new File(AngelProtect.getInstance().getDataFolder(), "config.json");
@@ -46,13 +48,14 @@ public class APConfig implements Serializable {
     public static APConfig load() {
         File f = new File(AngelProtect.getInstance().getDataFolder(), "config.json");
         if (!f.exists()) {
-            APConfig config = new APConfig();
+            config = new APConfig();
             config.save();
             return config;
         }
         try {
             String json = new String(Files.readAllBytes(f.toPath()));
-            return new Gson().fromJson(json, APConfig.class);
+            APConfig.config = new Gson().fromJson(json, APConfig.class);
+            return APConfig.config;
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             return null;
@@ -60,5 +63,9 @@ public class APConfig implements Serializable {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public static APConfig get() {
+        return config;
     }
 }

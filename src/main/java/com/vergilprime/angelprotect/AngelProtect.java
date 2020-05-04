@@ -9,8 +9,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class AngelProtect extends JavaPlugin {
 
     private static AngelProtect plugin;
+    private static APConfig config;
 
-    private APConfig config;
     private StorageManager storageManager;
 
     @Override

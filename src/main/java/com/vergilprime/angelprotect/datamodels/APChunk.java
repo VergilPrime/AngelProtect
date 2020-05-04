@@ -5,6 +5,7 @@ import org.bukkit.Chunk;
 import org.bukkit.World;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 public class APChunk implements Serializable {
 
@@ -53,5 +54,22 @@ public class APChunk implements Serializable {
 
     public Chunk getChunk() {
         return getWorld().getChunkAt(x, z);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof APChunk)) {
+            return false;
+        }
+        APChunk apChunk = (APChunk) obj;
+        return x == apChunk.x && z == apChunk.z && Objects.equals(getWorld(), apChunk.getWorld());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getWorld(), x, z);
     }
 }

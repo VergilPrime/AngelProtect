@@ -1,18 +1,18 @@
 package com.vergilprime.angelprotect.datamodels;
 
-import com.vergilprime.angelprotect.AngelProtect;
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
-public class APTown implements APEntity {
+public class APTown extends APEntity {
 
     private static final long serialVersionUID = -3009809928128769730L;
 
-    private UUID townID;
     private String townDisplayName;
 
     // Can promote assistants and has full permission in all town owned claims.
@@ -26,39 +26,23 @@ public class APTown implements APEntity {
     private List<APEntityRelation> allies = new ArrayList<>();
 
     public APTown(UUID uuid, String displayName, APPlayer mayor) {
+        super(uuid);
         if (!isValidDisplayname(displayName)) {
             throw new IllegalArgumentException("Invalid displayname '" + displayName + "'");
         }
-        townID = uuid;
         townDisplayName = displayName;
         this.mayor = mayor;
         members.add(mayor);
         assistants.add(mayor);
     }
 
-    public int getRunesAvailable() {
-        int runesAvailable = 0;
-        for (APPlayer member : members) {
-            int impact = 0;
-            // Using UUID, get the player's total runes, subtract 32 and assign this to "impact"
-            impact -= 32;
-            runesAvailable += impact;
-        }
-        // for every claim referenced in this.Claims, calculate the amount of runes the claim is using and subtract this from RunesAvailable.
-        return runesAvailable;
-    }
-
-    public void save() {
-        AngelProtect.getInstance().getStorageManager().saveTown(this);
-    }
-
-    @Override
-    public UUID getUUID() {
-        return townID;
-    }
-
     public String getTownDisplayName() {
         return townDisplayName;
+    }
+
+    public void setTownDisplayName(String townDisplayName) {
+        this.townDisplayName = townDisplayName;
+        save();
     }
 
     public APPlayer getMayor() {
@@ -77,9 +61,9 @@ public class APTown implements APEntity {
         return Collections.unmodifiableList(allies);
     }
 
-    public boolean addMember(APPlayer nonmember) {
-        if (!members.contains(nonmember)) {
-            members.add(nonmember);
+    public boolean addMember(APPlayer player) {
+        if (!members.contains(player) && player.setTown(this)) {
+            members.add(player);
             save();
             return true;
         }
@@ -113,9 +97,9 @@ public class APTown implements APEntity {
         return false;
     }
 
-    public boolean makeMayor(APPlayer member) {
+    public boolean setMayor(APPlayer member) {
         if (members.contains(member)) {
-            assistants.add(member);
+            assistants.remove(member);
             mayor = member;
             save();
             return true;
@@ -141,8 +125,18 @@ public class APTown implements APEntity {
     }
 
     @Override
+    public int getRunes() {
+        return members.stream().mapToInt(m -> m.getRunes() - APConfig.get().joinTownCost).sum();
+    }
+
+    @Override
     public boolean isPartOfEntity(OfflinePlayer player) {
         return members.contains(player.getUniqueId());
+    }
+
+    @Override
+    public List<OfflinePlayer> getPlayers() {
+        return members.parallelStream().map(u -> Bukkit.getOfflinePlayer(u.getUUID())).collect(Collectors.toList());
     }
 
     public static boolean isValidDisplayname(String name) {

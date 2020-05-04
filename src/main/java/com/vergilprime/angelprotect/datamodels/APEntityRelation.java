@@ -3,6 +3,7 @@ package com.vergilprime.angelprotect.datamodels;
 import com.vergilprime.angelprotect.AngelProtect;
 import org.bukkit.OfflinePlayer;
 
+import java.util.List;
 import java.util.UUID;
 
 public class APEntityRelation implements APEntity {
@@ -21,6 +22,7 @@ public class APEntityRelation implements APEntity {
     public APEntityRelation(APEntity entity) {
         uuid = entity.getUUID();
         isTown = entity instanceof APTown;
+        entityCache = entity;
     }
 
     @Override
@@ -55,5 +57,10 @@ public class APEntityRelation implements APEntity {
     @Override
     public boolean isPartOfEntity(OfflinePlayer player) {
         return getEntity().isPartOfEntity(player);
+    }
+
+    @Override
+    public List<OfflinePlayer> getPlayers() {
+        return getEntity().getPlayers();
     }
 }
