@@ -24,7 +24,6 @@ public class FileStorageManager extends StorageManager {
         townFolder.mkdir();
     }
 
-
     @Override
     public APPlayer loadPlayer(UUID uuid) {
         File f = new File(playerFolder, uuid + ".json");
@@ -61,6 +60,13 @@ public class FileStorageManager extends StorageManager {
         towns.put(town.getUUID(), town);
         File file = new File(townFolder, town.getUUID() + ".json");
         return UtilSerialize.writeJson(town, false, file);
+    }
+
+    @Override
+    public boolean deleteTown(APTown town) {
+        towns.remove(town.getUUID());
+        File file = new File(townFolder, town.getUUID() + ".json");
+        return file.delete();
     }
 
     @Override

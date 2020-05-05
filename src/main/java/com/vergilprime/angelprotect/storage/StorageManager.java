@@ -34,6 +34,15 @@ public abstract class StorageManager {
         return town;
     }
 
+    public APTown getTown(String name) {
+        for (APTown town : towns.values()) {
+            if (town.getTownDisplayName().equalsIgnoreCase(name)) {
+                return town;
+            }
+        }
+        return null;
+    }
+
     // TODO: Optimize this
     public APClaim getClaim(APChunk chunk) {
         List<APEntity> list = new ArrayList<>(players.size() + towns.size());
@@ -52,9 +61,11 @@ public abstract class StorageManager {
         return claim;
     }
 
+    public abstract boolean deleteTown(APTown town);
+
     public boolean save(APEntity entity) {
-        if (entity instanceof APEntity) {
-            return save((APEntity) entity);
+        if (entity instanceof APPlayer) {
+            return save((APPlayer) entity);
         } else if (entity instanceof APTown) {
             return save((APTown) entity);
         } else {

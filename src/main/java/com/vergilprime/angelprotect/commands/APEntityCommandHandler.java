@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 import java.util.Collections;
 import java.util.List;
 
-public abstract class APEntityCommandHandler extends CommandHandler {
+public abstract class APEntityCommandHandler<T extends APEntity> extends CommandHandler {
 
     private boolean town;
     private boolean isAdmin = true;
@@ -24,19 +24,18 @@ public abstract class APEntityCommandHandler extends CommandHandler {
         return town;
     }
 
-    protected APEntity getEntity(CommandSender sender) {
+    protected T getEntity(CommandSender sender) {
         if (sender instanceof Player) {
-            APEntity entity;
+            T entity;
             APPlayer player = AngelProtect.getInstance().getStorageManager().getPlayer(((Player) sender).getUniqueId());
             if (isTown()) {
                 if (!player.hasTown()) {
                     sender.sendMessage(C.error("You need to be in a town to use that command."));
                     return null;
                 }
-                entity = player.getTown();
-
+                entity = (T) player.getTown();
             } else {
-                entity = player;
+                entity = (T) player;
             }
             return entity;
         } else {
@@ -47,7 +46,7 @@ public abstract class APEntityCommandHandler extends CommandHandler {
 
     @Override
     public void onCommand(CommandSender sender, String cmd, String[] args) {
-        APEntity entity = getEntity(sender);
+        T entity = getEntity(sender);
         if (sender != null) {
             isAdmin = false;
             onCommand(entity, sender, cmd, args);
@@ -57,7 +56,7 @@ public abstract class APEntityCommandHandler extends CommandHandler {
 
     @Override
     public List<String> onTab(CommandSender sender, String cmd, String[] args) {
-        APEntity entity = getEntity(sender);
+        T entity = getEntity(sender);
         if (sender != null) {
             isAdmin = false;
             List<String> list = onTab(entity, sender, cmd, args);
@@ -71,8 +70,8 @@ public abstract class APEntityCommandHandler extends CommandHandler {
         return isAdmin;
     }
 
-    public abstract void onCommand(APEntity entity, CommandSender sender, String cmd, String[] args);
+    public abstract void onCommand(T entity, CommandSender sender, String cmd, String[] args);
 
-    public abstract List<String> onTab(APEntity entity, CommandSender sender, String cmd, String[] args);
+    public abstract List<String> onTab(T entity, CommandSender sender, String cmd, String[] args);
 
 }

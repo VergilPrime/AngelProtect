@@ -58,6 +58,28 @@ public class C {
         return error_prefix + " " + msg;
     }
 
+    public static String usage(String usage) {
+        return usage(usage, null);
+    }
+
+    public static String usage(String usage, String desc) {
+        if (desc != null && desc.length() > 0) {
+            desc = " - " + C.item(desc);
+        }
+        return error("Please use " + C.item(usage) + desc);
+    }
+
+    public static String usageList(String usage) {
+        return usageList(usage, null);
+    }
+
+    public static String usageList(String usage, String desc) {
+        if (desc != null && desc.length() > 0) {
+            desc = " - " + C.item(desc);
+        }
+        return error(" • " + C.item(usage) + desc);
+    }
+
     public static String player(String name) {
         return player + name + body;
     }

@@ -24,6 +24,7 @@ public class APConfig implements Serializable {
     public short protectionPVPCost = 1;
     public short protectionMobCost = 1;
     public short protectionContainerCost = 2;
+    public boolean announceTownCreateDelete = true;
 
     // database stuff
     public String hostname = "localhost";
@@ -31,6 +32,7 @@ public class APConfig implements Serializable {
     public String database = "angelprotect";
     public String username = "root";
     public String password = "toor";
+
 
     public boolean save() {
         File f = new File(AngelProtect.getInstance().getDataFolder(), "config.json");

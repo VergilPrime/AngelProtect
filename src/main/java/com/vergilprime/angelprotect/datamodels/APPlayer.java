@@ -1,8 +1,11 @@
 package com.vergilprime.angelprotect.datamodels;
 
 import com.vergilprime.angelprotect.AngelProtect;
+import com.vergilprime.angelprotect.utils.C;
+import com.vergilprime.angelprotect.utils.UtilPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -65,6 +68,35 @@ public class APPlayer extends APEntity {
         }
         save();
         return true;
+    }
+
+    public String getName() {
+        return UtilPlayer.getNameOrUUID(getUUID());
+    }
+
+    public OfflinePlayer getOfflinePlayer() {
+        return getPlayers().get(0);
+    }
+
+    public Player getOnlinePlayer() {
+        OfflinePlayer op = getOfflinePlayer();
+        if (op.isOnline()) {
+            return op.getPlayer();
+        }
+        return null;
+    }
+
+    public boolean sendMessage(String msg) {
+        return sendMessageRaw(C.prefix + " " + msg);
+    }
+
+    public boolean sendMessageRaw(String msg) {
+        Player p = getOnlinePlayer();
+        if (p != null) {
+            p.sendMessage(msg);
+            return true;
+        }
+        return false;
     }
 
     @Override

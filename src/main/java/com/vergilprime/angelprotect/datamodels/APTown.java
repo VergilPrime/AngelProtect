@@ -1,5 +1,7 @@
 package com.vergilprime.angelprotect.datamodels;
 
+import com.vergilprime.angelprotect.AngelProtect;
+import com.vergilprime.angelprotect.utils.C;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
@@ -12,6 +14,10 @@ import java.util.stream.Collectors;
 public class APTown extends APEntity {
 
     private static final long serialVersionUID = -3009809928128769730L;
+
+    public static final int maxNameLength = 32;
+    public static final int minNameLength = 3;
+    public static final String nameRegex = "^[a-zA-Z0-9_-]+$"; //TODO: Could add stricter filter, like must start and end with letters
 
     private String townDisplayName;
 
@@ -34,6 +40,11 @@ public class APTown extends APEntity {
         this.mayor = mayor;
         members.add(mayor);
         assistants.add(mayor);
+    }
+
+    public APTown(String displayName, APPlayer mayor) {
+        this(UUID.randomUUID(), displayName, mayor);
+        save();
     }
 
     public String getTownDisplayName() {
@@ -64,6 +75,7 @@ public class APTown extends APEntity {
     public boolean addMember(APPlayer player) {
         if (!members.contains(player) && player.setTown(this)) {
             members.add(player);
+            broadcast(C.player(player.getName()) + " has " + C.item("joined") + " the town.");
             save();
             return true;
         }
@@ -72,8 +84,20 @@ public class APTown extends APEntity {
 
     public boolean removeMember(APPlayer member) {
         if (members.contains(member)) {
+            if (member.equals(mayor) && members.size() > 1) {
+                if (members.size() > 1) {
+                    return false;
+                } else {
+                    member.setTown(null);
+                    delete();
+                    return true;
+                }
+            }
+            broadcast(C.player(member.getName()) + " has " + C.item("left") + " the town.");
             assistants.remove(member);
             members.remove(member);
+            member.setTown(null);
+
             save();
             return true;
         }
@@ -83,6 +107,7 @@ public class APTown extends APEntity {
     public boolean promoteAssistant(APPlayer member) {
         if (!members.contains(member)) {
             assistants.add(member);
+            broadcastAssistants(C.player(member.getName()) + " has been " + C.item("promoted") + " to town assistant.");
             save();
             return true;
         }
@@ -91,6 +116,7 @@ public class APTown extends APEntity {
 
     public boolean demoteAssistant(APPlayer member) {
         if (assistants.remove(member)) {
+            broadcastAssistants(C.player(member.getName()) + " has been " + C.item("demoted") + " from town assistant.");
             save();
             return true;
         }
@@ -124,6 +150,41 @@ public class APTown extends APEntity {
         return false;
     }
 
+    public int broadcast(String msg) {
+        return broadcastRaw(C.prefix + "[" + C.town(getTownDisplayName()) + "] " + msg);
+    }
+
+    public int broadcastRaw(String msg) {
+        int c = 0;
+        for (APPlayer member : members) {
+            if (member.sendMessageRaw(msg)) {
+                c++;
+            }
+        }
+        return c;
+    }
+
+    public int broadcastAssistants(String msg) {
+        return broadcastAssistantsRaw(C.prefix + "[" + C.town(getTownDisplayName()) + "] " + msg);
+    }
+
+    public int broadcastAssistantsRaw(String msg) {
+        int c = 0;
+        for (APPlayer member : assistants) {
+            if (member.sendMessageRaw(msg)) {
+                c++;
+            }
+        }
+        if (mayor.sendMessageRaw(msg)) {
+            c++;
+        }
+        return c;
+    }
+
+    public boolean delete() {
+        return AngelProtect.getInstance().getStorageManager().deleteTown(this);
+    }
+
     @Override
     public int getRunes() {
         return members.stream().mapToInt(m -> m.getRunes() - APConfig.get().joinTownCost).sum();
@@ -140,6 +201,6 @@ public class APTown extends APEntity {
     }
 
     public static boolean isValidDisplayname(String name) {
-        return name.length() <= 32 && name.length() >= 3 && name.replaceFirst("[a-zA-Z0-9_-]+", "").isEmpty();
+        return name.length() <= maxNameLength && name.length() >= minNameLength && name.replaceFirst(nameRegex, "").isEmpty();
     }
 }
