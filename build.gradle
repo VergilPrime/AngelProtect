@@ -37,8 +37,18 @@ spigot {
     commands {
         AngelProtect {
             aliases = ['ap']
-            description = 'Main AngelProtect command'
-            usage = '/AngelProtect <sub command> [args...]'
+            description = 'AngelProtect player command'
+            usage = '/ap <sub command> [args...]'
+        }
+        Town {
+            alaises = ['towns', 't']
+            description = 'AngelProtect towns command'
+            usage = '/t <sub command> [args...]'
+        }
+        AdminAngelProtect {
+            aliases = ['aap', 'adminap']
+            description = 'AngelProtect admin command'
+            usage = '/aap <sub command> [args...]'
         }
     }
     apiVersion = '1.15'

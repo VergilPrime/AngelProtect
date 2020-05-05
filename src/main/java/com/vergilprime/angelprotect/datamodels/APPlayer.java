@@ -1,5 +1,6 @@
 package com.vergilprime.angelprotect.datamodels;
 
+import com.vergilprime.angelprotect.AngelProtect;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
@@ -16,6 +17,8 @@ public class APPlayer extends APEntity {
     private int runes;
     private UUID town;
 
+    private transient APTown townCache;
+
 
     public APPlayer(UUID uuid) {
         super(uuid);
@@ -26,8 +29,11 @@ public class APPlayer extends APEntity {
         return Collections.unmodifiableList(friends);
     }
 
-    public UUID getTown() {
-        return town;
+    public APTown getTown() {
+        if (townCache == null) {
+            townCache = AngelProtect.getInstance().getStorageManager().getTown(town);
+        }
+        return townCache;
     }
 
     public boolean hasTown() {
@@ -50,10 +56,12 @@ public class APPlayer extends APEntity {
     protected boolean setTown(APTown town) {
         if (town == null) {
             this.town = null;
+            townCache = null;
         } else if (this.town != null) {
             return false;
         } else {
             this.town = town.getUUID();
+            townCache = town;
         }
         save();
         return true;
