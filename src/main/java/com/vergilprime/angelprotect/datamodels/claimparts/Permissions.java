@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 public class Permissions implements Serializable {
 
@@ -152,7 +153,7 @@ public class Permissions implements Serializable {
             if (relation != null) {
                 return relation.isPartOfEntity(player);
             }
-            List<? extends APEntity> entities = null;
+            Set<? extends APEntity> entities = null;
             if (relativeTo instanceof APPlayer) {
                 if (type == Type.Friends) {
                     entities = ((APPlayer) relativeTo).getFriends();

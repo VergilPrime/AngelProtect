@@ -1,6 +1,7 @@
 package com.vergilprime.angelprotect.utils;
 
 import com.vergilprime.angelprotect.AngelProtect;
+import com.vergilprime.angelprotect.datamodels.APPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
@@ -22,6 +23,14 @@ public class UtilPlayer {
             }
         }
         return null;
+    }
+
+    public static APPlayer getAPPlayer(String name) {
+        OfflinePlayer op = getOfflinePlayer(name);
+        if (op == null) {
+            return null;
+        }
+        return AngelProtect.getInstance().getStorageManager().getPlayer(op.getUniqueId());
     }
 
     public static String getNameOrUUID(UUID uuid) {

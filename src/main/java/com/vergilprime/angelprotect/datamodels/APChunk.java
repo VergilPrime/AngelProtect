@@ -2,7 +2,9 @@ package com.vergilprime.angelprotect.datamodels;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
+import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.entity.Entity;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -18,6 +20,18 @@ public class APChunk implements Serializable {
         this.world = world;
         this.x = x;
         this.z = z;
+    }
+
+    public APChunk(Chunk chunk) {
+        this(chunk.getWorld().getName(), chunk.getX(), chunk.getZ());
+    }
+
+    public APChunk(Location loc) {
+        this(loc.getChunk());
+    }
+
+    public APChunk(Entity ent) {
+        this(ent.getLocation());
     }
 
     public APChunk negate() {

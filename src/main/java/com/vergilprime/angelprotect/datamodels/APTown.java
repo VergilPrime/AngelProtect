@@ -5,9 +5,10 @@ import com.vergilprime.angelprotect.utils.C;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -18,18 +19,19 @@ public class APTown extends APEntity {
     public static final int maxNameLength = 32;
     public static final int minNameLength = 3;
     public static final String nameRegex = "^[a-zA-Z0-9_-]+$"; //TODO: Could add stricter filter, like must start and end with letters
+    public static final int inviteTimeoutSeconds = 60;
 
     private String townDisplayName;
 
     // Can promote assistants and has full permission in all town owned claims.
     private APPlayer mayor;
-    private List<APPlayer> members = new ArrayList<>();
+    private Set<APPlayer> members = new HashSet<>();
 
     // Assistants have the ability to claim land for the town and manage claims by default.
-    private List<APPlayer> assistants = new ArrayList<>();
+    private Set<APPlayer> assistants = new HashSet<>();
 
     // Allies can contain both players and other towns
-    private List<APEntityRelation> allies = new ArrayList<>();
+    private Set<APEntityRelation> allies = new HashSet<>();
 
     public APTown(UUID uuid, String displayName, APPlayer mayor) {
         super(uuid);
@@ -51,31 +53,67 @@ public class APTown extends APEntity {
         return townDisplayName;
     }
 
-    public void setTownDisplayName(String townDisplayName) {
+    @Override
+    public String getName() {
+        return getTownDisplayName();
+    }
+
+    public boolean setTownDisplayName(String townDisplayName) {
+        if (!isValidDisplayname(townDisplayName)) {
+            return false;
+        }
+        if (AngelProtect.getInstance().getStorageManager().getTown(townDisplayName) != null) {
+            return false;
+        }
         this.townDisplayName = townDisplayName;
         save();
+        broadcast("The town has changed its name to " + C.town(townDisplayName));
+        return true;
     }
 
     public APPlayer getMayor() {
         return mayor;
     }
 
-    public List<APPlayer> getMembers() {
-        return Collections.unmodifiableList(members);
+    public Set<APPlayer> getMembers() {
+        return Collections.unmodifiableSet(members);
     }
 
-    public List<APEntity> getAssistants() {
-        return Collections.unmodifiableList(assistants);
+    public Set<APPlayer> getAssistants() {
+        return Collections.unmodifiableSet(assistants);
     }
 
-    public List<APEntityRelation> getAllies() {
-        return Collections.unmodifiableList(allies);
+    public Set<APEntityRelation> getAllies() {
+        return Collections.unmodifiableSet(allies);
+    }
+
+    public boolean declineInvite(APPlayer player) {
+        if (player.openInvites.remove(this)) {
+            broadcastRaw("The player " + C.player(player) + " declined the invite to join the town.");
+            return true;
+        }
+        return false;
+    }
+
+    public boolean invitePlayer(APPlayer player) {
+        if (player.hasTown() || player.openInvites.contains(this)) {
+            return false;
+        }
+        player.openInvites.add(this);
+        broadcastAssistants("An invite has been sent to " + C.player(player) + " to join the town.");
+        Bukkit.getScheduler().runTaskLater(AngelProtect.getInstance(), () -> {
+            if (player.openInvites.remove(this)) {
+                broadcastAssistants("The player " + C.player(player) + " did not respond to the invite to join the town.");
+            }
+        }, inviteTimeoutSeconds * 20);
+        return true;
     }
 
     public boolean addMember(APPlayer player) {
         if (!members.contains(player) && player.setTown(this)) {
+            player.openInvites.remove(this);
             members.add(player);
-            broadcast(C.player(player.getName()) + " has " + C.item("joined") + " the town.");
+            broadcast(C.player(player) + " has " + C.item("joined") + " the town.");
             save();
             return true;
         }
@@ -93,7 +131,7 @@ public class APTown extends APEntity {
                     return true;
                 }
             }
-            broadcast(C.player(member.getName()) + " has " + C.item("left") + " the town.");
+            broadcast(C.player(member) + " has " + C.item("left") + " the town.");
             assistants.remove(member);
             members.remove(member);
             member.setTown(null);
@@ -107,7 +145,7 @@ public class APTown extends APEntity {
     public boolean promoteAssistant(APPlayer member) {
         if (!members.contains(member)) {
             assistants.add(member);
-            broadcastAssistants(C.player(member.getName()) + " has been " + C.item("promoted") + " to town assistant.");
+            broadcastAssistants(C.player(member) + " has been " + C.item("promoted") + " to town assistant.");
             save();
             return true;
         }
@@ -116,7 +154,7 @@ public class APTown extends APEntity {
 
     public boolean demoteAssistant(APPlayer member) {
         if (assistants.remove(member)) {
-            broadcastAssistants(C.player(member.getName()) + " has been " + C.item("demoted") + " from town assistant.");
+            broadcastAssistants(C.player(member) + " has been " + C.item("demoted") + " from town assistant.");
             save();
             return true;
         }
@@ -125,6 +163,8 @@ public class APTown extends APEntity {
 
     public boolean setMayor(APPlayer member) {
         if (members.contains(member)) {
+            broadcast(C.player(mayor) + " has transferred ownership to " + C.player(member));
+            assistants.add(mayor);
             assistants.remove(member);
             mayor = member;
             save();
@@ -136,6 +176,8 @@ public class APTown extends APEntity {
     public boolean addAlly(APEntityRelation relation) {
         if (!allies.contains(relation)) {
             allies.add(relation);
+            String name = relation.isTown() ? C.town(relation.getAsTown()) : C.player(relation.getAsPlayer());
+            broadcast("The " + name + " has been added as an ally to the town.");
             save();
             return true;
         }
@@ -144,14 +186,20 @@ public class APTown extends APEntity {
 
     public boolean removeAlly(APEntityRelation relation) {
         if (allies.remove(relation)) {
+            String name = relation.isTown() ? C.town(relation.getAsTown()) : C.player(relation.getAsPlayer());
+            broadcast("The " + name + " has been removed from being ally to the town.");
             save();
             return true;
         }
         return false;
     }
 
+    public boolean isAlly(APEntity entity) {
+        return allies.contains(entity);
+    }
+
     public int broadcast(String msg) {
-        return broadcastRaw(C.prefix + "[" + C.town(getTownDisplayName()) + "] " + msg);
+        return broadcastRaw(C.prefix + "[" + C.town(this) + "] " + msg);
     }
 
     public int broadcastRaw(String msg) {
@@ -165,7 +213,7 @@ public class APTown extends APEntity {
     }
 
     public int broadcastAssistants(String msg) {
-        return broadcastAssistantsRaw(C.prefix + "[" + C.town(getTownDisplayName()) + "] " + msg);
+        return broadcastAssistantsRaw(C.prefix + "[" + C.town(this) + "] " + msg);
     }
 
     public int broadcastAssistantsRaw(String msg) {
@@ -181,6 +229,25 @@ public class APTown extends APEntity {
         return c;
     }
 
+    public boolean isMember(APPlayer player) {
+        return members.contains(player);
+    }
+
+    public boolean isAssistantOnly(APPlayer player) {
+        return assistants.contains(player);
+    }
+
+    public boolean isAssistantOrHigher(APPlayer player) {
+        if (isMayor(player)) {
+            return true;
+        }
+        return isAssistantOnly(player);
+    }
+
+    public boolean isMayor(APPlayer player) {
+        return mayor.equals(player);
+    }
+
     public boolean delete() {
         return AngelProtect.getInstance().getStorageManager().deleteTown(this);
     }
@@ -188,6 +255,11 @@ public class APTown extends APEntity {
     @Override
     public int getRunes() {
         return members.stream().mapToInt(m -> m.getRunes() - APConfig.get().joinTownCost).sum();
+    }
+
+    @Override
+    public boolean isTown() {
+        return true;
     }
 
     @Override
@@ -200,7 +272,23 @@ public class APTown extends APEntity {
         return members.parallelStream().map(u -> Bukkit.getOfflinePlayer(u.getUUID())).collect(Collectors.toList());
     }
 
+    public static String getErrorWithDisplayName(String name) {
+        if (name == null) {
+            return "The town name is null.";
+        }
+        if (name.length() < minNameLength) {
+            return "The town name is too short.";
+        }
+        if (name.length() > maxNameLength) {
+            return "The town name is too long.";
+        }
+        if (!name.replaceFirst(nameRegex, "").isEmpty()) {
+            return "The town name contains an invalid character.";
+        }
+        return null;
+    }
+
     public static boolean isValidDisplayname(String name) {
-        return name.length() <= maxNameLength && name.length() >= minNameLength && name.replaceFirst(nameRegex, "").isEmpty();
+        return getErrorWithDisplayName(name) == null;
     }
 }

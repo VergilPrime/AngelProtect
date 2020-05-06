@@ -33,6 +33,18 @@ public class APClaim implements Serializable {
         return chunk;
     }
 
+    public APEntityRelation getOwner() {
+        return owner;
+    }
+
+    public Permissions getPermissions() {
+        return permissions;
+    }
+
+    public Protections getProtections() {
+        return protections;
+    }
+
     public boolean canBuild(OfflinePlayer player) {
         return permissions.canBuild(player, owner);
     }

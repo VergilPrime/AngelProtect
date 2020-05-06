@@ -30,20 +30,9 @@ public class CreateCommand extends APEntityCommandHandler<APPlayer> {
             return;
         }
         String name = args[0];
-        if (name.length() > APTown.maxNameLength) {
-            sender.sendMessage(C.error("Town name is too long."));
-            return;
-        }
-        if (name.length() < APTown.minNameLength) {
-            sender.sendMessage(C.error("Town name is too short."));
-            return;
-        }
-        if (name.replaceFirst(APTown.nameRegex, "").length() > 0) {
-            sender.sendMessage(C.error("Town name contains an invalid character."));
-            return;
-        }
-        if (!APTown.isValidDisplayname(name)) {
-            sender.sendMessage(C.error("Town name is invalid."));
+        String error = APTown.getErrorWithDisplayName(name);
+        if (error != null) {
+            sender.sendMessage(C.error(error));
             return;
         }
         if (AngelProtect.getInstance().getStorageManager().getTown(name) != null) {
@@ -51,9 +40,9 @@ public class CreateCommand extends APEntityCommandHandler<APPlayer> {
             return;
         }
         new APTown(name, player);
-        sender.sendMessage("Town " + C.town(name) + " has been created!");
+        sender.sendMessage(C.main("Town " + C.town(name) + " has been created!"));
         if (APConfig.get().announceTownCreateDelete) {
-            Bukkit.broadcastMessage(C.prefix + C.player(player.getName()) + " has just started a new town called " + C.town(name) + "!");
+            Bukkit.broadcastMessage(C.prefix + C.player(player) + " has just started a new town called " + C.town(name) + "!");
         }
     }
 

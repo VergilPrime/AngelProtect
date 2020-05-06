@@ -1,6 +1,10 @@
 package com.vergilprime.angelprotect.utils;
 
+import com.vergilprime.angelprotect.datamodels.APEntity;
+import com.vergilprime.angelprotect.datamodels.APPlayer;
+import com.vergilprime.angelprotect.datamodels.APTown;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +47,8 @@ public class C {
     public static final String item = green;
     public static final String headerText = gold;
     public static final String headerLines = gold;
+    public static final String key = gold;
+    public static final String value = aqua;
 
     public static final String line = center("-", "-");
     public static final String double_line = center("=", "=");
@@ -84,8 +90,24 @@ public class C {
         return player + name + body;
     }
 
+    public static String player(APPlayer player) {
+        return player(player.getName());
+    }
+
+    public static String player(Player player) {
+        return player(player.getName());
+    }
+
     public static String town(String name) {
         return town + name + body;
+    }
+
+    public static String town(APTown town) {
+        return town(town.getTownDisplayName());
+    }
+
+    public static String entity(APEntity entity) {
+        return (entity.isTown() ? town : player) + entity.getName() + body;
     }
 
     public static String item(String name) {
@@ -196,14 +218,26 @@ public class C {
     }
 
     public static String colorYAML(String yaml) {
-        return colorYAML(yaml, gold, aqua);
+        return colorYAML(yaml, key, value);
+    }
+
+    public static String colorYAML(String yaml, int indent) {
+        return colorYAML(yaml, key, value, indent);
     }
 
     public static String colorYAML(String yaml, String colorKey, String colorValue) {
+        return colorYAML(yaml, colorKey, colorValue, 0);
+    }
+
+    public static String colorYAML(String yaml, String colorKey, String colorValue, int indentLevel) {
+        String indent = "";
+        for (int i = 0; i < indentLevel; i++) {
+            indent += "  ";
+        }
         List<String> lines = new ArrayList<>();
         for (String line : yaml.split("\n")) {
             if (line.length() > 0) {
-                lines.add(colorKey + line.replaceFirst("(- |: )", "$1" + colorValue));
+                lines.add(indent + colorKey + line.replaceFirst("(- |: )", "$1" + colorValue));
             }
         }
         return String.join("\n", lines);

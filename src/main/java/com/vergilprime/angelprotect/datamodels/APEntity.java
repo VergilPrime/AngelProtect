@@ -84,9 +84,13 @@ public abstract class APEntity implements Serializable {
         return AngelProtect.getInstance().getStorageManager().save(this);
     }
 
+    public abstract boolean isTown();
+
     public abstract boolean isPartOfEntity(OfflinePlayer player);
 
     public abstract List<OfflinePlayer> getPlayers();
+
+    public abstract String getName();
 
     @Override
     public boolean equals(Object o) {
@@ -97,12 +101,11 @@ public abstract class APEntity implements Serializable {
             return false;
         }
         APEntity entity = (APEntity) o;
-        // TODO: Fix this in case of overlapping uuid of town and player
-        return Objects.equals(uuid, entity.uuid);
+        return entity.isTown() == isTown() && getUUID().equals(entity.getUUID());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(uuid);
+        return Objects.hash(getUUID(), isTown());
     }
 }

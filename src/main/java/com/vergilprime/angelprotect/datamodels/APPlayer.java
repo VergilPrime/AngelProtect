@@ -10,17 +10,19 @@ import org.bukkit.entity.Player;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 public class APPlayer extends APEntity {
 
     private static final long serialVersionUID = 511963768601257063L;
 
-    private List<APEntityRelation> friends;
+    private Set<APEntityRelation> friends;
     private int runes;
     private UUID town;
 
     private transient APTown townCache;
+    protected transient Set<APTown> openInvites;
 
 
     public APPlayer(UUID uuid) {
@@ -28,8 +30,12 @@ public class APPlayer extends APEntity {
         runes = APConfig.get().defaultRunes;
     }
 
-    public List<APEntity> getFriends() {
-        return Collections.unmodifiableList(friends);
+    public Set<APEntity> getFriends() {
+        return Collections.unmodifiableSet(friends);
+    }
+
+    public boolean isFriend(APEntity entity) {
+        return friends.contains(entity);
     }
 
     public APTown getTown() {
@@ -53,6 +59,14 @@ public class APPlayer extends APEntity {
         save();
     }
 
+    public Set<APTown> getOpenInvites() {
+        return Collections.unmodifiableSet(openInvites);
+    }
+
+    public boolean hasOpenInvite(APTown town) {
+        return openInvites.contains(town);
+    }
+
     /**
      * This should only be called from {@link APTown#addMember(APPlayer)}
      */
@@ -70,6 +84,7 @@ public class APPlayer extends APEntity {
         return true;
     }
 
+    @Override
     public String getName() {
         return UtilPlayer.getNameOrUUID(getUUID());
     }
@@ -102,6 +117,11 @@ public class APPlayer extends APEntity {
     @Override
     public int getRunes() {
         return runes;
+    }
+
+    @Override
+    public boolean isTown() {
+        return false;
     }
 
     public void addRunes(int amount) {

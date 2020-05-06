@@ -30,13 +30,17 @@ public class LeaveCommand extends APEntityCommandHandler<APPlayer> {
                 sender.sendMessage(C.error("You can not leave the town as mayor while there are still members left."));
                 sender.sendMessage(C.error("Try transferring the town ownership before you leave."));
                 return;
-            } else {
-                if (APConfig.get().announceTownCreateDelete) {
-                    Bukkit.broadcastMessage(C.prefix + "The town " + C.town(town.getTownDisplayName()) + " has been disbanded.");
-                }
             }
         }
-        town.removeMember(player);
+        if (town.removeMember(player)) {
+            sender.sendMessage(C.main("You left the town " + C.town(town)));
+            if (town.getMayor().equals(player) && APConfig.get().announceTownCreateDelete) {
+                Bukkit.broadcastMessage(C.prefix + "The town " + C.town(town) + " has been disbanded.");
+            }
+        } else {
+            sender.sendMessage(C.error("Unable to leave town."));
+        }
+
     }
 
     @Override

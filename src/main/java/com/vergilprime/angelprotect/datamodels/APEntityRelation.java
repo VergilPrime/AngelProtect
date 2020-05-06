@@ -4,32 +4,33 @@ import com.vergilprime.angelprotect.AngelProtect;
 import org.bukkit.OfflinePlayer;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
-public class APEntityRelation implements APEntity {
+public class APEntityRelation extends APEntity {
 
     private static final long serialVersionUID = -3338936810930454521L;
-    private UUID uuid;
     private boolean isTown;
 
     private transient APEntity entityCache;
 
     public APEntityRelation(UUID uuid, boolean isTown) {
-        this.uuid = uuid;
+        super(uuid);
         this.isTown = isTown;
     }
 
     public APEntityRelation(APEntity entity) {
-        uuid = entity.getUUID();
+        super(entity.getUUID());
         isTown = entity instanceof APTown;
         entityCache = entity;
     }
 
     @Override
-    public UUID getUUID() {
-        return uuid;
+    public int getRunes() {
+        return getEntity().getRunes();
     }
 
+    @Override
     public boolean isTown() {
         return isTown;
     }
@@ -39,9 +40,9 @@ public class APEntityRelation implements APEntity {
             return entityCache;
         }
         if (isTown) {
-            entityCache = AngelProtect.getInstance().getStorageManager().getTown(uuid);
+            entityCache = AngelProtect.getInstance().getStorageManager().getTown(getUUID());
         } else {
-            entityCache = AngelProtect.getInstance().getStorageManager().getPlayer(uuid);
+            entityCache = AngelProtect.getInstance().getStorageManager().getPlayer(getUUID());
         }
         return entityCache;
     }
@@ -62,5 +63,31 @@ public class APEntityRelation implements APEntity {
     @Override
     public List<OfflinePlayer> getPlayers() {
         return getEntity().getPlayers();
+    }
+
+    @Override
+    public String getName() {
+        return getEntity().getName();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof APEntityRelation)) {
+            return false;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        APEntityRelation relation = (APEntityRelation) obj;
+        return isTown() == relation.isTown() &&
+                Objects.equals(entityCache, relation.entityCache);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), isTown(), entityCache);
     }
 }
