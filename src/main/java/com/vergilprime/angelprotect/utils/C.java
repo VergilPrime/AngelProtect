@@ -118,6 +118,10 @@ public class C {
         return center(headerText + " " + header + " ", headerLines + "-").replace("--", "-=");
     }
 
+    public static String color(String color, String msg) {
+        return color + msg + body;
+    }
+
     public static int getCharWidth(char c, boolean bold) {
         int i = bold ? 1 : 0;
         switch (c) {
