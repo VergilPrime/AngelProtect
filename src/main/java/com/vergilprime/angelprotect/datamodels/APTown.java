@@ -71,6 +71,15 @@ public class APTown extends APEntity {
         return true;
     }
 
+    @Override
+    public APClaim claim(APChunk chunk) {
+        APClaim claim = super.claim(chunk);
+        if (claim != null) {
+            broadcast("The town claimed new land at " + C.item(chunk.toString()));
+        }
+        return claim;
+    }
+
     public APPlayer getMayor() {
         return mayor;
     }

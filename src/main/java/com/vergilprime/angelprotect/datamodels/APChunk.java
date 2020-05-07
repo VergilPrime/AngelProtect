@@ -71,6 +71,15 @@ public class APChunk implements Serializable {
     }
 
     @Override
+    public String toString() {
+        return "[" +
+                "world='" + world + '\'' +
+                ", x=" + x +
+                ", z=" + z +
+                ']';
+    }
+
+    @Override
     public boolean equals(Object obj) {
         if (this == obj) {
             return true;
