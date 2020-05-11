@@ -1,11 +1,16 @@
 package com.vergilprime.angelprotect.utils;
 
 import com.google.common.base.Predicates;
+import com.google.common.collect.Lists;
 
 import java.util.List;
 import java.util.function.Predicate;
 
 public class UtilString {
+
+    public static List<String> filterPrefixIgnoreCase(String prefix, String... values) {
+        return filterPrefixIgnoreCase(prefix, Lists.newArrayList(values));
+    }
 
     public static List<String> filterPrefixIgnoreCase(String prefix, List<String> values) {
         values.removeIf(startsWithPrefixIgnoreCase(prefix).negate());

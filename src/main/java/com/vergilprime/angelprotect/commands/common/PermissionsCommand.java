@@ -184,7 +184,7 @@ public class PermissionsCommand extends APEntityCommandHandler {
 
     @Override
     public List<String> onTab(APEntity entity, CommandSender sender, String cmd, String[] args) {
-        return Collections.EMPTY_LIST;
+        return Collections.EMPTY_LIST; //TODO
     }
 
 }

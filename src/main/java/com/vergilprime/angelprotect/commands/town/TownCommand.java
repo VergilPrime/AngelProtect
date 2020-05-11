@@ -17,6 +17,7 @@ public class TownCommand extends RootCommand {
     public TownCommand() {
         super("town", "AngelProtect Town");
         List<CommandHandler> subCommands = new ArrayList<>();
+        subCommands.add(new InviteRequestCommand());
         subCommands.add(new InviteResponseCommand(true));
         subCommands.add(new InviteResponseCommand(false));
         subCommands.add(new LeaveCommand());

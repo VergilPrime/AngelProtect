@@ -36,13 +36,15 @@ public abstract class APEntityCommandHandler<T extends APEntity> extends Command
         permLevel = level;
     }
 
-    protected T getEntity(CommandSender sender) {
+    protected T getEntity(CommandSender sender, boolean silent) {
         APPlayer player = getPlayer(sender);
         if (player != null) {
             T entity;
             if (isTown()) {
                 if (!player.hasTown()) {
-                    sender.sendMessage(C.error("You need to be in a town to use that command."));
+                    if (!silent) {
+                        sender.sendMessage(C.error("You need to be in a town to use that command."));
+                    }
                     return null;
                 }
                 entity = (T) player.getTown();
@@ -67,7 +69,7 @@ public abstract class APEntityCommandHandler<T extends APEntity> extends Command
         if (!isTown()) {
             throw new UnsupportedOperationException("Only APEntityCommandHandler for towns can call this method.");
         }
-        if (!isAdmin() && !((APTown) getEntity(sender)).isAssistantOrHigher(getPlayer(sender))) {
+        if (!isAdmin() && !((APTown) getEntity(sender, silent)).isAssistantOrHigher(getPlayer(sender))) {
             if (!silent) {
                 sender.sendMessage(C.error("Only town assistants or higher may use this command."));
             }
@@ -80,7 +82,7 @@ public abstract class APEntityCommandHandler<T extends APEntity> extends Command
         if (!isTown()) {
             throw new UnsupportedOperationException("Only APEntityCommandHandler for towns can call this method.");
         }
-        if (!isAdmin() && !((APTown) getEntity(sender)).isMayor(getPlayer(sender))) {
+        if (!isAdmin() && !((APTown) getEntity(sender, silent)).isMayor(getPlayer(sender))) {
             if (!silent) {
                 sender.sendMessage(C.error("Only the town mayor may use this command."));
             }
@@ -123,10 +125,12 @@ public abstract class APEntityCommandHandler<T extends APEntity> extends Command
 
     @Override
     public void onCommand(CommandSender sender, String cmd, String[] args) {
-        T entity = getEntity(sender);
+        T entity = getEntity(sender, false);
         if (entity == null) {
-            sender.sendMessage(C.error("Error fetching player data to execute command."));
-            Debug.log("Error fetching player data for sender " + sender + ", name: " + sender.getName(), new RuntimeException());
+            if (!isTown()) {
+                sender.sendMessage(C.error("Error fetching player data to execute command."));
+                Debug.log("Error fetching player data for sender " + sender + ", name: " + sender.getName(), new RuntimeException());
+            }
             return;
         }
         if (permLevel == TownPermissionLevel.Mayor) {
@@ -147,10 +151,12 @@ public abstract class APEntityCommandHandler<T extends APEntity> extends Command
 
     @Override
     public List<String> onTab(CommandSender sender, String cmd, String[] args) {
-        T entity = getEntity(sender);
+        T entity = getEntity(sender, true);
         if (entity == null) {
-            sender.sendMessage(C.error("Error fetching player data to execute command."));
-            Debug.log("Error fetching player data for sender " + sender + ", name: " + sender.getName(), new RuntimeException());
+            if (!isTown()) {
+                sender.sendMessage(C.error("Error fetching player data to execute command."));
+                Debug.log("Error fetching player data for sender " + sender + ", name: " + sender.getName(), new RuntimeException());
+            }
             return Collections.EMPTY_LIST;
         }
         if (permLevel == TownPermissionLevel.Mayor) {

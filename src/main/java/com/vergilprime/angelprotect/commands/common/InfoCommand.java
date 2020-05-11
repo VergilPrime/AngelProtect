@@ -11,7 +11,6 @@ import com.vergilprime.angelprotect.datamodels.APTown;
 import com.vergilprime.angelprotect.datamodels.claimparts.Permissions;
 import com.vergilprime.angelprotect.utils.C;
 import com.vergilprime.angelprotect.utils.UtilSerialize;
-import jdk.internal.joptsimple.internal.Strings;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -84,7 +83,7 @@ public class InfoCommand extends APEntityCommandHandler {
     private void print(CommandSender sender, String key, List<String> values) {
         sender.sendMessage(C.key + key + ": " + C.value + C.bold + values.size());
         for (List<String> row : Lists.partition(values, 3)) {
-            sender.sendMessage(C.value + Strings.join(row, C.body + ", "));
+            sender.sendMessage(C.value + String.join(C.body + ", ", row));
         }
     }
 

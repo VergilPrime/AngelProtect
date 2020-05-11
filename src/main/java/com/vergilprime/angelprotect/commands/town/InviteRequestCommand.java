@@ -7,6 +7,7 @@ import com.vergilprime.angelprotect.utils.C;
 import com.vergilprime.angelprotect.utils.UtilPlayer;
 import org.bukkit.command.CommandSender;
 
+import java.util.Collections;
 import java.util.List;
 
 public class InviteRequestCommand extends APEntityCommandHandler<APTown> {
@@ -50,6 +51,9 @@ public class InviteRequestCommand extends APEntityCommandHandler<APTown> {
 
     @Override
     public List<String> onTab(APTown town, CommandSender sender, String cmd, String[] args) {
-        return null;
+        if (args.length <= 2) {
+            return null;
+        }
+        return Collections.EMPTY_LIST;
     }
 }

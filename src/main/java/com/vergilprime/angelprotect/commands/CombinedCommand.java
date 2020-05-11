@@ -89,11 +89,14 @@ public class CombinedCommand extends CommandHandler {
             }
             return list;
         }
-        CommandHandler handler = getHandler(cmd);
+        String subCmd = args[0];
+        CommandHandler handler = getHandler(subCmd);
         if (handler == null) {
             return Collections.EMPTY_LIST;
         }
-        return handler.onTab(sender, cmd, args);
+        String[] subArgs = new String[args.length - 1];
+        System.arraycopy(args, 1, subArgs, 0, subArgs.length);
+        return handler.onTab(sender, subCmd, subArgs);
     }
 
 

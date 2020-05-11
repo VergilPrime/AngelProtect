@@ -4,9 +4,11 @@ import com.vergilprime.angelprotect.commands.APEntityCommandHandler;
 import com.vergilprime.angelprotect.datamodels.APPlayer;
 import com.vergilprime.angelprotect.utils.C;
 import com.vergilprime.angelprotect.utils.UtilPlayer;
+import com.vergilprime.angelprotect.utils.UtilString;
 import org.bukkit.command.CommandSender;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class AdminRunesCommand extends APEntityCommandHandler<APPlayer> {
@@ -52,6 +54,12 @@ public class AdminRunesCommand extends APEntityCommandHandler<APPlayer> {
 
     @Override
     public List<String> onTab(APPlayer entity, CommandSender sender, String cmd, String[] args) {
+        if (args.length < 2) {
+            String pref = args.length == 0 ? "" : args[0];
+            return UtilString.filterPrefixIgnoreCase(pref, "add", "set");
+        } else if (args.length == 2) {
+            return Collections.EMPTY_LIST;
+        }
         return null;
     }
 }
