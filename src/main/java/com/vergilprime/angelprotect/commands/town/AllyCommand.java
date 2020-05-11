@@ -1,6 +1,7 @@
 package com.vergilprime.angelprotect.commands.town;
 
-import com.google.common.collect.Lists;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 import com.vergilprime.angelprotect.AngelProtect;
 import com.vergilprime.angelprotect.commands.APEntityCommandHandler;
 import com.vergilprime.angelprotect.datamodels.APEntityRelation;
@@ -31,7 +32,7 @@ public class AllyCommand extends APEntityCommandHandler<APTown> {
 
     @Override
     public void onCommand(APTown town, CommandSender sender, String cmd, String[] args) {
-        if (args.length < 2 || Lists.newArrayList(typePlayer, typeTown).contains(args[0].toLowerCase())) {
+        if (args.length < 2 || ImmutableList.copyOf(Iterables.concat(typePlayer, typeTown)).contains(args[0].toLowerCase())) {
             String word = unally ? "unally" : "ally";
             String Word = unally ? "Unally" : "Ally";
             sender.sendMessage(C.error("Please use one of the following:"));

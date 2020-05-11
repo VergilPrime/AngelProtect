@@ -39,18 +39,13 @@ public class ClaimChunkCommand extends APEntityCommandHandler {
             player = (APPlayer) entity;
             town = player.getTown();
         }
-        APChunk chunk = new APChunk(player.getOnlinePlayer());
-        APClaim claim = AngelProtect.getInstance().getStorageManager().getClaim(chunk);
+        APChunk chunk = getChunk(sender);
+        if (chunk == null) {
+            return;
+        }
         if (unclaim) {
+            APClaim claim = getClaim(entity, sender, chunk);
             if (claim == null) {
-                sender.sendMessage(C.error("This land is not currently claimed."));
-                return;
-            } else if (!claim.getOwner().equals(entity)) {
-                if (isTown()) {
-                    sender.sendMessage(C.error("Your town does not own this land, " + C.entity(claim.getOwner()) + " does."));
-                } else {
-                    sender.sendMessage(C.error("You do not own this land, " + C.entity(claim.getOwner()) + " does."));
-                }
                 return;
             }
             if (entity.unclaim(chunk) != null) {
@@ -63,6 +58,7 @@ public class ClaimChunkCommand extends APEntityCommandHandler {
                 sender.sendMessage(C.error("Unable to unclaim this land."));
             }
         } else {
+            APClaim claim = AngelProtect.getInstance().getStorageManager().getClaim(chunk);
             if (claim != null) {
                 if (claim.getOwner().equals(player)) {
                     sender.sendMessage(C.error("You already own this claim."));

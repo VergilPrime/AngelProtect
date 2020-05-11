@@ -24,4 +24,8 @@ public class UtilString {
         return str.substring(0, 2).toUpperCase() + str.substring(1);
     }
 
+    public static String uncapitalizeFirst(String str) {
+        return str.substring(0, 2).toLowerCase() + str.substring(1);
+    }
+
 }

@@ -1,6 +1,7 @@
 package com.vergilprime.angelprotect.commands.ap;
 
-import com.google.common.collect.Lists;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 import com.vergilprime.angelprotect.commands.APEntityCommandHandler;
 import com.vergilprime.angelprotect.datamodels.APPlayer;
 import com.vergilprime.angelprotect.utils.C;
@@ -25,7 +26,7 @@ public class FriendsCommand extends APEntityCommandHandler<APPlayer> {
 
     @Override
     public void onCommand(APPlayer player, CommandSender sender, String cmd, String[] args) {
-        if (args.length < 2 || Lists.newArrayList(actionAdd, actionRemove).contains(args[0].toLowerCase())) {
+        if (args.length < 2 || ImmutableList.copyOf(Iterables.concat(actionAdd, actionRemove)).contains(args[0].toLowerCase())) {
             sender.sendMessage(C.error("Please use one of the following:"));
             sender.sendMessage(C.usageList("/ap friends add [player name]", "Add a player as your friend"));
             sender.sendMessage(C.usageList("/ap friends remove [player name]", "Remove a player from your friends"));

@@ -11,8 +11,8 @@ public class APClaim implements Serializable {
     private static final long serialVersionUID = 4732394814509249916L;
 
     private final APChunk chunk;
-    private final Permissions permissions;
-    private final Protections protections;
+    private Permissions permissions;
+    private Protections protections;
 
     private final APEntityRelation owner;
 
@@ -41,8 +41,21 @@ public class APClaim implements Serializable {
         return permissions;
     }
 
+    public void setPermissions(Permissions permissions) {
+        this.permissions = permissions;
+    }
+
     public Protections getProtections() {
         return protections;
+    }
+
+    public boolean setProtections(Protections protections) {
+        if (owner.getRunesAvailable() + this.protections.getCost() - protections.getCost() >= 0) {
+            this.protections = protections;
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public boolean canBuild(OfflinePlayer player) {
@@ -62,7 +75,7 @@ public class APClaim implements Serializable {
     }
 
     public boolean canContainer(OfflinePlayer player) {
-        return !protections.container || permissions.canContainer(player, owner);
+        return !protections.isContainer() || permissions.canContainer(player, owner);
     }
 
 

@@ -8,11 +8,22 @@ public class Protections implements Serializable {
 
     private static final long serialVersionUID = 1957796085560132961L;
 
-    public boolean fire = true;
-    public boolean tnt = true;
-    public boolean mob = false;
-    public boolean pvp = false;
-    public boolean container = false;
+    private boolean fire = true;
+    private boolean tnt = true;
+    private boolean mob = false;
+    private boolean pvp = false;
+    private boolean container = false;
+
+    public Protections() {
+    }
+
+    public Protections(boolean fire, boolean tnt, boolean mob, boolean pvp, boolean container) {
+        this.fire = fire;
+        this.tnt = tnt;
+        this.mob = mob;
+        this.pvp = pvp;
+        this.container = container;
+    }
 
     public int getCost() {
         APConfig config = APConfig.get();
@@ -27,6 +38,26 @@ public class Protections implements Serializable {
             cost += config.protectionContainerCost;
         }
         return cost;
+    }
+
+    public boolean isFire() {
+        return fire;
+    }
+
+    public boolean isTnt() {
+        return tnt;
+    }
+
+    public boolean isMob() {
+        return mob;
+    }
+
+    public boolean isPvp() {
+        return pvp;
+    }
+
+    public boolean isContainer() {
+        return container;
     }
 
     @Override

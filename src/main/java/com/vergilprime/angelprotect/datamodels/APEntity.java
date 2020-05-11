@@ -61,6 +61,22 @@ public abstract class APEntity implements Serializable {
         return claim;
     }
 
+    public Permissions getDefaultPermissions() {
+        return defaultPermissions;
+    }
+
+    public void setDefaultPermissions(Permissions defaultPermissions) {
+        this.defaultPermissions = defaultPermissions;
+    }
+
+    public Protections getDefaultProtections() {
+        return defaultProtections;
+    }
+
+    public void setDefaultProtections(Protections defaultProtections) {
+        this.defaultProtections = defaultProtections;
+    }
+
     public int getCostOfNewClaim() {
         return defaultProtections.getCost();
     }

@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 public class Permissions implements Serializable {
@@ -94,7 +95,50 @@ public class Permissions implements Serializable {
         return hasPermission(player, relativeTo, container);
     }
 
-    private boolean hasPermission(OfflinePlayer player, APEntity relativeTo, List<Permission> permissions) {
+    public List<Permission> getPermissions(String name) {
+        // TODO: Remove magic values
+        if (name == null) {
+            return null;
+        }
+        switch (name.toLowerCase()) {
+            case "build":
+                return getCanBuild();
+            case "trigger":
+                return getCanTrigger();
+            case "tp":
+            case "teleport":
+                return getCanTeleport();
+            case "manage":
+                return getCanManage();
+            case "con":
+            case "containers":
+                return getCanContainer();
+        }
+        return null;
+    }
+
+    public Permissions setPermissionsClone(String name, List<Permission> permissions) {
+        // TODO: Remove magic values
+        permissions = new ArrayList<>(permissions);
+        Permissions perm = clone();
+        switch (name.toLowerCase()) {
+            case "build":
+                perm.build = permissions;
+            case "trigger":
+                perm.trigger = permissions;
+            case "tp":
+            case "teleport":
+                perm.teleport = permissions;
+            case "manage":
+                perm.manage = permissions;
+            case "con":
+            case "containers":
+                perm.container = permissions;
+        }
+        return perm;
+    }
+
+    public static boolean hasPermission(OfflinePlayer player, APEntity relativeTo, List<Permission> permissions) {
         return permissions.stream().anyMatch(p -> p.hasPermission(player, relativeTo));
     }
 
@@ -115,6 +159,7 @@ public class Permissions implements Serializable {
         public static final Permission Friends = new Permission(Type.Friends);
         public static final Permission Allies = new Permission(Type.Allies);
         public static final Permission Assistants = new Permission(Type.Assistants);
+        public static final Permission Everyone = new Permission(Type.Everyone);
 
         private final APEntityRelation relation;
         private final Type type;
@@ -179,6 +224,23 @@ public class Permissions implements Serializable {
             throw new IllegalArgumentException("Illegal type " + relativeTo.getClass() + " for permission type " + type);
         }
 
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (!(obj instanceof Permission)) {
+                return false;
+            }
+            Permission perm = (Permission) obj;
+            return Objects.equals(getRelation(), perm.getRelation()) &&
+                    getType() == perm.getType();
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(getRelation(), getType());
+        }
 
         public static enum Type {
             Members, Friends, Allies, Assistants, Player, Town, Everyone

@@ -1,6 +1,8 @@
 package com.vergilprime.angelprotect.commands;
 
 import com.vergilprime.angelprotect.AngelProtect;
+import com.vergilprime.angelprotect.datamodels.APChunk;
+import com.vergilprime.angelprotect.datamodels.APClaim;
 import com.vergilprime.angelprotect.datamodels.APEntity;
 import com.vergilprime.angelprotect.datamodels.APPlayer;
 import com.vergilprime.angelprotect.datamodels.APTown;
@@ -85,6 +87,38 @@ public abstract class APEntityCommandHandler<T extends APEntity> extends Command
             return false;
         }
         return true;
+    }
+
+    protected APChunk getChunk(CommandSender sender) {
+        APPlayer player = getPlayer(sender);
+        if (player == null) {
+            return null;
+        }
+        return new APChunk(player.getOnlinePlayer());
+    }
+
+    protected APClaim getClaim(APEntity entity, CommandSender sender) {
+        return getClaim(entity, sender, getChunk(sender));
+    }
+
+    protected APClaim getClaim(APEntity entity, CommandSender sender, APChunk chunk) {
+        if (chunk == null) {
+            return null;
+        }
+        APClaim claim = AngelProtect.getInstance().getStorageManager().getClaim(chunk);
+        if (claim == null) {
+            sender.sendMessage(C.error("This land is currently not claimed."));
+            return null;
+        }
+        if (!claim.getOwner().equals(entity)) {
+            if (isTown()) {
+                sender.sendMessage(C.error("Your town does not own this land, " + C.entity(claim.getOwner()) + " does."));
+            } else {
+                sender.sendMessage(C.error("You do not own this land, " + C.entity(claim.getOwner()) + " does."));
+            }
+            return null;
+        }
+        return claim;
     }
 
     @Override
