@@ -19,6 +19,11 @@ public class Tester implements Listener {
     public Tester(AngelProtect main) {
         Bukkit.getPluginManager().registerEvents(this, main);
 
+//        runTests();
+
+    }
+
+    public void runTests() {
         Debug.log(" ############### Running Tests ###############");
 
         APPlayer xadudex = new APPlayer(UUID.fromString("fc0cfaa2-c73e-4f8e-8557-d7655641b85c"));
@@ -50,7 +55,6 @@ public class Tester implements Listener {
         Debug.log(C.line);
 
         Debug.log(" ############### Finished Tests ###############");
-
     }
 
     @EventHandler

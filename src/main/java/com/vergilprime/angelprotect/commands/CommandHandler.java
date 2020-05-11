@@ -35,7 +35,7 @@ public abstract class CommandHandler {
     }
 
     public List<String> getInfo() {
-        return getInfo(C.gold + "  %d: " + C.gray + "%d");
+        return getInfo(C.gold + "• %n: " + C.gray + "%d");
     }
 
     /**

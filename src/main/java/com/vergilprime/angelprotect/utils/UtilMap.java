@@ -12,7 +12,7 @@ import java.util.List;
 public class UtilMap {
 
     public static final int radius = 4;
-    public static final String symbols = "#*~$%&+?@0123456789ABCDEFGHJKLMNOPQRSTUVWXYZ";
+    public static final String symbols = "#~$%&+?@0123456789ABCDEFGHJKLMNOPQRSTUVWXYZ";
     public static final String empty = "-";
 
     public static String getColor(APPlayer self, APEntity entity) {

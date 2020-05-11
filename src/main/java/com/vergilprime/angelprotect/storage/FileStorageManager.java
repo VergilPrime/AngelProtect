@@ -64,6 +64,7 @@ public class FileStorageManager extends StorageManager {
 
     @Override
     public boolean deleteTown(APTown town) {
+        Debug.log("Deleting town " + town.getName());
         towns.remove(town.getUUID());
         File file = new File(townFolder, town.getUUID() + ".json");
         return file.delete();

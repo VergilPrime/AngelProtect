@@ -16,6 +16,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -35,7 +36,7 @@ public class InfoCommand extends APEntityCommandHandler {
             APTown town = (APTown) entity;
             APPlayer mayor = town.getMayor();
             Set<APPlayer> assistants = town.getAssistants();
-            Set<APPlayer> members = town.getMembers();
+            Set<APPlayer> members = new HashSet<>(town.getMembers());
             members.remove(mayor);
             members.removeAll(assistants);
             List<String> allies = town.getAllies().stream().map(a -> C.entity(a)).collect(Collectors.toList());

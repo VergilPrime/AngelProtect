@@ -11,7 +11,7 @@ public class AdminCommand extends RootCommand {
     public AdminCommand() {
         super("AdminAngelProtect", "Admin AngelProtect");
         List<CommandHandler> subCommands = new ArrayList<>();
-
-        setSubCommands((CommandHandler[]) subCommands.toArray());
+        subCommands.add(new AdminRunesCommand());
+        setSubCommands(subCommands.toArray(new CommandHandler[0]));
     }
 }

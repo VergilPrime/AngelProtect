@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -17,7 +18,7 @@ public class APPlayer extends APEntity {
 
     private static final long serialVersionUID = 511963768601257063L;
 
-    private Set<APEntityRelation> friends;
+    private Set<APEntityRelation> friends = new HashSet<>();
     private int runes;
     private UUID town;
 
@@ -124,8 +125,8 @@ public class APPlayer extends APEntity {
         return false;
     }
 
-    public void addRunes(int amount) {
-        runes += amount;
+    public void setRunes(int runes) {
+        this.runes = runes;
         save();
     }
 

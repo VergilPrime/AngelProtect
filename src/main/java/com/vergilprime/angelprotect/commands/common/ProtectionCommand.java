@@ -76,9 +76,9 @@ public class ProtectionCommand extends APEntityCommandHandler {
         } else {
             if (changeCost > entity.getRunesAvailable()) {
                 if (isTown()) {
-                    sender.sendMessage(C.error("This change will cost " + C.item(changeCost + " Runes") + ", your town has " + C.item(entity.getRunesAvailable() + " Runes") + " available."));
+                    sender.sendMessage(C.error("This change will cost " + C.runes(changeCost) + ", your town has " + C.runes(entity.getRunesAvailable()) + " available."));
                 } else {
-                    sender.sendMessage(C.error("This change will cost " + C.item(changeCost + " Runes") + ", you have " + C.item(entity.getRunesAvailable() + " Runes") + " available."));
+                    sender.sendMessage(C.error("This change will cost " + C.runes(changeCost) + ", you have " + C.runes(entity.getRunesAvailable()) + " available."));
                 }
                 return;
             }

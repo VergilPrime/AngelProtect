@@ -8,16 +8,11 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabCompleter;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class RootCommand extends CombinedCommand implements CommandExecutor, TabCompleter {
 
     public final static int maxTabComplete = 100;
-
-    private Map<String, CommandHandler> lookupCache = new HashMap<>();
-    private CommandHandler[] subCommands;
 
     public RootCommand(String command, String title, CommandHandler... subCommands) {
         super(command, title, new String[0], subCommands);
@@ -25,17 +20,6 @@ public class RootCommand extends CombinedCommand implements CommandExecutor, Tab
         cmd.setExecutor(this);
         cmd.setTabCompleter(this);
         setSubCommands(subCommands);
-    }
-
-    protected void setSubCommands(CommandHandler... subCommands) {
-        this.subCommands = subCommands;
-
-        for (CommandHandler handler : subCommands) {
-            lookupCache.put(handler.getCommand().toLowerCase(), handler);
-            for (String alias : handler.getAliases()) {
-                lookupCache.put(alias, handler);
-            }
-        }
     }
 
     @Override
@@ -52,7 +36,10 @@ public class RootCommand extends CombinedCommand implements CommandExecutor, Tab
         if (list == null) {
             return null;
         } else {
-            return list.subList(0, maxTabComplete);
+            if (list.size() > maxTabComplete) {
+                list = list.subList(0, maxTabComplete);
+            }
+            return list;
         }
     }
 }

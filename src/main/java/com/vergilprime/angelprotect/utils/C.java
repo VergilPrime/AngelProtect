@@ -38,8 +38,8 @@ public class C {
     public static final String white = ChatColor.WHITE + "";
     public static final String yellow = ChatColor.YELLOW + "";
 
-    public static final String prefix = gray + "[" + aqua + "AngelProtect" + gray + "]";
-    public static final String error_prefix = gray + "[" + dred + bold + "!" + gray + "]";
+    public static final String prefix = gray + "[" + aqua + "AP" + gray + "] ";
+    public static final String error_prefix = gray + "[" + dred + bold + "!" + gray + "] ";
     public static final String error = red;
     public static final String body = gray;
     public static final String player = yellow;
@@ -49,6 +49,7 @@ public class C {
     public static final String headerLines = gold;
     public static final String key = gold;
     public static final String value = aqua;
+    public static final String runes = green;
 
     public static final String line = center("-", "-");
     public static final String double_line = center("=", "=");
@@ -57,11 +58,11 @@ public class C {
     public static final int chatWidth = 320;
 
     public static String main(String msg) {
-        return prefix + " " + body + msg;
+        return prefix + body + msg;
     }
 
     public static String error(String msg) {
-        return error_prefix + " " + msg;
+        return error_prefix + msg;
     }
 
     public static String usage(String usage) {
@@ -69,7 +70,9 @@ public class C {
     }
 
     public static String usage(String usage, String desc) {
-        if (desc != null && desc.length() > 0) {
+        if (desc == null || desc.length() > 0) {
+            desc = "";
+        } else {
             desc = " - " + C.item(desc);
         }
         return error("Please use " + C.item(usage) + desc);
@@ -120,6 +123,10 @@ public class C {
 
     public static String color(String color, String msg) {
         return color + msg + body;
+    }
+
+    public static String runes(int number) {
+        return color(runes, number + " " + (number == 1 ? "rune" : "runes"));
     }
 
     public static int getCharWidth(char c, boolean bold) {

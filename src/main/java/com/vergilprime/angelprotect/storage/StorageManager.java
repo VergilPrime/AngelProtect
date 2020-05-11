@@ -6,7 +6,9 @@ import com.vergilprime.angelprotect.datamodels.APEntity;
 import com.vergilprime.angelprotect.datamodels.APPlayer;
 import com.vergilprime.angelprotect.datamodels.APTown;
 import com.vergilprime.angelprotect.utils.Debug;
+import com.vergilprime.angelprotect.utils.UtilSerialize;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,6 +21,11 @@ public abstract class StorageManager {
     protected Map<UUID, APTown> towns = new HashMap<>();
 
     public APPlayer getPlayer(UUID uuid) {
+        if (uuid == null) {
+            return null;
+        }
+        Debug.log("Players:" + UtilSerialize.toJson((Serializable) players, true));
+        Debug.log("Towns:" + UtilSerialize.toJson((Serializable) towns, true));
         APPlayer player = players.get(uuid);
         if (player == null) {
             player = loadPlayer(uuid);
@@ -27,6 +34,9 @@ public abstract class StorageManager {
     }
 
     public APTown getTown(UUID uuid) {
+        if (uuid == null) {
+            return null;
+        }
         APTown town = towns.get(uuid);
         if (town == null) {
             town = loadTown(uuid);
@@ -65,9 +75,9 @@ public abstract class StorageManager {
 
     public boolean save(APEntity entity) {
         if (entity instanceof APPlayer) {
-            return save((APPlayer) entity);
+            return savePlayer((APPlayer) entity);
         } else if (entity instanceof APTown) {
-            return save((APTown) entity);
+            return saveTown((APTown) entity);
         } else {
             throw new UnsupportedOperationException("Tried to save " + entity.getClass());
         }

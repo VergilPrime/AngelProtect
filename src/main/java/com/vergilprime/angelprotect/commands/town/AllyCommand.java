@@ -38,6 +38,7 @@ public class AllyCommand extends APEntityCommandHandler<APTown> {
             sender.sendMessage(C.error("Please use one of the following:"));
             sender.sendMessage(C.usageList("/t " + word + " player [player name]", Word + " a player"));
             sender.sendMessage(C.usageList("/t " + word + " town [town name]", Word + " a town"));
+            return;
         }
         String type = args[0].toLowerCase();
         String name = args[1];

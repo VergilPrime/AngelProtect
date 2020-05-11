@@ -27,6 +27,6 @@ public class AngelProtectCommand extends RootCommand {
         subCommands.add(new ProtectionCommand(false, true));
         subCommands.add(new PermissionsCommand(false, false));
         subCommands.add(new ProtectionCommand(false, false));
-        setSubCommands((CommandHandler[]) subCommands.toArray());
+        setSubCommands(subCommands.toArray(new CommandHandler[0]));
     }
 }

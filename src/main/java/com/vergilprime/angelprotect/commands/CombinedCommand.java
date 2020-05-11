@@ -31,6 +31,17 @@ public class CombinedCommand extends CommandHandler {
         return subCommands;
     }
 
+    protected void setSubCommands(CommandHandler... subCommands) {
+        this.subCommands = subCommands;
+
+        for (CommandHandler handler : subCommands) {
+            lookupCache.put(handler.getCommand().toLowerCase(), handler);
+            for (String alias : handler.getAliases()) {
+                lookupCache.put(alias, handler);
+            }
+        }
+    }
+
     public CommandHandler getHandler(String cmd) {
         return lookupCache.get(cmd.toLowerCase());
     }
@@ -41,7 +52,7 @@ public class CombinedCommand extends CommandHandler {
 
     @Override
     public List<String> getInfo(String format) {
-        List<String> info = super.getInfo(format);
+        List<String> info = new ArrayList<>();
         for (CommandHandler cmd : subCommands) {
             info.addAll(cmd.getInfo());
         }

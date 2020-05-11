@@ -139,6 +139,9 @@ public class Permissions implements Serializable {
     }
 
     public static boolean hasPermission(OfflinePlayer player, APEntity relativeTo, List<Permission> permissions) {
+        if (!relativeTo.isTown() && relativeTo.isPartOfEntity(player)) {
+            return true;
+        }
         return permissions.stream().anyMatch(p -> p.hasPermission(player, relativeTo));
     }
 
@@ -192,6 +195,9 @@ public class Permissions implements Serializable {
          * E.g. Permission.Allies.hasPermission(player, town) would return true if player is an Ally of town.
          */
         public boolean hasPermission(OfflinePlayer player, APEntity relativeTo) {
+            if (relativeTo instanceof APEntityRelation) {
+                relativeTo = ((APEntityRelation) relativeTo).getEntity();
+            }
             if (type == Type.Everyone) {
                 return true;
             }

@@ -4,7 +4,6 @@ import com.vergilprime.angelprotect.AngelProtect;
 import org.bukkit.OfflinePlayer;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 public class APEntityRelation extends APEntity {
@@ -70,24 +69,4 @@ public class APEntityRelation extends APEntity {
         return getEntity().getName();
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (!(obj instanceof APEntityRelation)) {
-            return false;
-        }
-        if (!super.equals(obj)) {
-            return false;
-        }
-        APEntityRelation relation = (APEntityRelation) obj;
-        return isTown() == relation.isTown() &&
-                Objects.equals(entityCache, relation.entityCache);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), isTown(), entityCache);
-    }
 }

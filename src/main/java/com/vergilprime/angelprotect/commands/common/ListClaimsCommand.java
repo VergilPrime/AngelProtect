@@ -29,7 +29,7 @@ public class ListClaimsCommand extends APEntityCommandHandler {
         }
 
         if (isTown()) {
-            sender.sendMessage(C.main("Chunks for your town. Total " + C.item(entity.getClaims().size() + "")));
+            sender.sendMessage(C.main("Chunks for your town. Total " + C.item(entity.getClaims().size() + "")) + ".");
         } else {
             sender.sendMessage(C.main("Your chunks. Total " + C.item(entity.getClaims().size() + "")));
         }

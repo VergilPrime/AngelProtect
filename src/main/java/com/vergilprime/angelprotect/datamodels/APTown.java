@@ -41,11 +41,11 @@ public class APTown extends APEntity {
         townDisplayName = displayName;
         this.mayor = mayor;
         members.add(mayor);
-        assistants.add(mayor);
     }
 
     public APTown(String displayName, APPlayer mayor) {
         this(UUID.randomUUID(), displayName, mayor);
+        mayor.setTown(this);
         save();
     }
 
@@ -131,7 +131,7 @@ public class APTown extends APEntity {
 
     public boolean removeMember(APPlayer member) {
         if (members.contains(member)) {
-            if (member.equals(mayor) && members.size() > 1) {
+            if (isMayor(member)) {
                 if (members.size() > 1) {
                     return false;
                 } else {

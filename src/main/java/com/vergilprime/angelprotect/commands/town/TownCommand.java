@@ -3,6 +3,9 @@ package com.vergilprime.angelprotect.commands.town;
 import com.vergilprime.angelprotect.commands.CommandHandler;
 import com.vergilprime.angelprotect.commands.RootCommand;
 import com.vergilprime.angelprotect.commands.common.ClaimChunkCommand;
+import com.vergilprime.angelprotect.commands.common.InfoCommand;
+import com.vergilprime.angelprotect.commands.common.ListClaimsCommand;
+import com.vergilprime.angelprotect.commands.common.MapCommand;
 import com.vergilprime.angelprotect.commands.common.PermissionsCommand;
 import com.vergilprime.angelprotect.commands.common.ProtectionCommand;
 
@@ -21,6 +24,9 @@ public class TownCommand extends RootCommand {
         subCommands.add(new ClaimChunkCommand(true, true));
         subCommands.add(new CreateCommand());
         subCommands.add(new SetNameCommand());
+        subCommands.add(new InfoCommand(true));
+        subCommands.add(new MapCommand());
+        subCommands.add(new ListClaimsCommand(true));
         subCommands.add(new PromoteCommand(false));
         subCommands.add(new PromoteCommand(true));
         subCommands.add(new TransferOwnerCommand());
@@ -32,6 +38,6 @@ public class TownCommand extends RootCommand {
         subCommands.add(new ProtectionCommand(true, true));
         subCommands.add(new PermissionsCommand(true, false));
         subCommands.add(new ProtectionCommand(true, false));
-        setSubCommands((CommandHandler[]) subCommands.toArray());
+        setSubCommands(subCommands.toArray(new CommandHandler[0]));
     }
 }

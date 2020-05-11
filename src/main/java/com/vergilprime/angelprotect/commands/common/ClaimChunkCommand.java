@@ -18,7 +18,7 @@ public class ClaimChunkCommand extends APEntityCommandHandler {
     private boolean unclaim;
 
     public ClaimChunkCommand(boolean town, boolean unclaim) {
-        super("claimChunk", (unclaim ? "Unclaim" : "Claim") + " the current chunk", town, unclaim ? "uc" : "cc");
+        super(unclaim ? "unclaimChunk" : "claimChunk", (unclaim ? "Unclaim" : "Claim") + " the current chunk", town, unclaim ? "uc" : "cc");
         this.unclaim = unclaim;
         if (town) {
             require(TownPermissionLevel.Assistant);
@@ -65,7 +65,7 @@ public class ClaimChunkCommand extends APEntityCommandHandler {
                 } else if (claim.getOwner().isTown() && claim.getOwner().equals(town)) {
                     sender.sendMessage(C.error("Your town already owns this claim."));
                 } else {
-                    sender.sendMessage(C.error("This land is already claimed by " + C.entity(claim.getOwner())));
+                    sender.sendMessage(C.error("This land is already claimed by " + C.entity(claim.getOwner()) + "."));
                 }
                 return;
             }
@@ -74,12 +74,12 @@ public class ClaimChunkCommand extends APEntityCommandHandler {
                 int available = entity.getRunesAvailable();
                 if (isTown()) {
                     sender.sendMessage(C.error("Your town can not afford a new claim."));
-                    sender.sendMessage(C.error("A new claim would cost " + C.item(cost + "") + " with the town's current default settings."));
-                    sender.sendMessage(C.error("Your town has " + C.item(available + "") + " runes available."));
+                    sender.sendMessage(C.error("A new claim would cost " + C.runes(cost) + " with the town's current default settings."));
+                    sender.sendMessage(C.error("Your town has " + C.runes(available) + " available."));
                 } else {
                     sender.sendMessage(C.error("You can not afford a new claim."));
-                    sender.sendMessage(C.error("A new claim would cost " + C.item(cost + "") + " with your current default settings."));
-                    sender.sendMessage(C.error("You have " + C.item(available + "") + " runes available."));
+                    sender.sendMessage(C.error("A new claim would cost " + C.runes(cost) + " with your current default settings."));
+                    sender.sendMessage(C.error("You have " + C.runes(available) + " available."));
                 }
                 return;
             }
