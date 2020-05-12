@@ -64,8 +64,9 @@ public class InviteResponseCommand extends APEntityCommandHandler<APPlayer> {
             return Collections.EMPTY_LIST;
         }
         return player.getOpenInvites().stream()
-                .map(t -> t.getName())
-                .filter(UtilString.startsWithPrefixIgnoreCase(args.length > 0 ? args[0] : ""))
+                .map(APTown::getName)
+                .filter(UtilString.startsWithPrefixIgnoreCase(args[0]))
+                .sorted()
                 .collect(Collectors.toList());
     }
 }

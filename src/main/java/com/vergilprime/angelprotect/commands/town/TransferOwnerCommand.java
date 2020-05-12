@@ -49,15 +49,15 @@ public class TransferOwnerCommand extends APEntityCommandHandler<APTown> {
 
     @Override
     public List<String> onTab(APTown town, CommandSender sender, String cmd, String[] args) {
-        if (args.length > 1) {
-            return Collections.EMPTY_LIST;
+        if (args.length == 1) {
+            List<APPlayer> list = new ArrayList<>(town.getMembers());
+            list.remove(getPlayer(sender));
+            return list.stream()
+                    .map(APPlayer::getName)
+                    .filter(UtilString.startsWithPrefixIgnoreCase(args[0]))
+                    .sorted()
+                    .collect(Collectors.toList());
         }
-        List<APPlayer> list = new ArrayList<>(town.getMembers());
-        list.remove(getPlayer(sender));
-        return list.stream()
-                .map(player -> player.getName())
-                .filter(UtilString.startsWithPrefixIgnoreCase(args.length >= 0 ? args[0] : ""))
-                .sorted()
-                .collect(Collectors.toList());
+        return Collections.EMPTY_LIST;
     }
 }

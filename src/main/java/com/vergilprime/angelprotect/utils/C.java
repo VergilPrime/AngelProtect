@@ -58,11 +58,11 @@ public class C {
     public static final int chatWidth = 320;
 
     public static String main(String msg) {
-        return prefix + body + msg;
+        return prefix + body + msg + body;
     }
 
     public static String error(String msg) {
-        return error_prefix + msg;
+        return error_prefix + msg + body;
     }
 
     public static String usage(String usage) {
@@ -101,6 +101,14 @@ public class C {
         return player(player.getName());
     }
 
+    public static String playerPosessive(APPlayer player) {
+        return player(player.getName() + "'s");
+    }
+
+    public static String playerPosessive(Player player) {
+        return player(player.getName() + "'s");
+    }
+
     public static String town(String name) {
         return town + name + body;
     }
@@ -109,8 +117,16 @@ public class C {
         return town(town.getTownDisplayName());
     }
 
+    public static String townPosessive(APTown town) {
+        return town(town.getTownDisplayName() + "'s");
+    }
+
     public static String entity(APEntity entity) {
         return (entity.isTown() ? town : player) + entity.getName() + body;
+    }
+
+    public static String entityPosessive(APEntity entity) {
+        return (entity.isTown() ? town : player) + entity.getName() + "'s" + body;
     }
 
     public static String item(String name) {

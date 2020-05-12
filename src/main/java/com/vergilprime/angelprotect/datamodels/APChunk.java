@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 
 import java.io.Serializable;
@@ -28,6 +29,10 @@ public class APChunk implements Serializable {
 
     public APChunk(Location loc) {
         this(loc.getChunk());
+    }
+
+    public APChunk(Block block) {
+        this(block.getChunk());
     }
 
     public APChunk(Entity ent) {

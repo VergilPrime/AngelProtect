@@ -104,19 +104,27 @@ public abstract class APEntityCommandHandler<T extends APEntity> extends Command
     }
 
     protected APClaim getClaim(APEntity entity, CommandSender sender, APChunk chunk) {
+        return getClaim(entity, sender, getChunk(sender), false);
+    }
+
+    protected APClaim getClaim(APEntity entity, CommandSender sender, APChunk chunk, boolean silent) {
         if (chunk == null) {
             return null;
         }
         APClaim claim = AngelProtect.getInstance().getStorageManager().getClaim(chunk);
         if (claim == null) {
-            sender.sendMessage(C.error("This land is currently not claimed."));
+            if (!silent) {
+                sender.sendMessage(C.error("This land is currently not claimed."));
+            }
             return null;
         }
         if (!claim.getOwner().equals(entity)) {
-            if (isTown()) {
-                sender.sendMessage(C.error("Your town does not own this land, " + C.entity(claim.getOwner()) + " does."));
-            } else {
-                sender.sendMessage(C.error("You do not own this land, " + C.entity(claim.getOwner()) + " does."));
+            if (!silent) {
+                if (isTown()) {
+                    sender.sendMessage(C.error("Your town does not own this land, " + C.entity(claim.getOwner()) + " does."));
+                } else {
+                    sender.sendMessage(C.error("You do not own this land, " + C.entity(claim.getOwner()) + " does."));
+                }
             }
             return null;
         }

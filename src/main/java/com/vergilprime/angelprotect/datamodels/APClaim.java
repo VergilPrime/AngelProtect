@@ -62,8 +62,8 @@ public class APClaim implements Serializable {
         return permissions.canBuild(player, owner);
     }
 
-    public boolean canTrigger(OfflinePlayer player) {
-        return permissions.canTrigger(player, owner);
+    public boolean canSwitch(OfflinePlayer player) {
+        return permissions.canSwitch(player, owner);
     }
 
     public boolean canTeleport(OfflinePlayer player) {

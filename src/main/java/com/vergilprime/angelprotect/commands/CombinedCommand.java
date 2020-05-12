@@ -81,13 +81,11 @@ public class CombinedCommand extends CommandHandler {
 
     @Override
     public List<String> onTab(CommandSender sender, String cmd, String[] args) {
-        if (args.length < 2) {
-            List<String> list = new ArrayList<>(lookupCache.keySet());
-            Collections.sort(list);
-            if (args.length > 0) {
-                UtilString.filterPrefixIgnoreCase(args[0], list);
-            }
-            return list;
+        if (args.length == 0) {
+            args = new String[]{""};
+        }
+        if (args.length == 1) {
+            return UtilString.filterPrefixIgnoreCase(args[0], lookupCache.keySet());
         }
         String subCmd = args[0];
         CommandHandler handler = getHandler(subCmd);

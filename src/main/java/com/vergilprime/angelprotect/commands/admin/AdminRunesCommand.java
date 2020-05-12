@@ -54,9 +54,8 @@ public class AdminRunesCommand extends APEntityCommandHandler<APPlayer> {
 
     @Override
     public List<String> onTab(APPlayer entity, CommandSender sender, String cmd, String[] args) {
-        if (args.length < 2) {
-            String pref = args.length == 0 ? "" : args[0];
-            return UtilString.filterPrefixIgnoreCase(pref, "add", "set");
+        if (args.length == 1) {
+            return UtilString.filterPrefixIgnoreCase(args[0], "add", "set");
         } else if (args.length == 2) {
             return Collections.EMPTY_LIST;
         }

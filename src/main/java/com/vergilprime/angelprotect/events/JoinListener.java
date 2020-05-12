@@ -1,5 +1,6 @@
-package com.vergilprime.angelprotect;
+package com.vergilprime.angelprotect.events;
 
+import com.vergilprime.angelprotect.AngelProtect;
 import com.vergilprime.angelprotect.datamodels.APPlayer;
 import com.vergilprime.angelprotect.utils.Debug;
 import org.bukkit.Bukkit;

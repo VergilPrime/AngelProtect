@@ -1,6 +1,7 @@
 package com.vergilprime.angelprotect.utils;
 
 import com.google.common.base.Predicates;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 import java.util.List;
@@ -12,9 +13,10 @@ public class UtilString {
         return filterPrefixIgnoreCase(prefix, Lists.newArrayList(values));
     }
 
-    public static List<String> filterPrefixIgnoreCase(String prefix, List<String> values) {
-        values.removeIf(startsWithPrefixIgnoreCase(prefix).negate());
-        return values;
+    public static List<String> filterPrefixIgnoreCase(String prefix, Iterable<String>... values) {
+        List<String> list = Lists.newArrayList(Iterables.concat(values));
+        list.removeIf(startsWithPrefixIgnoreCase(prefix).negate());
+        return list;
     }
 
     public static Predicate<String> startsWithPrefixIgnoreCase(String prefix) {

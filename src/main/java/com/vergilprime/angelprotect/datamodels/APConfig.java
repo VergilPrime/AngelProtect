@@ -25,6 +25,7 @@ public class APConfig implements Serializable {
     public short protectionMobCost = 1;
     public short protectionContainerCost = 2;
     public boolean announceTownCreateDelete = true;
+    public boolean preventTramplingCropsGlobally = true;
 
     // database stuff
     public String hostname = "localhost";

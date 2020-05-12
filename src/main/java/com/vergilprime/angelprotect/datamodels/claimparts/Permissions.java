@@ -1,9 +1,11 @@
 package com.vergilprime.angelprotect.datamodels.claimparts;
 
+import com.vergilprime.angelprotect.commands.common.PermissionsCommand;
 import com.vergilprime.angelprotect.datamodels.APEntity;
 import com.vergilprime.angelprotect.datamodels.APEntityRelation;
 import com.vergilprime.angelprotect.datamodels.APPlayer;
 import com.vergilprime.angelprotect.datamodels.APTown;
+import com.vergilprime.angelprotect.utils.C;
 import org.bukkit.OfflinePlayer;
 
 import java.io.Serializable;
@@ -13,6 +15,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Permissions implements Serializable {
 
@@ -22,7 +25,7 @@ public class Permissions implements Serializable {
     private List<Permission> build;
 
     // If a player can activate stone pressure plates, stone buttons and switches here.
-    private List<Permission> trigger;
+    private List<Permission> switches;
 
     // If a player can teleport into this claim.
     private List<Permission> teleport;
@@ -34,21 +37,20 @@ public class Permissions implements Serializable {
     private List<Permission> container;
 
     public Permissions() {
-
     }
 
     public Permissions(boolean isTown) {
         if (isTown) {
             // These are only the default settings if the claim is for a town, but this can be overridden if the town has different default settings;
             build = Arrays.asList(Permission.Members);
-            trigger = Arrays.asList(Permission.Members, Permission.Allies);
+            switches = Arrays.asList(Permission.Members, Permission.Allies);
             teleport = Arrays.asList(Permission.Members, Permission.Allies);
             manage = Arrays.asList(Permission.Assistants);
             container = Arrays.asList(Permission.Members, Permission.Allies);
         } else {
             // These are the default settings for a personal claim but are overridden by the owner's default settings.
             build = Arrays.asList(Permission.Friends);
-            trigger = Arrays.asList(Permission.Friends);
+            switches = Arrays.asList(Permission.Friends);
             teleport = Arrays.asList(Permission.Friends);
             manage = Arrays.asList();
             container = Arrays.asList(Permission.Friends);
@@ -63,12 +65,12 @@ public class Permissions implements Serializable {
         return hasPermission(player, relativeTo, build);
     }
 
-    public List<Permission> getCanTrigger() {
-        return Collections.unmodifiableList(trigger);
+    public List<Permission> getCanSwitch() {
+        return Collections.unmodifiableList(switches);
     }
 
-    public boolean canTrigger(OfflinePlayer player, APEntity relativeTo) {
-        return hasPermission(player, relativeTo, trigger);
+    public boolean canSwitch(OfflinePlayer player, APEntity relativeTo) {
+        return hasPermission(player, relativeTo, switches);
     }
 
     public List<Permission> getCanTeleport() {
@@ -100,19 +102,17 @@ public class Permissions implements Serializable {
         if (name == null) {
             return null;
         }
-        switch (name.toLowerCase()) {
-            case "build":
-                return getCanBuild();
-            case "trigger":
-                return getCanTrigger();
-            case "tp":
-            case "teleport":
-                return getCanTeleport();
-            case "manage":
-                return getCanManage();
-            case "con":
-            case "containers":
-                return getCanContainer();
+        name = name.toLowerCase();
+        if (PermissionsCommand.fieldBuild.contains(name)) {
+            return getCanBuild();
+        } else if (PermissionsCommand.fieldSwitch.contains(name)) {
+            return getCanSwitch();
+        } else if (PermissionsCommand.fieldTeleport.contains(name)) {
+            return getCanTeleport();
+        } else if (PermissionsCommand.fieldManage.contains(name)) {
+            return getCanManage();
+        } else if (PermissionsCommand.fieldContainers.contains(name)) {
+            return getCanContainer();
         }
         return null;
     }
@@ -121,26 +121,30 @@ public class Permissions implements Serializable {
         // TODO: Remove magic values
         permissions = new ArrayList<>(permissions);
         Permissions perm = clone();
-        switch (name.toLowerCase()) {
-            case "build":
-                perm.build = permissions;
-            case "trigger":
-                perm.trigger = permissions;
-            case "tp":
-            case "teleport":
-                perm.teleport = permissions;
-            case "manage":
-                perm.manage = permissions;
-            case "con":
-            case "containers":
-                perm.container = permissions;
+        if (PermissionsCommand.fieldBuild.contains(name)) {
+            perm.build = permissions;
+        } else if (PermissionsCommand.fieldSwitch.contains(name)) {
+            perm.switches = permissions;
+        } else if (PermissionsCommand.fieldTeleport.contains(name)) {
+            perm.teleport = permissions;
+        } else if (PermissionsCommand.fieldManage.contains(name)) {
+            perm.manage = permissions;
+        } else if (PermissionsCommand.fieldContainers.contains(name)) {
+            perm.container = permissions;
         }
         return perm;
     }
 
     public static boolean hasPermission(OfflinePlayer player, APEntity relativeTo, List<Permission> permissions) {
-        if (!relativeTo.isTown() && relativeTo.isPartOfEntity(player)) {
-            return true;
+        if (relativeTo.isTown()) {
+            APTown town = (APTown) relativeTo;
+            if (town.getMayor().isPartOfEntity(player)) {
+                return true;
+            }
+        } else {
+            if (relativeTo.isPartOfEntity(player)) {
+                return true;
+            }
         }
         return permissions.stream().anyMatch(p -> p.hasPermission(player, relativeTo));
     }
@@ -149,11 +153,22 @@ public class Permissions implements Serializable {
     public Permissions clone() {
         Permissions perm = new Permissions();
         perm.build = new ArrayList<>(build);
-        perm.trigger = new ArrayList<>(trigger);
+        perm.switches = new ArrayList<>(switches);
         perm.teleport = new ArrayList<>(teleport);
         perm.manage = new ArrayList<>(manage);
         perm.container = new ArrayList<>(container);
         return perm;
+    }
+
+    public String toColorString() {
+        return C.gold + "Build: " + toColorString(getCanBuild()) + "\n" +
+                C.gold + "Switch: " + toColorString(getCanSwitch()) + "\n" +
+                C.gold + "Teleport: " + toColorString(getCanTeleport()) + "\n" +
+                C.gold + "Manage: " + toColorString(getCanManage());
+    }
+
+    private String toColorString(List<Permission> list) {
+        return C.body + "[" + String.join(", ", list.stream().map(Permission::getColorName).collect(Collectors.toList())) + "]";
     }
 
     public static class Permission {
@@ -228,6 +243,13 @@ public class Permissions implements Serializable {
                 return false;
             }
             throw new IllegalArgumentException("Illegal type " + relativeTo.getClass() + " for permission type " + type);
+        }
+
+        public String getColorName() {
+            if (relation != null) {
+                return C.entity(relation);
+            }
+            return C.item(type.name());
         }
 
         @Override

@@ -83,21 +83,21 @@ public class PromoteCommand extends APEntityCommandHandler<APTown> {
 
     @Override
     public List<String> onTab(APTown town, CommandSender sender, String cmd, String[] args) {
-        if (args.length > 1) {
-            return Collections.EMPTY_LIST;
+        if (args.length == 1) {
+            Set<APPlayer> players;
+            if (demote) {
+                players = town.getAssistants();
+            } else {
+                players = new HashSet<>(town.getMembers());
+                players.removeAll(town.getAssistants());
+                players.remove(town.getMayor());
+            }
+            return players.stream()
+                    .map(APPlayer::getName)
+                    .filter(UtilString.startsWithPrefixIgnoreCase(args[0]))
+                    .sorted()
+                    .collect(Collectors.toList());
         }
-        Set<APPlayer> players;
-        if (demote) {
-            players = town.getAssistants();
-        } else {
-            players = new HashSet<>(town.getMembers());
-            players.removeAll(town.getAssistants());
-            players.remove(town.getMayor());
-        }
-        return players.stream()
-                .map(player -> player.getName())
-                .filter(UtilString.startsWithPrefixIgnoreCase(args.length > 0 ? args[0] : ""))
-                .sorted()
-                .collect(Collectors.toList());
+        return Collections.EMPTY_LIST;
     }
 }

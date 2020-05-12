@@ -62,14 +62,14 @@ public class InfoCommand extends APEntityCommandHandler {
             print(sender, "Owner", C.entity(owner));
             if (owner.isPartOfEntity(player)) {
                 print(sender, "Permissions", "");
-                sender.sendMessage(C.colorYAML(UtilSerialize.toYaml(claim.getPermissions()), 1));
+                sender.sendMessage("  " + claim.getPermissions().toColorString().replaceAll("\n", "\n  "));
                 print(sender, "Protections", "");
                 sender.sendMessage(C.colorYAML(UtilSerialize.toYaml(claim.getProtections()), 1));
             }
             Permissions perms = claim.getPermissions();
             print(sender, "You can", "");
             print(sender, "  Build", perms.canBuild(player, owner));
-            print(sender, "  Trigger", perms.canTrigger(player, owner));
+            print(sender, "  Switch", perms.canSwitch(player, owner));
             print(sender, "  Container", perms.canContainer(player, owner));
             print(sender, "  Teleport", perms.canTeleport(player, owner));
             print(sender, "  Manage", perms.canManage(player, owner));

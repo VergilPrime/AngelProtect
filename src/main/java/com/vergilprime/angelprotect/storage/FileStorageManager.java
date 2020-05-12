@@ -7,6 +7,7 @@ import com.vergilprime.angelprotect.utils.Debug;
 import com.vergilprime.angelprotect.utils.UtilSerialize;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.UUID;
 
 public class FileStorageManager extends StorageManager {
@@ -22,6 +23,7 @@ public class FileStorageManager extends StorageManager {
 
         playerFolder.mkdir();
         townFolder.mkdir();
+
     }
 
     @Override
@@ -81,6 +83,7 @@ public class FileStorageManager extends StorageManager {
                 AngelProtect.getInstance().getLogger().warning("Error loading " + playerFile.getName() + ". Not a valid UUID.");
             }
         }
+        Debug.log("Loaded " + players.size() + " players.");
 
         for (File townFile : townFolder.listFiles(f -> f.isFile() && f.getName().endsWith(".json"))) {
             try {
@@ -91,6 +94,10 @@ public class FileStorageManager extends StorageManager {
                 AngelProtect.getInstance().getLogger().warning("Error loading " + townFile.getName() + ". Not a valid UUID.");
             }
         }
+        Debug.log("Loaded " + towns.size() + " towns.");
+
+        Debug.log("Players:" + UtilSerialize.toJson((Serializable) players, true));
+        Debug.log("Towns:" + UtilSerialize.toJson((Serializable) towns, true));
 
         return false;
     }

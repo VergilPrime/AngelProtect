@@ -2,6 +2,7 @@ package com.vergilprime.angelprotect;
 
 import com.vergilprime.angelprotect.commands.CommandManager;
 import com.vergilprime.angelprotect.datamodels.APConfig;
+import com.vergilprime.angelprotect.events.EventsManager;
 import com.vergilprime.angelprotect.storage.FileStorageManager;
 import com.vergilprime.angelprotect.storage.StorageManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -20,8 +21,9 @@ public class AngelProtect extends JavaPlugin {
         getDataFolder().mkdir();
         config = APConfig.load();
         storageManager = new FileStorageManager(this);
+        storageManager.loadAll();
 
-        new JoinListener(this);
+        new EventsManager(this);
 
         new CommandManager();
 

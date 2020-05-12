@@ -32,6 +32,9 @@ public class RootCommand extends CombinedCommand implements CommandExecutor, Tab
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        if (args.length == 0) {
+            args = new String[]{""};
+        }
         List<String> list = super.onTab(sender, alias, args);
         if (list == null) {
             return null;

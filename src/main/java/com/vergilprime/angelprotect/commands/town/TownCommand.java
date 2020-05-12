@@ -31,8 +31,7 @@ public class TownCommand extends RootCommand {
         subCommands.add(new PromoteCommand(false));
         subCommands.add(new PromoteCommand(true));
         subCommands.add(new TransferOwnerCommand());
-        subCommands.add(new AllyCommand(false));
-        subCommands.add(new AllyCommand(true));
+        subCommands.add(new AllyCommand());
         subCommands.add(new ClaimChunkCommand(true, false));
         subCommands.add(new ClaimChunkCommand(true, true));
         subCommands.add(new PermissionsCommand(true, true));

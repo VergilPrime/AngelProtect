@@ -273,7 +273,7 @@ public class APTown extends APEntity {
 
     @Override
     public boolean isPartOfEntity(OfflinePlayer player) {
-        return members.contains(player.getUniqueId());
+        return members.contains(AngelProtect.getInstance().getStorageManager().getPlayer(player.getUniqueId()));
     }
 
     @Override

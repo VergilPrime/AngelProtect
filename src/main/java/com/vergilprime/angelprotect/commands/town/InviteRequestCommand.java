@@ -1,14 +1,18 @@
 package com.vergilprime.angelprotect.commands.town;
 
+import com.vergilprime.angelprotect.AngelProtect;
 import com.vergilprime.angelprotect.commands.APEntityCommandHandler;
 import com.vergilprime.angelprotect.datamodels.APPlayer;
 import com.vergilprime.angelprotect.datamodels.APTown;
 import com.vergilprime.angelprotect.utils.C;
 import com.vergilprime.angelprotect.utils.UtilPlayer;
+import com.vergilprime.angelprotect.utils.UtilString;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class InviteRequestCommand extends APEntityCommandHandler<APTown> {
 
@@ -51,8 +55,15 @@ public class InviteRequestCommand extends APEntityCommandHandler<APTown> {
 
     @Override
     public List<String> onTab(APTown town, CommandSender sender, String cmd, String[] args) {
-        if (args.length <= 2) {
-            return null;
+        if (args.length == 1) {
+            return Bukkit.getOnlinePlayers().stream()
+                    .map(p -> AngelProtect.getInstance().getStorageManager().getPlayer(p.getUniqueId()))
+                    .filter(p -> !p.hasTown())
+                    .filter(p -> !p.hasOpenInvite(town))
+                    .map(APPlayer::getName)
+                    .filter(UtilString.startsWithPrefixIgnoreCase(args[0]))
+                    .sorted()
+                    .collect(Collectors.toList());
         }
         return Collections.EMPTY_LIST;
     }

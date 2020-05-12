@@ -9,8 +9,11 @@ import com.vergilprime.angelprotect.datamodels.APPlayer;
 import com.vergilprime.angelprotect.datamodels.APTown;
 import com.vergilprime.angelprotect.datamodels.claimparts.Protections;
 import com.vergilprime.angelprotect.utils.C;
+import com.vergilprime.angelprotect.utils.UtilString;
 import jdk.internal.net.http.common.Pair;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -20,8 +23,8 @@ import java.util.function.Function;
 public class ProtectionCommand extends APEntityCommandHandler {
 
     public static List<String> fields = Arrays.asList("fire", "tnt", "mob", "pvp", "con", "containers");
-    public static List<String> valuesTrue = Arrays.asList("true", "on", "enable", "enabled");
-    public static List<String> valuesFalse = Arrays.asList("false", "off", "disable", "disabled");
+    public static List<String> valuesTrue = Arrays.asList("true", "on", "enable");
+    public static List<String> valuesFalse = Arrays.asList("false", "off", "disable");
     public static List<String> valuesToggle = Arrays.asList("toggle");
     public static List<String> valuesAll = ImmutableList.copyOf(Iterables.concat(valuesTrue, valuesFalse, valuesToggle));
 
@@ -37,6 +40,13 @@ public class ProtectionCommand extends APEntityCommandHandler {
 
     @Override
     public void onCommand(APEntity entity, CommandSender sender, String cmd, String[] args) {
+        if (!def && isTown() && !isAdmin() && sender instanceof Player) {
+            APClaim claim = getClaim(entity, sender, getChunk(sender), true);
+            if (!claim.canManage((OfflinePlayer) sender)) {
+                sender.sendMessage(C.error("You do not have protection to manage protections for this land."));
+                return;
+            }
+        }
         APPlayer player = getPlayer(sender);
         if (player == null) {
             return;
@@ -49,6 +59,7 @@ public class ProtectionCommand extends APEntityCommandHandler {
             sender.sendMessage(C.usageList(pref + "mob <enable/disable/toggle>", "Prevent destruction by mobs"));
             sender.sendMessage(C.usageList(pref + "pvp <enable/disable/toggle>", "Prevent PvP"));
             sender.sendMessage(C.usageList(pref + "con <enable/disable/toggle>", "Prevent people from accessing containers. If enabled, then this can be further fine tuned with claim permissions."));
+            return;
         }
         Protections oldProt;
         if (def) {
@@ -117,18 +128,22 @@ public class ProtectionCommand extends APEntityCommandHandler {
                 fire = newValue.apply(fire);
                 newBoolValue = fire;
                 fieldName = "Fire Spread";
+                break;
             case "tnt":
                 tnt = newValue.apply(tnt);
                 newBoolValue = tnt;
                 fieldName = "TNT Damage";
+                break;
             case "mob":
                 mob = newValue.apply(mob);
                 newBoolValue = mob;
                 fieldName = "Mob Damage";
+                break;
             case "pvp":
                 pvp = newValue.apply(pvp);
                 newBoolValue = pvp;
                 fieldName = "PVP";
+                break;
             default:
                 con = newValue.apply(con);
                 newBoolValue = con;
@@ -140,7 +155,12 @@ public class ProtectionCommand extends APEntityCommandHandler {
 
     @Override
     public List<String> onTab(APEntity entity, CommandSender sender, String cmd, String[] args) {
-        return Collections.EMPTY_LIST; //TODO
+        if (args.length == 1) {
+            return UtilString.filterPrefixIgnoreCase(args[0], fields);
+        } else if (args.length == 2) {
+            return UtilString.filterPrefixIgnoreCase(args[1], valuesAll);
+        }
+        return Collections.EMPTY_LIST;
     }
 
 }

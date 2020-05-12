@@ -51,6 +51,10 @@ public abstract class CommandHandler {
 
     public abstract void onCommand(CommandSender sender, String cmd, String[] args);
 
+    /**
+     * @param args Minimum length of 1
+     * @return Return a list of possible tab completions, or null to default to online players
+     */
     public abstract List<String> onTab(CommandSender sender, String cmd, String[] args);
 
 

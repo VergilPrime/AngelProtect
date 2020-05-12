@@ -12,16 +12,14 @@ import org.bukkit.command.CommandSender;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class FriendsCommand extends APEntityCommandHandler<APPlayer> {
 
     private List<String> actionAdd = Arrays.asList("add");
-    private List<String> actionRemove = Arrays.asList("remove", "rem");
+    private List<String> actionRemove = Arrays.asList("remove");
 
     public FriendsCommand() {
-        super("friends", "Manage friends", false, "friend");
+        super("friends", "Manage friends", false);
     }
 
     @Override
@@ -59,14 +57,10 @@ public class FriendsCommand extends APEntityCommandHandler<APPlayer> {
 
     @Override
     public List<String> onTab(APPlayer player, CommandSender sender, String cmd, String[] args) {
-        if (args.length <= 1) {
-            return Stream.of(actionAdd, actionRemove)
-                    .flatMap(list -> list.stream())
-                    .filter(UtilString.startsWithPrefixIgnoreCase(args.length > 0 ? args[0] : ""))
-                    .collect(Collectors.toList());
+        if (args.length == 1) {
+            return UtilString.filterPrefixIgnoreCase(args[0], actionAdd, actionRemove);
         }
         if (args.length == 2) {
-            // Defaults to online players
             return null;
         }
         return Collections.EMPTY_LIST;

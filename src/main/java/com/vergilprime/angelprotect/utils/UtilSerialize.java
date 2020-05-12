@@ -8,14 +8,20 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializer;
+import com.google.gson.reflect.TypeToken;
 import com.vergilprime.angelprotect.AngelProtect;
+import com.vergilprime.angelprotect.datamodels.APChunk;
+import com.vergilprime.angelprotect.datamodels.APClaim;
+import com.vergilprime.angelprotect.datamodels.APEntityRelation;
 import com.vergilprime.angelprotect.datamodels.APPlayer;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -29,15 +35,52 @@ public class UtilSerialize {
         return AngelProtect.getInstance().getStorageManager().getPlayer(UUID.fromString(json.getAsString()));
     };
 
-    public static String toJson(Serializable obj, boolean prettyPrint) {
+    private static JsonSerializer<Map<APChunk, APClaim>> apClaimsSerializer = (src, typeOfSrc, context) -> {
+        return context.serialize(src.values());
+    };
+
+    private static JsonDeserializer<Map<APChunk, APClaim>> apClaimsDeserializer = (json, typeOfSrc, context) -> {
+        Map<APChunk, APClaim> map = new HashMap<>();
+        for (JsonElement element : json.getAsJsonArray()) {
+            APClaim claim = context.deserialize(element, APClaim.class);
+            map.put(claim.getChunk(), claim);
+        }
+        return map;
+    };
+
+    private static JsonSerializer<APEntityRelation> apRelationSerializer = (src, typeOfSrc, context) -> {
+        JsonObject obj = new JsonObject();
+        obj.addProperty("isTown", src.isTown());
+        obj.addProperty("uuid", src.getUUID().toString());
+        return obj;
+    };
+
+    private static JsonDeserializer<APEntityRelation> apRelationDeserializer = (src, typeOfSrc, context) -> {
+        UUID uuid = UUID.fromString(src.getAsJsonObject().get("uuid").getAsString());
+        boolean isTown = src.getAsJsonObject().get("isTown").getAsBoolean();
+        return new APEntityRelation(uuid, isTown);
+    };
+
+    public static Gson getGson(Type type, boolean prettyPrint) {
         GsonBuilder builder = new GsonBuilder();
         if (prettyPrint) {
             builder.setPrettyPrinting();
         }
-        if (!(obj instanceof APPlayer)) {
+        if (!type.equals(APPlayer.class)) {
             builder.registerTypeAdapter(APPlayer.class, apPlayerSerializer);
+            builder.registerTypeAdapter(APPlayer.class, apPlayerDeserializer);
         }
-        Gson gson = builder.create();
+        builder.registerTypeAdapter(new TypeToken<Map<APChunk, APClaim>>() {
+        }.getType(), apClaimsSerializer);
+        builder.registerTypeAdapter(new TypeToken<Map<APChunk, APClaim>>() {
+        }.getType(), apClaimsDeserializer);
+        builder.registerTypeAdapter(APEntityRelation.class, apRelationSerializer);
+        builder.registerTypeAdapter(APEntityRelation.class, apRelationDeserializer);
+        return builder.create();
+    }
+
+    public static String toJson(Serializable obj, boolean prettyPrint) {
+        Gson gson = getGson(obj.getClass(), prettyPrint);
         return gson.toJson(obj);
     }
 
@@ -51,18 +94,15 @@ public class UtilSerialize {
     }
 
     public static <T extends Serializable> T fromJson(String json, Class<T> type) {
-        GsonBuilder builder = new GsonBuilder();
-        if (type != APPlayer.class) {
-            builder.registerTypeAdapter(APPlayer.class, apPlayerDeserializer);
-        }
-        Gson gson = builder.create();
+        Gson gson = getGson(type, false);
         return gson.fromJson(json, type);
     }
 
     public static <T extends Serializable> T readJson(File file, Class<T> type) {
         String json = readFile(file);
         if (json == null) {
-            Debug.log("Error reading json file. Returned null.\nFile: " + file + "\nDataType: " + type, new RuntimeException());
+            //Debug.log("Error reading json file. Returned null.\nFile: " + file + "\nDataType: " + type, new RuntimeException());
+            Debug.log("Error reading json file. Returned null.\nFile: " + file + "\nDataType: " + type);
             return null;
         }
         return fromJson(json, type);
@@ -117,11 +157,7 @@ public class UtilSerialize {
     }
 
     public static String toYaml(Serializable obj) {
-        GsonBuilder builder = new GsonBuilder();
-        if (!(obj instanceof APPlayer)) {
-            builder.registerTypeAdapter(APPlayer.class, apPlayerSerializer);
-        }
-        Gson gson = builder.create();
+        Gson gson = getGson(obj.getClass(), false);
         JsonElement json = gson.toJsonTree(obj);
         List<String> lines = jsonElementToLines(null, json);
         return String.join("\n", lines);
@@ -131,8 +167,10 @@ public class UtilSerialize {
         try {
             return new String(Files.readAllBytes(file.toPath()));
         } catch (IOException e) {
-            Debug.log("Error reading file file.\nFile: " + file, e);
-            e.printStackTrace();
+            Debug.log("Error reading file file.\nFile: " + file);
+            Debug.log(e.getLocalizedMessage());
+            //Debug.log("Error reading file file.\nFile: " + file, e);
+            //e.printStackTrace();
             return null;
         }
     }
@@ -140,8 +178,8 @@ public class UtilSerialize {
     public static boolean writeFile(File file, String data) {
         try {
             Files.write(file.toPath(), data.getBytes());
-            file.delete(); // TODO: delete this
-            Debug.log("Wrote and deleted file " + file);
+//            file.delete(); // TODO: delete this
+//            Debug.log("Wrote and deleted file " + file);
             return true;
         } catch (IOException e) {
             Debug.log("Error writing file.\nFile: " + file + "\nData: " + data, e);
