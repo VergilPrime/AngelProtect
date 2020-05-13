@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class APPlayer extends APEntity {
 
@@ -32,6 +33,10 @@ public class APPlayer extends APEntity {
 
     public Set<APEntity> getFriends() {
         return Collections.unmodifiableSet(friends);
+    }
+
+    public String getPrettyPrintFriends() {
+        return C.body + "[" + friends.stream().map(e -> C.entity(e)).collect(Collectors.joining(", ")) + "]";
     }
 
     public boolean isFriend(APEntity entity) {
@@ -64,6 +69,13 @@ public class APPlayer extends APEntity {
             return Collections.EMPTY_SET;
         }
         return Collections.unmodifiableSet(openInvites);
+    }
+
+    public String getPrettyPrintOpenInvites() {
+        if (openInvites == null) {
+            return C.body + "[]";
+        }
+        return C.body + openInvites.stream().map(t -> C.town(t)).collect(Collectors.joining(", ")) + "]";
     }
 
     public boolean hasOpenInvite(APTown town) {

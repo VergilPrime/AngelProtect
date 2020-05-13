@@ -1,30 +1,25 @@
 package com.vergilprime.angelprotect.commands.common;
 
 import com.google.common.collect.Lists;
-import com.vergilprime.angelprotect.AngelProtect;
 import com.vergilprime.angelprotect.commands.APEntityCommandHandler;
-import com.vergilprime.angelprotect.datamodels.APChunk;
-import com.vergilprime.angelprotect.datamodels.APClaim;
 import com.vergilprime.angelprotect.datamodels.APEntity;
 import com.vergilprime.angelprotect.datamodels.APPlayer;
 import com.vergilprime.angelprotect.datamodels.APTown;
 import com.vergilprime.angelprotect.utils.C;
-import com.vergilprime.angelprotect.utils.UtilSerialize;
+import com.vergilprime.angelprotect.utils.UtilString;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class InfoCommand extends APEntityCommandHandler {
 
     private boolean town;
 
     public InfoCommand(boolean town) {
-        super("info", "Display " + (town ? "town" : "chunk") + " info", town);
+        super("info", "Display " + (town ? "town" : "player") + " info", town);
         this.town = town;
     }
 
@@ -37,40 +32,38 @@ public class InfoCommand extends APEntityCommandHandler {
             Set<APPlayer> members = new HashSet<>(town.getMembers());
             members.remove(mayor);
             members.removeAll(assistants);
-            List<String> allies = town.getAllies().stream().map(a -> C.entity(a)).collect(Collectors.toList());
             print(sender, "Town", C.town(town.getName()));
             print(sender, "Mayor", C.player(mayor.getName()));
-            print(sender, "Assistants", assistants.stream().map(p -> C.entity(p)).collect(Collectors.toList()));
-            print(sender, "Members", members.stream().map(p -> C.entity(p)).collect(Collectors.toList()));
-            print(sender, "Runes", C.runes(town.getRunes()));
-            print(sender, "Used runes", C.runes(town.getRunesInUse()));
+            print(sender, "Assistants", UtilString.prettyPrintEntityCollection(assistants));
+            print(sender, "Members", UtilString.prettyPrintEntityCollection(members));
+            print(sender, "Total Runes", C.runes(town.getRunes()));
+            print(sender, "Runes In Use", C.runes(town.getRunesInUse()));
+            print(sender, "Runes Available", C.runes(town.getRunesAvailable()));
             print(sender, "Claims", town.getClaims().size());
-            print(sender, "Allies", allies);
+            print(sender, "Allies", UtilString.prettyPrintEntityCollection(town.getAllies()));
+            if (isAdmin() || town.isAssistantOrHigher(getPlayer(sender))) {
+                print(sender, "Default permissions for new chunks", "");
+                sender.sendMessage(town.getDefaultPermissions().toColorString().replaceAll("^|(\n)", "$1  "));
+                print(sender, "Default protections for new chunks", "");
+                sender.sendMessage(town.getDefaultPermissions().toColorString().replaceAll("^|(\n)", "$1  "));
+                print(sender, "Cost Of A New Claim", town.getCostOfNewClaim());
+            }
         } else {
-            APPlayer apPlayer = getPlayer(sender);
-            if (apPlayer == null) {
-                return;
-            }
-            Player player = apPlayer.getOnlinePlayer();
-            APClaim claim = AngelProtect.getInstance().getStorageManager().getClaim(new APChunk(player));
-            if (claim == null) {
-                print(sender, "Chunk", "Unclaimed");
-                return;
-            }
-            APEntity owner = claim.getOwner();
-            print(sender, "Owner", C.entity(owner));
-            if (owner.isPartOfEntity(player)) {
-                print(sender, "Permissions", "");
-                sender.sendMessage("  " + claim.getPermissions().toColorString().replaceAll("\n", "\n  "));
-                print(sender, "Protections", "");
-                sender.sendMessage(C.colorYAML(UtilSerialize.toYaml(claim.getProtections()), 1));
-            }
-            print(sender, "You can", "");
-            print(sender, "  Build", claim.canBuild(player));
-            print(sender, "  Switch", claim.canSwitch(player));
-            print(sender, "  Container", claim.canContainer(player));
-            print(sender, "  Teleport", claim.canTeleport(player));
-            print(sender, "  Manage", claim.canManage(player));
+            APPlayer player = (APPlayer) entity;
+            APTown town = player.getTown();
+            print(sender, "Town", player.hasTown() ? C.town(player.getTown()) : C.italic + "none");
+            print(sender, "Town Role", player.hasTown() ? town.isMayor(player) ? "Mayor" : town.isAssistantOnly(player) ? "Assistant" : "Member" : "N/A");
+            print(sender, "Total Runes", C.runes(player.getRunes()));
+            print(sender, "Runes In Use", C.runes(player.getRunesInUse()));
+            print(sender, "Runes Available", C.runes(player.getRunesAvailable()));
+            print(sender, "Claims", player.getClaims().size());
+            print(sender, "Friends", player.getPrettyPrintFriends());
+            print(sender, "Open Invites To Towns", player.hasTown() ? "N/A" : player.getPrettyPrintOpenInvites());
+            print(sender, "Default permissions for new chunks", "");
+            sender.sendMessage(player.getDefaultPermissions().toColorString().replaceAll("^|(\n)", "$1  "));
+            print(sender, "Default protections for new chunks", "");
+            sender.sendMessage(player.getDefaultPermissions().toColorString().replaceAll("^|(\n)", "$1  "));
+            print(sender, "Cost Of A New Claim", player.getCostOfNewClaim());
         }
     }
 

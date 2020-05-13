@@ -24,7 +24,7 @@ public class RootCommand extends CombinedCommand implements CommandExecutor, Tab
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        sender.sendMessage(C.header(C.aqua + "AngelProtect"));
+        sender.sendMessage(C.header("AngelProtect"));
         super.onCommand(sender, label, args);
         sender.sendMessage(C.body + C.line);
         return true;

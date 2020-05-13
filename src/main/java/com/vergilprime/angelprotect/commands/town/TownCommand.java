@@ -3,6 +3,7 @@ package com.vergilprime.angelprotect.commands.town;
 import com.vergilprime.angelprotect.commands.CommandHandler;
 import com.vergilprime.angelprotect.commands.RootCommand;
 import com.vergilprime.angelprotect.commands.common.ClaimChunkCommand;
+import com.vergilprime.angelprotect.commands.common.ClaimInfoCommand;
 import com.vergilprime.angelprotect.commands.common.InfoCommand;
 import com.vergilprime.angelprotect.commands.common.ListClaimsCommand;
 import com.vergilprime.angelprotect.commands.common.MapCommand;
@@ -26,6 +27,7 @@ public class TownCommand extends RootCommand {
         subCommands.add(new CreateCommand());
         subCommands.add(new SetNameCommand());
         subCommands.add(new InfoCommand(true));
+        subCommands.add(new ClaimInfoCommand());
         subCommands.add(new MapCommand());
         subCommands.add(new ListClaimsCommand(true));
         subCommands.add(new PromoteCommand(false));

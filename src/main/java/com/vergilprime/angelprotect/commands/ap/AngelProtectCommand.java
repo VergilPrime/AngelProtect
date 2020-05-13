@@ -3,6 +3,7 @@ package com.vergilprime.angelprotect.commands.ap;
 import com.vergilprime.angelprotect.commands.CommandHandler;
 import com.vergilprime.angelprotect.commands.RootCommand;
 import com.vergilprime.angelprotect.commands.common.ClaimChunkCommand;
+import com.vergilprime.angelprotect.commands.common.ClaimInfoCommand;
 import com.vergilprime.angelprotect.commands.common.InfoCommand;
 import com.vergilprime.angelprotect.commands.common.ListClaimsCommand;
 import com.vergilprime.angelprotect.commands.common.MapCommand;
@@ -20,6 +21,7 @@ public class AngelProtectCommand extends RootCommand {
         subCommands.add(new ClaimChunkCommand(false, false));
         subCommands.add(new ClaimChunkCommand(false, true));
         subCommands.add(new InfoCommand(false));
+        subCommands.add(new ClaimInfoCommand());
         subCommands.add(new ListClaimsCommand(false));
         subCommands.add(new MapCommand());
         subCommands.add(new FriendsCommand());

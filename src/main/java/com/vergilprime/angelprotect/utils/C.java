@@ -45,8 +45,8 @@ public class C {
     public static final String player = yellow;
     public static final String town = blue;
     public static final String item = green;
-    public static final String headerText = gold;
-    public static final String headerLines = gold;
+    public static final String headerText = aqua;
+    public static final String headerLines = gold + strikethrough;
     public static final String key = gold;
     public static final String value = aqua;
     public static final String runes = green;
@@ -134,7 +134,7 @@ public class C {
     }
 
     public static String header(String header) {
-        return center(headerText + " " + header + " ", headerLines + "-").replace("--", "-=");
+        return headerLines + center(headerText + " " + header + " " + headerLines, " =");
     }
 
     public static String color(String color, String msg) {

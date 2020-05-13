@@ -42,7 +42,7 @@ spigot {
             usage = '/ap <sub command> [args...]'
         }
         Town {
-            aliases = ['t', 'aptown', 'angelprotecttown']
+            aliases = ['t', 'angelprotecttown']
             description = 'AngelProtect towns command'
             usage = '/t <sub command> [args...]'
         }
