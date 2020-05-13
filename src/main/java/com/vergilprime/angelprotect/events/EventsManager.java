@@ -12,6 +12,7 @@ public class EventsManager {
         if (APConfig.get().preventTramplingCropsGlobally) {
             new CropTrampleListener(plugin);
         }
+        new ProtectionListener(plugin);
     }
 
 }

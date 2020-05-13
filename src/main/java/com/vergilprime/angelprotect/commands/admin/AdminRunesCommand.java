@@ -21,22 +21,22 @@ public class AdminRunesCommand extends APEntityCommandHandler<APPlayer> {
     @Override
     public void onCommand(APPlayer entity, CommandSender sender, String cmd, String[] args) {
         if (args.length < 3 || !Arrays.asList("set", "add").contains(args[0].toLowerCase())) {
-            sender.sendMessage(C.usage("/aap runes [set/add] [#amount] [player]"));
+            sender.sendMessage(C.usage("/aap runes [set/add] [player] [#amount]"));
             return;
         }
         String action = args[0];
-        String strAmount = args[1];
-        String targetName = args[2];
+        String targetName = args[1];
+        String strAmount = args[2];
+        APPlayer target = UtilPlayer.getAPPlayer(targetName);
+        if (target == null) {
+            sender.sendMessage(C.error("Unknown player " + C.player(targetName)));
+            return;
+        }
         int amount;
         try {
             amount = Integer.parseInt(strAmount);
         } catch (NumberFormatException e) {
             sender.sendMessage(C.error("Invalid number " + C.item(strAmount)));
-            return;
-        }
-        APPlayer target = UtilPlayer.getAPPlayer(targetName);
-        if (target == null) {
-            sender.sendMessage(C.error("Unknown player " + C.player(targetName)));
             return;
         }
         if (action.equalsIgnoreCase("set")) {
@@ -57,8 +57,8 @@ public class AdminRunesCommand extends APEntityCommandHandler<APPlayer> {
         if (args.length == 1) {
             return UtilString.filterPrefixIgnoreCase(args[0], "add", "set");
         } else if (args.length == 2) {
-            return Collections.EMPTY_LIST;
+            return null;
         }
-        return null;
+        return Collections.EMPTY_LIST;
     }
 }

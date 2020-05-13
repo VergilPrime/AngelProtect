@@ -97,7 +97,7 @@ public class APTown extends APEntity {
     }
 
     public boolean declineInvite(APPlayer player) {
-        if (player.openInvites.remove(this)) {
+        if (player.removeInvite(this)) {
             broadcastRaw("The player " + C.player(player) + " declined the invite to join the town.");
             return true;
         }
@@ -105,13 +105,14 @@ public class APTown extends APEntity {
     }
 
     public boolean invitePlayer(APPlayer player) {
-        if (player.hasTown() || player.openInvites.contains(this)) {
+        if (player.hasTown() || player.hasOpenInvite(this)) {
             return false;
         }
-        player.openInvites.add(this);
+        player.addInvite(this);
+        player.sendMessage(C.town(this) + " has invited you to join their town.");
         broadcastAssistants("An invite has been sent to " + C.player(player) + " to join the town.");
         Bukkit.getScheduler().runTaskLater(AngelProtect.getInstance(), () -> {
-            if (player.openInvites.remove(this)) {
+            if (player.removeInvite(this)) {
                 broadcastAssistants("The player " + C.player(player) + " did not respond to the invite to join the town.");
             }
         }, inviteTimeoutSeconds * 20);
@@ -120,7 +121,6 @@ public class APTown extends APEntity {
 
     public boolean addMember(APPlayer player) {
         if (!members.contains(player) && player.setTown(this)) {
-            player.openInvites.remove(this);
             members.add(player);
             broadcast(C.player(player) + " has " + C.item("joined") + " the town.");
             save();
@@ -208,7 +208,7 @@ public class APTown extends APEntity {
     }
 
     public int broadcast(String msg) {
-        return broadcastRaw(C.prefix + "[" + C.town(this) + "] " + msg);
+        return broadcastRaw("[" + C.town(this) + "] " + msg);
     }
 
     public int broadcastRaw(String msg) {

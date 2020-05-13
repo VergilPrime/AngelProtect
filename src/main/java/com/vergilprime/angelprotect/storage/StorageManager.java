@@ -3,6 +3,7 @@ package com.vergilprime.angelprotect.storage;
 import com.vergilprime.angelprotect.datamodels.APChunk;
 import com.vergilprime.angelprotect.datamodels.APClaim;
 import com.vergilprime.angelprotect.datamodels.APEntity;
+import com.vergilprime.angelprotect.datamodels.APEntityRelation;
 import com.vergilprime.angelprotect.datamodels.APPlayer;
 import com.vergilprime.angelprotect.datamodels.APTown;
 import com.vergilprime.angelprotect.utils.Debug;
@@ -74,7 +75,9 @@ public abstract class StorageManager {
     public abstract boolean deleteTown(APTown town);
 
     public boolean save(APEntity entity) {
-        if (entity instanceof APPlayer) {
+        if (entity instanceof APEntityRelation) {
+            return save(((APEntityRelation) entity).getEntity());
+        } else if (entity instanceof APPlayer) {
             return savePlayer((APPlayer) entity);
         } else if (entity instanceof APTown) {
             return saveTown((APTown) entity);

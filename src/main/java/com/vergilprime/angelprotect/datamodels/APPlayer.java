@@ -23,8 +23,7 @@ public class APPlayer extends APEntity {
     private UUID town;
 
     private transient APTown townCache;
-    protected transient Set<APTown> openInvites;
-
+    private transient Set<APTown> openInvites;
 
     public APPlayer(UUID uuid) {
         super(uuid);
@@ -61,17 +60,35 @@ public class APPlayer extends APEntity {
     }
 
     public Set<APTown> getOpenInvites() {
+        if (openInvites == null) {
+            return Collections.EMPTY_SET;
+        }
         return Collections.unmodifiableSet(openInvites);
     }
 
     public boolean hasOpenInvite(APTown town) {
-        return openInvites.contains(town);
+        return getOpenInvites().contains(town);
+    }
+
+    protected boolean addInvite(APTown town) {
+        if (openInvites == null) {
+            openInvites = new HashSet<>();
+        }
+        return openInvites.add(town);
+    }
+
+    protected boolean removeInvite(APTown town) {
+        if (openInvites != null) {
+            return openInvites.remove(town);
+        }
+        return false;
     }
 
     /**
      * This should only be called from {@link APTown#addMember(APPlayer)}
      */
     protected boolean setTown(APTown town) {
+        removeInvite(town);
         if (town == null) {
             this.town = null;
             townCache = null;

@@ -15,6 +15,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityInteractEvent;
@@ -39,7 +40,7 @@ public class PermissionListener implements Listener {
         if (claim == null) {
             return;
         }
-        if (claim.getPermissions().canBuild(player, claim.getOwner())) {
+        if (claim.canBuild(player)) {
             return;
         }
         event.setCancelled(true);
@@ -48,33 +49,48 @@ public class PermissionListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlace(BlockPlaceEvent event) {
         onBuild(event, event.getBlock(), event.getPlayer());
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onBreak(BlockBreakEvent event) {
         onBuild(event, event.getBlock(), event.getPlayer());
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onBucketFill(PlayerBucketFillEvent event) {
         onBuild(event, event.getBlock(), event.getPlayer());
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onBucketEmpty(PlayerBucketEmptyEvent event) {
         onBuild(event, event.getBlock(), event.getPlayer());
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
+    public void onFireExtinguish(PlayerInteractEvent event) {
+        if (event.getClickedBlock() == null || event.getAction() != Action.LEFT_CLICK_BLOCK) {
+            return;
+        }
+        Block fire = event.getClickedBlock().getRelative(event.getBlockFace());
+        if (fire.getType() != Material.FIRE) {
+            return;
+        }
+        onBuild(event, event.getClickedBlock(), event.getPlayer());
+        if (event.isCancelled()) {
+            event.getPlayer().sendBlockChange(fire.getLocation(), fire.getBlockData());
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
     public void onTeleport(PlayerTeleportEvent event) {
         Player player = event.getPlayer();
         APClaim from = AngelProtect.getInstance().getStorageManager().getClaim(new APChunk(event.getFrom()));
         APClaim to = AngelProtect.getInstance().getStorageManager().getClaim(new APChunk(event.getTo()));
         if (from != null) {
-            if (!from.getPermissions().canTeleport(player, from.getOwner())) {
+            if (!from.canTeleport(player)) {
                 event.setCancelled(true);
                 if (UtilTimer.timeout(player, "Claim Teleport")) {
                     player.sendMessage(C.error("You do not have permission to teleport away from " + C.entityPosessive(from.getOwner()) + " land."));
@@ -83,7 +99,7 @@ public class PermissionListener implements Listener {
             }
         }
         if (to != null) {
-            if (!to.getPermissions().canTeleport(player, to.getOwner())) {
+            if (!to.canTeleport(player)) {
                 event.setCancelled(true);
                 if (UtilTimer.timeout(player, "Claim Teleport")) {
                     player.sendMessage(C.error("You do not have permission to teleport to " + C.entityPosessive(to.getOwner()) + " land."));
@@ -93,8 +109,8 @@ public class PermissionListener implements Listener {
         }
     }
 
-    @EventHandler
-    public void onEntityInteract(EntityInteractEvent event) {
+    @EventHandler(ignoreCancelled = true)
+    public void onEntityUsePressurePlate(EntityInteractEvent event) {
         if (event.getBlock().getType() != Material.STONE_PRESSURE_PLATE) {
             return;
         }
@@ -113,8 +129,8 @@ public class PermissionListener implements Listener {
         event.setCancelled(true);
     }
 
-    @EventHandler
-    public void onPlayerInteract(PlayerInteractEvent event) {
+    @EventHandler(ignoreCancelled = true)
+    public void onPlayerUseSwitch(PlayerInteractEvent event) {
         if (event.getClickedBlock() == null) {
             return;
         }
@@ -134,13 +150,18 @@ public class PermissionListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onContainerOpen(InventoryOpenEvent event) {
         if (!(event.getPlayer() instanceof Player)) {
             return;
         }
         Player player = (Player) event.getPlayer();
         Location loc = event.getInventory().getLocation();
+        if (loc == null) {
+            if (event.getInventory().getHolder() instanceof Entity) {
+                loc = ((Entity) event.getInventory().getHolder()).getLocation();
+            }
+        }
         if (loc == null) {
             return;
         }

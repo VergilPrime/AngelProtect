@@ -137,7 +137,12 @@ public class Permissions implements Serializable {
 
     public static boolean hasPermission(OfflinePlayer player, APEntity relativeTo, List<Permission> permissions) {
         if (relativeTo.isTown()) {
-            APTown town = (APTown) relativeTo;
+            APTown town;
+            if (relativeTo instanceof APTown) {
+                town = (APTown) relativeTo;
+            } else {
+                town = ((APEntityRelation) relativeTo).getAsTown();
+            }
             if (town.getMayor().isPartOfEntity(player)) {
                 return true;
             }
@@ -164,7 +169,8 @@ public class Permissions implements Serializable {
         return C.gold + "Build: " + toColorString(getCanBuild()) + "\n" +
                 C.gold + "Switch: " + toColorString(getCanSwitch()) + "\n" +
                 C.gold + "Teleport: " + toColorString(getCanTeleport()) + "\n" +
-                C.gold + "Manage: " + toColorString(getCanManage());
+                C.gold + "Manage: " + toColorString(getCanManage()) + "\n" +
+                C.gold + "Container: " + toColorString(getCanContainer());
     }
 
     private String toColorString(List<Permission> list) {

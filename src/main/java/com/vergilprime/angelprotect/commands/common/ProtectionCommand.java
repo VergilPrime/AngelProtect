@@ -2,6 +2,7 @@ package com.vergilprime.angelprotect.commands.common;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
+import com.sun.tools.javac.util.Pair;
 import com.vergilprime.angelprotect.commands.APEntityCommandHandler;
 import com.vergilprime.angelprotect.datamodels.APClaim;
 import com.vergilprime.angelprotect.datamodels.APEntity;
@@ -10,7 +11,6 @@ import com.vergilprime.angelprotect.datamodels.APTown;
 import com.vergilprime.angelprotect.datamodels.claimparts.Protections;
 import com.vergilprime.angelprotect.utils.C;
 import com.vergilprime.angelprotect.utils.UtilString;
-import jdk.internal.net.http.common.Pair;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -22,7 +22,7 @@ import java.util.function.Function;
 
 public class ProtectionCommand extends APEntityCommandHandler {
 
-    public static List<String> fields = Arrays.asList("fire", "tnt", "mob", "pvp", "con", "containers");
+    public static List<String> fields = Arrays.asList("fire", "tnt", "mob", "pvp", "containers");
     public static List<String> valuesTrue = Arrays.asList("true", "on", "enable");
     public static List<String> valuesFalse = Arrays.asList("false", "off", "disable");
     public static List<String> valuesToggle = Arrays.asList("toggle");
@@ -31,7 +31,7 @@ public class ProtectionCommand extends APEntityCommandHandler {
     private boolean def;
 
     public ProtectionCommand(boolean town, boolean def) {
-        super(def ? "defaultProtections" : "protections", def ? "Manage default protections" : "Manage protections for the current chunk", town, def ? "defProt" : "prot");
+        super(def ? "defaultProtections" : "protections", def ? "Manage default protections" : "Manage protections for the current chunk", town);
         this.def = def;
         if (town) {
             require(TownPermissionLevel.Assistant);
@@ -73,9 +73,9 @@ public class ProtectionCommand extends APEntityCommandHandler {
         }
 
         Pair<Protections, Pair<String, Boolean>> change = change(oldProt, args[0], args[1]);
-        Protections newProt = change.first;
-        String fieldName = change.second.first;
-        boolean newBoolValue = change.second.second;
+        Protections newProt = change.fst;
+        String fieldName = change.snd.fst;
+        boolean newBoolValue = change.snd.snd;
         int changeCost = newProt.getCost() - oldProt.getCost();
 
         if (def) {

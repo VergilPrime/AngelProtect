@@ -193,6 +193,7 @@ public class PermissionsCommand extends APEntityCommandHandler {
 
     @Override
     public List<String> onTab(APEntity entity, CommandSender sender, String cmd, String[] args) {
+        // TODO: Return smarter suggestions, don't suggest to add perms for perms the claim already has, same for remove
         if (args.length == 1) {
             return UtilString.filterPrefixIgnoreCase(args[0], fields);
         } else if (args.length == 2) {

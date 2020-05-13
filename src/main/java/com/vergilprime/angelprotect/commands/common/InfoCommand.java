@@ -8,7 +8,6 @@ import com.vergilprime.angelprotect.datamodels.APClaim;
 import com.vergilprime.angelprotect.datamodels.APEntity;
 import com.vergilprime.angelprotect.datamodels.APPlayer;
 import com.vergilprime.angelprotect.datamodels.APTown;
-import com.vergilprime.angelprotect.datamodels.claimparts.Permissions;
 import com.vergilprime.angelprotect.utils.C;
 import com.vergilprime.angelprotect.utils.UtilSerialize;
 import org.bukkit.command.CommandSender;
@@ -39,12 +38,12 @@ public class InfoCommand extends APEntityCommandHandler {
             members.remove(mayor);
             members.removeAll(assistants);
             List<String> allies = town.getAllies().stream().map(a -> C.entity(a)).collect(Collectors.toList());
-            print(sender, "Town", town.getName());
-            print(sender, "Mayor", mayor.getName());
+            print(sender, "Town", C.town(town.getName()));
+            print(sender, "Mayor", C.player(mayor.getName()));
             print(sender, "Assistants", assistants.stream().map(p -> C.entity(p)).collect(Collectors.toList()));
             print(sender, "Members", members.stream().map(p -> C.entity(p)).collect(Collectors.toList()));
-            print(sender, "Runes", town.getRunes());
-            print(sender, "Used runes", town.getRunesInUse());
+            print(sender, "Runes", C.runes(town.getRunes()));
+            print(sender, "Used runes", C.runes(town.getRunesInUse()));
             print(sender, "Claims", town.getClaims().size());
             print(sender, "Allies", allies);
         } else {
@@ -66,13 +65,12 @@ public class InfoCommand extends APEntityCommandHandler {
                 print(sender, "Protections", "");
                 sender.sendMessage(C.colorYAML(UtilSerialize.toYaml(claim.getProtections()), 1));
             }
-            Permissions perms = claim.getPermissions();
             print(sender, "You can", "");
-            print(sender, "  Build", perms.canBuild(player, owner));
-            print(sender, "  Switch", perms.canSwitch(player, owner));
-            print(sender, "  Container", perms.canContainer(player, owner));
-            print(sender, "  Teleport", perms.canTeleport(player, owner));
-            print(sender, "  Manage", perms.canManage(player, owner));
+            print(sender, "  Build", claim.canBuild(player));
+            print(sender, "  Switch", claim.canSwitch(player));
+            print(sender, "  Container", claim.canContainer(player));
+            print(sender, "  Teleport", claim.canTeleport(player));
+            print(sender, "  Manage", claim.canManage(player));
         }
     }
 

@@ -2,6 +2,7 @@ package com.vergilprime.angelprotect.datamodels;
 
 import com.vergilprime.angelprotect.datamodels.claimparts.Permissions;
 import com.vergilprime.angelprotect.datamodels.claimparts.Protections;
+import com.vergilprime.angelprotect.utils.Debug;
 import org.bukkit.OfflinePlayer;
 
 import java.io.Serializable;
@@ -43,6 +44,7 @@ public class APClaim implements Serializable {
 
     public void setPermissions(Permissions permissions) {
         this.permissions = permissions;
+        save();
     }
 
     public Protections getProtections() {
@@ -52,6 +54,7 @@ public class APClaim implements Serializable {
     public boolean setProtections(Protections protections) {
         if (owner.getRunesAvailable() + this.protections.getCost() - protections.getCost() >= 0) {
             this.protections = protections;
+            save();
             return true;
         } else {
             return false;
@@ -76,6 +79,14 @@ public class APClaim implements Serializable {
 
     public boolean canContainer(OfflinePlayer player) {
         return !protections.isContainer() || permissions.canContainer(player, owner);
+    }
+
+    public void save() {
+        getOwner().save();
+    }
+
+    public void delete() {
+        Debug.log("Delete chunk function not implemented yet.");
     }
 
 

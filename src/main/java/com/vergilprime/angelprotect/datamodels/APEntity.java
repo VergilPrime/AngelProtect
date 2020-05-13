@@ -49,6 +49,7 @@ public abstract class APEntity implements Serializable {
         }
         APClaim claim = new APClaim(chunk, this, defaultPermissions, defaultProtections);
         claims.put(chunk, claim);
+        claim.save();
         save();
         return claim;
     }
@@ -56,6 +57,7 @@ public abstract class APEntity implements Serializable {
     public APClaim unclaim(APChunk chunk) {
         APClaim claim = claims.remove(chunk);
         if (claim != null) {
+            claim.delete();
             save();
         }
         return claim;
