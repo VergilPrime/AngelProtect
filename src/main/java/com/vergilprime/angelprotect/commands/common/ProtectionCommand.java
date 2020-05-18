@@ -2,7 +2,6 @@ package com.vergilprime.angelprotect.commands.common;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
-import com.sun.tools.javac.util.Pair;
 import com.vergilprime.angelprotect.commands.APEntityCommandHandler;
 import com.vergilprime.angelprotect.datamodels.APClaim;
 import com.vergilprime.angelprotect.datamodels.APEntity;
@@ -10,6 +9,7 @@ import com.vergilprime.angelprotect.datamodels.APPlayer;
 import com.vergilprime.angelprotect.datamodels.APTown;
 import com.vergilprime.angelprotect.datamodels.claimparts.Protections;
 import com.vergilprime.angelprotect.utils.C;
+import com.vergilprime.angelprotect.utils.Pair;
 import com.vergilprime.angelprotect.utils.UtilString;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
@@ -73,9 +73,9 @@ public class ProtectionCommand extends APEntityCommandHandler {
         }
 
         Pair<Protections, Pair<String, Boolean>> change = change(oldProt, args[0], args[1]);
-        Protections newProt = change.fst;
-        String fieldName = change.snd.fst;
-        boolean newBoolValue = change.snd.snd;
+        Protections newProt = change.key;
+        String fieldName = change.value.key;
+        boolean newBoolValue = change.value.value;
         int changeCost = newProt.getCost() - oldProt.getCost();
 
         if (def) {
