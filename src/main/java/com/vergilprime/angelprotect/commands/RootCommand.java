@@ -7,12 +7,14 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabCompleter;
+import org.bukkit.entity.Player;
 
 import java.util.List;
 
 public class RootCommand extends CombinedCommand implements CommandExecutor, TabCompleter {
 
     public final static int maxTabComplete = 100;
+    public String[] bookInfo;
 
     public RootCommand(String command, String title, CommandHandler... subCommands) {
         super(command, title, new String[0], subCommands);
@@ -24,9 +26,13 @@ public class RootCommand extends CombinedCommand implements CommandExecutor, Tab
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        sender.sendMessage(C.header("AngelProtect"));
-        super.onCommand(sender, label, args);
-        sender.sendMessage(C.body + C.line);
+        if (sender instanceof Player && args.length == 0) {
+            super.onCommand(sender, label, args);
+        } else {
+            sender.sendMessage(C.header("AngelProtect"));
+            super.onCommand(sender, label, args);
+            sender.sendMessage(C.body + C.line);
+        }
         return true;
     }
 

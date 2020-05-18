@@ -45,7 +45,7 @@ public class PermissionListener implements Listener {
         }
         event.setCancelled(true);
         if (UtilTimer.timeout(player, "Claim Break Block")) {
-            player.sendMessage(C.error("You do not have permission to build on " + C.entityPosessive(claim.getOwner()) + "'s land."));
+            player.sendMessage(C.error("You do not have permission to build on " + C.entityPosessive(claim.getOwner()) + " land."));
         }
     }
 

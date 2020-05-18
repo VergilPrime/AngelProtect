@@ -79,16 +79,18 @@ public class PermissionsCommand extends APEntityCommandHandler {
             String pref = isTown() ? "/t " : "/ap ";
             pref += def ? "defPerm " : "perm ";
 
-            String suffix = " [add/remove] ";
-            suffix += isTown() ? "[members/allies/assistants/everyone/" : "[friends/all/";
-            suffix += "/player .../town ...] <optional player/town>";
+            String actions = "add, remove";
+            String types = isTown() ? "members, allies, assistants, everyone" : "friends, all";
+            types += ", player <player name>, town <town name>";
 
             sender.sendMessage(C.error("Please use one of the following:"));
-            sender.sendMessage(C.usageList(pref + "build" + suffix));
-            sender.sendMessage(C.usageList(pref + "switch" + suffix));
-            sender.sendMessage(C.usageList(pref + "tp" + suffix));
-            sender.sendMessage(C.usageList(pref + "manage" + suffix));
-            sender.sendMessage(C.usageList(pref + "containers" + suffix));
+            sender.sendMessage(C.error("Actions: " + C.italic + actions));
+            sender.sendMessage(C.error("Types: " + C.italic + types));
+            sender.sendMessage(C.usageList(pref + "build <action> <type>"));
+            sender.sendMessage(C.usageList(pref + "switch <action> <type>"));
+            sender.sendMessage(C.usageList(pref + "tp <action> <type>"));
+            sender.sendMessage(C.usageList(pref + "manage <action> <type>"));
+            sender.sendMessage(C.usageList(pref + "containers <action> <type>"));
             if (fieldBuild.contains(field)) {
                 sender.sendMessage(C.error(C.item("build") + " - Set who are allowed to place/breaks blocks."));
             } else if (fieldSwitch.contains(field)) {

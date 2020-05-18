@@ -2,7 +2,10 @@ package com.vergilprime.angelprotect.commands;
 
 import com.vergilprime.angelprotect.utils.C;
 import com.vergilprime.angelprotect.utils.UtilString;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,6 +17,7 @@ public class CombinedCommand extends CommandHandler {
 
     private Map<String, CommandHandler> lookupCache = new HashMap<>();
     private CommandHandler[] subCommands;
+    private ItemStack bookInfo;
 
     public CombinedCommand(String command, String description, String[] aliases, CommandHandler... subCommands) {
         super(command, description, aliases);
@@ -25,6 +29,21 @@ public class CombinedCommand extends CommandHandler {
                 lookupCache.put(alias, handler);
             }
         }
+    }
+
+    public void setBookInfo(ItemStack bookInfo) {
+        if (bookInfo.getType() != Material.WRITTEN_BOOK) {
+            throw new IllegalArgumentException("bookInfo needs to be a written book!");
+        }
+        this.bookInfo = bookInfo;
+    }
+
+    public ItemStack getBookInfo() {
+        return bookInfo;
+    }
+
+    public boolean hasBookInfo() {
+        return bookInfo != null;
     }
 
     public CommandHandler[] getSubCommands() {
@@ -54,7 +73,7 @@ public class CombinedCommand extends CommandHandler {
     public List<String> getInfo(String format) {
         List<String> info = new ArrayList<>();
         for (CommandHandler cmd : subCommands) {
-            info.addAll(cmd.getInfo());
+            info.addAll(cmd.getInfo(format));
         }
         return info;
     }
@@ -62,8 +81,12 @@ public class CombinedCommand extends CommandHandler {
     @Override
     public void onCommand(CommandSender sender, String cmd, String[] args) {
         if (args.length == 0) {
-            for (String line : getInfo()) {
-                sender.sendMessage(line);
+            if (sender instanceof Player && hasBookInfo()) {
+                ((Player) sender).openBook(bookInfo);
+            } else {
+                for (String line : getInfo()) {
+                    sender.sendMessage(line);
+                }
             }
         } else {
             String subCmd = args[0];

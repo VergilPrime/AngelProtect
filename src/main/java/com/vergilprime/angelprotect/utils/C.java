@@ -15,6 +15,7 @@ import java.util.List;
 
 public class C {
 
+    // Minecraft Color Codes
     public static final String aqua = ChatColor.AQUA + "";
     public static final String black = ChatColor.BLACK + "";
     public static final String blue = ChatColor.BLUE + "";
@@ -38,6 +39,7 @@ public class C {
     public static final String white = ChatColor.WHITE + "";
     public static final String yellow = ChatColor.YELLOW + "";
 
+    // AngelProtect Colors and Constants
     public static final String prefix = gray + "[" + aqua + "AP" + gray + "] ";
     public static final String error_prefix = gray + "[" + dred + bold + "!" + gray + "] ";
     public static final String error = red;
@@ -51,11 +53,18 @@ public class C {
     public static final String value = aqua;
     public static final String runes = green;
 
+    // Lines/Separators
     public static final String line = center("-", "-");
     public static final String double_line = center("=", "=");
     public static final String hashtag_line = center("#", "#");
 
+    // Chars
+    public static final String cGoto = "➥";
+    public static final String c = "➥";
+
     public static final int chatWidth = 320;
+    public static final int bookWidth = 114;
+    public static final int bookLines = 14;
 
     public static String main(String msg) {
         return prefix + body + msg + body;
@@ -85,8 +94,10 @@ public class C {
     public static String usageList(String usage, String desc) {
         if (desc != null && desc.length() > 0) {
             desc = " - " + C.item(desc);
+        } else {
+            desc = "";
         }
-        return error(" • " + C.item(usage) + desc);
+        return C.body + "• " + C.item(usage) + desc;
     }
 
     public static String player(String name) {
@@ -102,11 +113,11 @@ public class C {
     }
 
     public static String playerPosessive(APPlayer player) {
-        return player(player.getName() + "'s");
+        return C.player + player.getName() + body + "'" + C.player + "s" + body;
     }
 
     public static String playerPosessive(Player player) {
-        return player(player.getName() + "'s");
+        return C.player + player.getName() + body + "'" + C.player + "s" + body;
     }
 
     public static String town(String name) {
@@ -118,7 +129,7 @@ public class C {
     }
 
     public static String townPosessive(APTown town) {
-        return town(town.getTownDisplayName() + "'s");
+        return C.town + town.getTownDisplayName() + body + "'" + C.town + "s" + body;
     }
 
     public static String entity(APEntity entity) {
@@ -126,7 +137,7 @@ public class C {
     }
 
     public static String entityPosessive(APEntity entity) {
-        return (entity.isTown() ? town : player) + entity.getName() + "'s" + body;
+        return (entity.isTown() ? town : player) + entity.getName() + body + "'" + (entity.isTown() ? town : player) + "s" + body;
     }
 
     public static String item(String name) {
@@ -137,6 +148,10 @@ public class C {
         return headerLines + center(headerText + " " + header + " " + headerLines, " =");
     }
 
+    public static String headerBook(String header) {
+        return headerLines + center(headerText + " " + header + " " + headerLines, " =", bookWidth);
+    }
+
     public static String color(String color, String msg) {
         return color + msg + body;
     }
@@ -144,8 +159,6 @@ public class C {
     public static String runes(int number) {
         return color(runes, number + " " + (number == 1 ? "rune" : "runes"));
     }
-
-    // #$%&+?@0123456789ABCDEFGHJKLMNOPQRSTUVWXYZ
 
     public static int getCharWidth(char c, boolean bold) {
         int i = bold ? 1 : 0;
@@ -223,6 +236,10 @@ public class C {
     }
 
     public static String center(String msg, String fill) {
+        return center(msg, fill, chatWidth);
+    }
+
+    public static String center(String msg, String fill, int lineWidth) {
         int fillWidth = getWidth(fill);
         String color = "";
         if (fill.startsWith("§") && fill.split("§").length == 2) {
