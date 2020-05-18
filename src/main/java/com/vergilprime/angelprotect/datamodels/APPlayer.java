@@ -132,7 +132,7 @@ public class APPlayer extends APEntity {
     }
 
     public boolean sendMessage(String msg) {
-        return sendMessageRaw(C.prefix + " " + msg);
+        return sendMessageRaw(C.prefix + msg);
     }
 
     public boolean sendMessageRaw(String msg) {

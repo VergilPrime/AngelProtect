@@ -6,6 +6,7 @@ import com.vergilprime.angelprotect.datamodels.APEntity;
 import com.vergilprime.angelprotect.datamodels.APPlayer;
 import com.vergilprime.angelprotect.datamodels.APTown;
 import com.vergilprime.angelprotect.utils.C;
+import com.vergilprime.angelprotect.utils.UtilSerialize;
 import com.vergilprime.angelprotect.utils.UtilString;
 import org.bukkit.command.CommandSender;
 
@@ -62,7 +63,7 @@ public class InfoCommand extends APEntityCommandHandler {
             print(sender, "Default permissions for new chunks", "");
             sender.sendMessage(player.getDefaultPermissions().toColorString().replaceAll("^|(\n)", "$1  "));
             print(sender, "Default protections for new chunks", "");
-            sender.sendMessage(player.getDefaultPermissions().toColorString().replaceAll("^|(\n)", "$1  "));
+            sender.sendMessage(C.colorYAML(UtilSerialize.toYaml(player.getDefaultProtections()), 1));
             print(sender, "Cost Of A New Claim", player.getCostOfNewClaim());
         }
     }

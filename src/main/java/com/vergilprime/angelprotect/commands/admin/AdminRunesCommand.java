@@ -41,12 +41,12 @@ public class AdminRunesCommand extends APEntityCommandHandler<APPlayer> {
         }
         if (action.equalsIgnoreCase("set")) {
             target.setRunes(amount);
+            target.sendMessage("Your runes have been set to " + C.item(amount + ""));
             sender.sendMessage(C.main("Set " + C.player(target) + " runes to " + C.item(amount + "") + "."));
-            target.sendMessage(C.main("Your runes have been set to " + C.item(amount + "")));
         } else {
             target.setRunes(target.getRunes() + amount);
-            sender.sendMessage(C.main("Added " + C.runes(amount) + " runes to " + C.player(target) + "."));
             target.sendMessage("You gained " + C.runes(amount) + ".");
+            sender.sendMessage(C.main("Added " + C.runes(amount) + " runes to " + C.player(target) + "."));
         }
 
 

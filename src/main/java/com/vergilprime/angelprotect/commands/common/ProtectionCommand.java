@@ -85,7 +85,7 @@ public class ProtectionCommand extends APEntityCommandHandler {
             }
             sender.sendMessage("Default " + C.main(C.item(fieldName) + " for new claims has been " + C.item(newBoolValue ? "Enabled" : "Disabled") + " ."));
         } else {
-            if (changeCost > entity.getRunesAvailable()) {
+            if (changeCost > 0 && changeCost > entity.getRunesAvailable()) {
                 if (isTown()) {
                     sender.sendMessage(C.error("This change will cost " + C.runes(changeCost) + ", your town has " + C.runes(entity.getRunesAvailable()) + " available."));
                 } else {
