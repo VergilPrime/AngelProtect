@@ -27,6 +27,7 @@ version = '1.0.0 Beta'
 description = 'AngelProtect'
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
+jar.archiveFileName = 'AngelProtect.jar'
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'

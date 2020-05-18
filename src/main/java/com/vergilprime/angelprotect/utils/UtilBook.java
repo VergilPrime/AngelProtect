@@ -87,7 +87,8 @@ public class UtilBook {
         }
 
         public BookBuilder suggestCommand(String cmd) {
-            last.event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, cmd));
+            //last.event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, cmd));
+            last.event(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, cmd));
             return this;
         }
 
@@ -127,6 +128,7 @@ public class UtilBook {
             } else {
                 hover = "";
             }
+            hover += "\n\nClick to copy the command to clipboard and then paste in chat.";
             hover(cmd + hover);
             suggestCommand(cmd);
             return this;
