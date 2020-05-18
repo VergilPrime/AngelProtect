@@ -145,6 +145,8 @@ public class C {
         return color(runes, number + " " + (number == 1 ? "rune" : "runes"));
     }
 
+    // #$%&+?@0123456789ABCDEFGHJKLMNOPQRSTUVWXYZ
+
     public static int getCharWidth(char c, boolean bold) {
         int i = bold ? 1 : 0;
         switch (c) {
@@ -161,6 +163,7 @@ public class C {
             case 'l':
             case 'ì':
             case 'í':
+            case '`':
                 return 3 + i;
             case ' ':
             case 'I':
