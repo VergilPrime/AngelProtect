@@ -3,9 +3,11 @@ package com.vergilprime.angelprotect.events;
 import com.vergilprime.angelprotect.AngelProtect;
 import com.vergilprime.angelprotect.datamodels.APChunk;
 import com.vergilprime.angelprotect.datamodels.APClaim;
+import com.vergilprime.angelprotect.datamodels.APEntity;
 import com.vergilprime.angelprotect.utils.C;
 import com.vergilprime.angelprotect.utils.UtilTimer;
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -21,6 +23,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
+import org.bukkit.event.block.BlockPistonEvent;
+import org.bukkit.event.block.BlockPistonExtendEvent;
+import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityBreakDoorEvent;
@@ -31,8 +36,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 public class ProtectionListener implements Listener {
 
@@ -195,5 +202,34 @@ public class ProtectionListener implements Listener {
         }
     }
 
+    public void onPiston(BlockPistonEvent event, boolean extend, Collection<Block> blocks) {
+        Set<Chunk> chunks = new HashSet<>();
+        for (Block b : blocks) {
+            chunks.add(b.getChunk());
+            chunks.add(b.getRelative(event.getDirection()).getChunk());
+        }
+        if (extend) {
+            chunks.add(event.getBlock().getRelative(event.getDirection()).getChunk());
+        }
+        APClaim claim = AngelProtect.getInstance().getStorageManager().getClaim(new APChunk(event.getBlock()));
+        APEntity owner = claim != null ? claim.getOwner() : null;
+        for (Chunk c : chunks) {
+            APClaim bClaim = AngelProtect.getInstance().getStorageManager().getClaim(new APChunk(c));
+            APEntity bOwner = bClaim != null ? bClaim.getOwner() : null;
+            if ((bClaim != null && !bOwner.equals(owner))) {
+                event.setCancelled(true);
+                return;
+            }
+        }
+    }
 
+    @EventHandler(ignoreCancelled = true)
+    public void onPistonExtend(BlockPistonExtendEvent event) {
+        onPiston(event, true, event.getBlocks());
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onPistonRetract(BlockPistonRetractEvent event) {
+        onPiston(event, false, event.getBlocks());
+    }
 }
