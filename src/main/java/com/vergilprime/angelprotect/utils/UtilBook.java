@@ -153,6 +153,11 @@ public class UtilBook {
             return item.clone();
         }
 
+        public BookBuilder send(Player player) {
+            player.openBook(build());
+            return this;
+        }
+
     }
 
     public static void sendBook(Player player, List<BaseComponent[]> pages) {

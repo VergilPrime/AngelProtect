@@ -4,6 +4,7 @@ import com.vergilprime.angelprotect.datamodels.APEntityRelation;
 import com.vergilprime.angelprotect.datamodels.APPlayer;
 import com.vergilprime.angelprotect.datamodels.APTown;
 import com.vergilprime.angelprotect.utils.C;
+import com.vergilprime.angelprotect.utils.ConfirmMenu;
 import com.vergilprime.angelprotect.utils.Debug;
 import com.vergilprime.angelprotect.utils.UtilSerialize;
 import org.bukkit.Bukkit;
@@ -63,6 +64,10 @@ public class Tester implements Listener {
         String[] args = event.getMessage().split(" ");
         if (Arrays.asList("/apt", "/aptest").contains(cmd.toLowerCase())) {
             event.getPlayer().sendMessage("Test cmd.");
+
+            new ConfirmMenu(event.getPlayer(), "Are you sure you want to open the test menu?", () -> {
+                Bukkit.broadcastMessage("The player confirmed.");
+            });
 
             event.setCancelled(true);
         }
