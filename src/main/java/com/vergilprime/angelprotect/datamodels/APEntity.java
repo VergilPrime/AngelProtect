@@ -7,10 +7,10 @@ import org.bukkit.OfflinePlayer;
 
 import java.io.Serializable;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 public abstract class APEntity implements Serializable {
@@ -18,7 +18,7 @@ public abstract class APEntity implements Serializable {
     private static final long serialVersionUID = 8948626089490987249L;
 
     private UUID uuid;
-    private Map<APChunk, APClaim> claims = new HashMap<>();
+    private Set<APChunk> claims = new HashSet<>();
 
     private Permissions defaultPermissions;
     private Protections defaultProtections;
@@ -35,12 +35,19 @@ public abstract class APEntity implements Serializable {
         return uuid;
     }
 
-    public Map<APChunk, APClaim> getClaims() {
-        return Collections.unmodifiableMap(claims);
+    public Set<APChunk> getClaims() {
+        return Collections.unmodifiableSet(claims);
+    }
+
+    public boolean ownsClaim(APChunk chunk) {
+        return claims.contains(chunk);
     }
 
     public APClaim getClaim(APChunk chunk) {
-        return claims.get(chunk);
+        if (ownsClaim(chunk)) {
+            return AngelProtect.getInstance().getStorageManager().getClaim(chunk);
+        }
+        return null;
     }
 
     public APClaim claim(APChunk chunk) {
@@ -48,16 +55,17 @@ public abstract class APEntity implements Serializable {
             return null;
         }
         APClaim claim = new APClaim(chunk, this, defaultPermissions, defaultProtections);
-        claims.put(chunk, claim);
+        claims.add(chunk);
         claim.save();
         save();
         return claim;
     }
 
     public APClaim unclaim(APChunk chunk) {
-        APClaim claim = claims.remove(chunk);
+        APClaim claim = getClaim(chunk);
         if (claim != null) {
             claim.delete();
+            claims.remove(chunk);
             save();
         }
         return claim;
@@ -90,7 +98,10 @@ public abstract class APEntity implements Serializable {
     public abstract int getRunes();
 
     public int getRunesInUse() {
-        return claims.values().stream().mapToInt(c -> c.getCost()).sum();
+        return claims.stream()
+                .map(c -> AngelProtect.getInstance().getStorageManager().getClaim(c))
+                .mapToInt(c -> c.getCost())
+                .sum();
     }
 
     public int getRunesAvailable() {
@@ -125,5 +136,15 @@ public abstract class APEntity implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(getUUID(), isTown());
+    }
+
+    @Override
+    public String toString() {
+        return "APEntity{" +
+                "name=" + getName() +
+                ", isTown=" + isTown() +
+                ", uuid=" + uuid +
+                ", isRelative=" + (this instanceof APEntityRelation) +
+                '}';
     }
 }

@@ -10,9 +10,7 @@ import com.vergilprime.angelprotect.utils.Debug;
 import com.vergilprime.angelprotect.utils.UtilSerialize;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -20,6 +18,7 @@ public abstract class StorageManager {
 
     protected Map<UUID, APPlayer> players = new HashMap<>();
     protected Map<UUID, APTown> towns = new HashMap<>();
+    protected Map<APChunk, APClaim> claims = new HashMap<>();
 
     public APPlayer getPlayer(UUID uuid) {
         if (uuid == null) {
@@ -54,25 +53,18 @@ public abstract class StorageManager {
         return null;
     }
 
-    // TODO: Optimize this
     public APClaim getClaim(APChunk chunk) {
-        List<APEntity> list = new ArrayList<>(players.size() + towns.size());
-        list.addAll(players.values());
-        list.addAll(towns.values());
-        APClaim claim = null;
-        for (APEntity ent : list) {
-            APClaim c = ent.getClaim(chunk);
-            if (c != null) {
-                if (claim != null) {
-                    Debug.log("Error: Found two claims for the same chunk!", new IllegalStateException());
-                }
-                claim = c;
-            }
+        if (chunk == null) {
+            return null;
+        }
+        APClaim claim = claims.get(chunk);
+        if (claim == null) {
+            claim = loadClaim(chunk);
+            // Put claim in claims, even if return null, to prevent us from looking up this chunk in the future
+            claims.put(chunk, claim);
         }
         return claim;
     }
-
-    public abstract boolean deleteTown(APTown town);
 
     public boolean save(APEntity entity) {
         if (entity instanceof APEntityRelation) {
@@ -86,13 +78,25 @@ public abstract class StorageManager {
         }
     }
 
+
     public abstract APPlayer loadPlayer(UUID player);
 
     public abstract boolean savePlayer(APPlayer apPlayer);
 
+
     public abstract APTown loadTown(UUID townUUID);
 
     public abstract boolean saveTown(APTown town);
+
+    public abstract boolean deleteTown(APTown town);
+
+
+    public abstract boolean saveClaim(APClaim claim);
+
+    public abstract APClaim loadClaim(APChunk chunk);
+
+    public abstract boolean deleteClaim(APClaim claim);
+
 
     public abstract boolean loadAll();
 }

@@ -23,7 +23,7 @@ public class ListClaimsCommand extends APEntityCommandHandler {
     @Override
     public void onCommand(APEntity entity, CommandSender sender, String cmd, String[] args) {
         Map<String, List<APChunk>> chunks = new HashMap<>();
-        for (APChunk chunk : entity.getClaims().keySet()) {
+        for (APChunk chunk : entity.getClaims()) {
             List<APChunk> list = chunks.computeIfAbsent(chunk.world, s -> new ArrayList<>());
             list.add(chunk);
         }

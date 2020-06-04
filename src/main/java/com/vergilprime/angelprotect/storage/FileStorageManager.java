@@ -1,6 +1,9 @@
 package com.vergilprime.angelprotect.storage;
 
 import com.vergilprime.angelprotect.AngelProtect;
+import com.vergilprime.angelprotect.datamodels.APChunk;
+import com.vergilprime.angelprotect.datamodels.APClaim;
+import com.vergilprime.angelprotect.datamodels.APEntity;
 import com.vergilprime.angelprotect.datamodels.APPlayer;
 import com.vergilprime.angelprotect.datamodels.APTown;
 import com.vergilprime.angelprotect.utils.Debug;
@@ -9,20 +12,24 @@ import com.vergilprime.angelprotect.utils.UtilSerialize;
 import java.io.File;
 import java.io.Serializable;
 import java.util.UUID;
+import java.util.logging.Level;
 
 public class FileStorageManager extends StorageManager {
 
     private File playerFolder;
     private File townFolder;
+    private File claimsFolder;
 
     public FileStorageManager(AngelProtect main) {
         File f = main.getDataFolder();
         f.mkdir();
         playerFolder = new File(f, "players");
         townFolder = new File(f, "towns");
+        claimsFolder = new File(f, "claims");
 
         playerFolder.mkdir();
         townFolder.mkdir();
+        claimsFolder.mkdir();
 
     }
 
@@ -73,6 +80,51 @@ public class FileStorageManager extends StorageManager {
     }
 
     @Override
+    public APClaim loadClaim(APChunk chunk) {
+        File worldFolder = new File(claimsFolder, chunk.world);
+        if (!worldFolder.exists()) {
+            return null;
+        }
+        File file = new File(worldFolder, chunk.x + " " + chunk.z + ".json");
+        APClaim claim = UtilSerialize.readJson(file, APClaim.class);
+        if (claim == null) {
+            return null;
+        }
+        claims.put(chunk, claim);
+        return claim;
+    }
+
+    @Override
+    public boolean saveClaim(APClaim claim) {
+        File worldFolder = new File(claimsFolder, claim.getChunk().world);
+        if (!worldFolder.exists()) {
+            worldFolder.mkdir();
+        }
+        File file = new File(worldFolder, claim.getChunk().x + " " + claim.getChunk().z + ".json");
+        return UtilSerialize.writeJson(claim, false, file);
+    }
+
+    @Override
+    /**
+     * Warning: Don't call this method directly, without having unclaimed the chunk from the owner first.
+     */
+    public boolean deleteClaim(APClaim claim) {
+        claims.remove(claim);
+        File file = new File(claimsFolder, claim.getChunk().world + File.separator + claim.getChunk().x + " " + claim.getChunk().z + ".json");
+        boolean delete = file.delete();
+        APEntity owner = null;
+        if (claim.getOwner().isTown()) {
+            owner = towns.get(claim.getOwner().getUUID());
+        } else {
+            owner = players.get(claim.getOwner().getUUID());
+        }
+        if (owner.ownsClaim(claim.getChunk())) {
+            throw new IllegalStateException("Owner still owns chunk while trying to unclaim! Chunk: " + claim.getChunk() + ", Owner: " + owner);
+        }
+        return delete;
+    }
+
+    @Override
     public boolean loadAll() {
         for (File playerFile : playerFolder.listFiles(f -> f.isFile() && f.getName().endsWith(".json"))) {
             try {
@@ -80,7 +132,9 @@ public class FileStorageManager extends StorageManager {
                 APPlayer player = loadPlayer(uuid);
                 players.put(uuid, player);
             } catch (IllegalArgumentException e) {
-                AngelProtect.getInstance().getLogger().warning("Error loading " + playerFile.getName() + ". Not a valid UUID.");
+                AngelProtect.getInstance().getLogger().warning("Error loading player " + playerFile + ". Not a valid UUID.");
+            } catch (Exception e) {
+                AngelProtect.getInstance().getLogger().log(Level.WARNING, "Error loading player " + playerFile + ".", e);
             }
         }
         Debug.log("Loaded " + players.size() + " players.");
@@ -91,14 +145,30 @@ public class FileStorageManager extends StorageManager {
                 APTown town = loadTown(uuid);
                 towns.put(uuid, town);
             } catch (IllegalArgumentException e) {
-                AngelProtect.getInstance().getLogger().warning("Error loading " + townFile.getName() + ". Not a valid UUID.");
+                AngelProtect.getInstance().getLogger().warning("Error loading town " + townFile + ". Not a valid UUID.");
+            } catch (Exception e) {
+                AngelProtect.getInstance().getLogger().log(Level.WARNING, "Error loading town " + townFile + ".", e);
             }
         }
+
+        for (File claimWorld : claimsFolder.listFiles(f -> f.isDirectory())) {
+            for (File claimCoord : claimWorld.listFiles(f -> f.isFile() && f.getName().endsWith(".json"))) {
+                try {
+                    APClaim claim = UtilSerialize.readJson(claimCoord, APClaim.class);
+                    claims.put(claim.getChunk(), claim);
+                } catch (Exception e) {
+                    AngelProtect.getInstance().getLogger().log(Level.WARNING, "Error loading claim " + claimCoord + ".", e);
+                }
+            }
+        }
+        Debug.log("Loaded " + players.size() + " players.");
         Debug.log("Loaded " + towns.size() + " towns.");
+        Debug.log("Loaded " + claims.size() + " claims.");
 
         Debug.log("Players:" + UtilSerialize.toJson((Serializable) players, true));
         Debug.log("Towns:" + UtilSerialize.toJson((Serializable) towns, true));
+        Debug.log("Claims:" + UtilSerialize.toJson((Serializable) claims, true));
 
-        return false;
+        return true;
     }
 }
