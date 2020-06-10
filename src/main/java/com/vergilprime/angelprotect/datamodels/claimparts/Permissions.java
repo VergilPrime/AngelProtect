@@ -98,7 +98,6 @@ public class Permissions implements Serializable {
     }
 
     public List<Permission> getPermissions(String name) {
-        // TODO: Remove magic values
         if (name == null) {
             return null;
         }
@@ -118,7 +117,6 @@ public class Permissions implements Serializable {
     }
 
     public Permissions setPermissionsClone(String name, List<Permission> permissions) {
-        // TODO: Remove magic values
         permissions = new ArrayList<>(permissions);
         Permissions perm = clone();
         if (PermissionsCommand.fieldBuild.contains(name)) {
