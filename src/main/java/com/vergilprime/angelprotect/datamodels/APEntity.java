@@ -99,8 +99,7 @@ public abstract class APEntity implements Serializable {
 
     public int getRunesInUse() {
         return claims.stream()
-                .map(c -> AngelProtect.getInstance().getStorageManager().getClaim(c))
-                .mapToInt(c -> c.getCost())
+                .mapToInt(c -> AngelProtect.getInstance().getStorageManager().getClaim(c).getCost())
                 .sum();
     }
 

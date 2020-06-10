@@ -96,6 +96,7 @@ public class FileStorageManager extends StorageManager {
 
     @Override
     public boolean doSaveClaim(APClaim claim) {
+        claims.put(claim.getChunk(), claim);
         File worldFolder = new File(claimsFolder, claim.getChunk().world);
         if (!worldFolder.exists()) {
             worldFolder.mkdir();
@@ -109,7 +110,7 @@ public class FileStorageManager extends StorageManager {
      */
     @Override
     public boolean doDeleteClaim(APClaim claim) {
-        claims.remove(claim);
+        claims.remove(claim.getChunk());
         File file = new File(claimsFolder, claim.getChunk().world + File.separator + claim.getChunk().x + " " + claim.getChunk().z + ".json");
         boolean delete = file.delete();
         APEntity owner = null;
