@@ -38,7 +38,7 @@ public class FileStorageManager extends StorageManager {
         File f = new File(playerFolder, uuid + ".json");
         APPlayer player = UtilSerialize.readJson(f, APPlayer.class);
         if (player == null) {
-            Debug.log("Unable to load player '" + uuid + "', UtilSerialize.readJson(" + f + ") returned null");
+            AngelProtect.getLog().log(Level.WARNING, "Unable to load player '" + uuid + "', UtilSerialize.readJson(" + f + ") returned null.");
             return null;
         }
         players.put(uuid, player);
@@ -57,7 +57,7 @@ public class FileStorageManager extends StorageManager {
         File file = new File(townFolder, uuid + ".json");
         APTown town = UtilSerialize.readJson(file, APTown.class);
         if (town == null) {
-            Debug.log("Unable to load town '" + uuid + "', UtilSerialize.readJson(" + file + ") returned null");
+            AngelProtect.getLog().log(Level.WARNING, "Unable to load town '" + uuid + "', UtilSerialize.readJson(" + file + ") returned null.");
             return null;
         }
         towns.put(uuid, town);
@@ -86,7 +86,7 @@ public class FileStorageManager extends StorageManager {
             return null;
         }
         File file = new File(worldFolder, chunk.x + " " + chunk.z + ".json");
-        APClaim claim = UtilSerialize.readJson(file, APClaim.class);
+        APClaim claim = UtilSerialize.readJson(file, APClaim.class, false);
         if (claim == null) {
             return null;
         }
@@ -132,9 +132,9 @@ public class FileStorageManager extends StorageManager {
                 APPlayer player = loadPlayer(uuid);
                 players.put(uuid, player);
             } catch (IllegalArgumentException e) {
-                AngelProtect.getInstance().getLogger().log(Level.WARNING, "Error loading player " + playerFile + ". Not a valid UUID.", e);
+                AngelProtect.getLog().log(Level.WARNING, "Error loading player " + playerFile + ". Not a valid UUID.", e);
             } catch (Exception e) {
-                AngelProtect.getInstance().getLogger().log(Level.WARNING, "Error loading player " + playerFile + ".", e);
+                AngelProtect.getLog().log(Level.WARNING, "Error loading player " + playerFile + ".", e);
             }
         }
         Debug.log("Loaded " + players.size() + " players.");
@@ -145,9 +145,9 @@ public class FileStorageManager extends StorageManager {
                 APTown town = loadTown(uuid);
                 towns.put(uuid, town);
             } catch (IllegalArgumentException e) {
-                AngelProtect.getInstance().getLogger().log(Level.WARNING, "Error loading town " + townFile + ". Not a valid UUID.", e);
+                AngelProtect.getLog().log(Level.WARNING, "Error loading town " + townFile + ". Not a valid UUID.", e);
             } catch (Exception e) {
-                AngelProtect.getInstance().getLogger().log(Level.WARNING, "Error loading town " + townFile + ".", e);
+                AngelProtect.getLog().log(Level.WARNING, "Error loading town " + townFile + ".", e);
             }
         }
 
@@ -157,7 +157,7 @@ public class FileStorageManager extends StorageManager {
                     APClaim claim = UtilSerialize.readJson(claimCoord, APClaim.class);
                     claims.put(claim.getChunk(), claim);
                 } catch (Exception e) {
-                    AngelProtect.getInstance().getLogger().log(Level.WARNING, "Error loading claim " + claimCoord + ".", e);
+                    AngelProtect.getLog().log(Level.WARNING, "Error loading claim " + claimCoord + ".", e);
                 }
             }
         }

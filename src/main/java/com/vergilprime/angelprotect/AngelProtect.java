@@ -8,6 +8,8 @@ import com.vergilprime.angelprotect.storage.StorageManager;
 import com.vergilprime.angelprotect.utils.UtilTiming;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.logging.Logger;
+
 public class AngelProtect extends JavaPlugin {
 
     private static AngelProtect plugin;
@@ -38,6 +40,10 @@ public class AngelProtect extends JavaPlugin {
 
     public static AngelProtect getInstance() {
         return plugin;
+    }
+
+    public static Logger getLog() {
+        return getInstance().getLogger();
     }
 
     @Override

@@ -7,12 +7,13 @@ import com.vergilprime.angelprotect.datamodels.APEntity;
 import com.vergilprime.angelprotect.datamodels.APPlayer;
 import com.vergilprime.angelprotect.datamodels.APTown;
 import com.vergilprime.angelprotect.utils.C;
-import com.vergilprime.angelprotect.utils.Debug;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
 
 public abstract class APEntityCommandHandler<T extends APEntity> extends CommandHandler {
 
@@ -137,7 +138,7 @@ public abstract class APEntityCommandHandler<T extends APEntity> extends Command
         if (entity == null) {
             if (!isTown()) {
                 sender.sendMessage(C.error("Error fetching player data to execute command."));
-                Debug.log("Error fetching player data for sender " + sender + ", name: " + sender.getName(), new RuntimeException());
+                AngelProtect.getLog().log(Level.WARNING, "Error fetching player data for sender " + sender + ", name: " + sender.getName() + ", command " + cmd + ", args: " + Arrays.toString(args));
             }
             return;
         }
@@ -163,7 +164,7 @@ public abstract class APEntityCommandHandler<T extends APEntity> extends Command
         if (entity == null) {
             if (!isTown()) {
                 sender.sendMessage(C.error("Error fetching player data to execute command."));
-                Debug.log("Error fetching player data for sender " + sender + ", name: " + sender.getName(), new RuntimeException());
+                AngelProtect.getLog().log(Level.WARNING, "Error fetching player data for sender " + sender + ", name: " + sender.getName() + ", command " + cmd + ", args: " + Arrays.toString(args));
             }
             return Collections.EMPTY_LIST;
         }

@@ -64,8 +64,8 @@ public abstract class APEntity implements Serializable {
     public APClaim unclaim(APChunk chunk) {
         APClaim claim = getClaim(chunk);
         if (claim != null) {
+            claims.remove(chunk); // This order is important to prevent loops
             claim.delete();
-            claims.remove(chunk);
             save();
         }
         return claim;

@@ -3,7 +3,6 @@ package com.vergilprime.angelprotect.datamodels;
 import com.vergilprime.angelprotect.AngelProtect;
 import com.vergilprime.angelprotect.datamodels.claimparts.Permissions;
 import com.vergilprime.angelprotect.datamodels.claimparts.Protections;
-import com.vergilprime.angelprotect.utils.Debug;
 import org.bukkit.OfflinePlayer;
 
 import java.io.Serializable;
@@ -87,7 +86,11 @@ public class APClaim implements Serializable {
     }
 
     public void delete() {
-        Debug.log("Delete chunk function not implemented yet.");
+        if (getOwner().ownsClaim(getChunk())) {
+            getOwner().unclaim(getChunk());
+        } else {
+            AngelProtect.getInstance().getStorageManager().deleteClaim(this);
+        }
     }
 
 

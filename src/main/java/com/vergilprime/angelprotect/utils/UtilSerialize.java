@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.logging.Level;
 
 public class UtilSerialize {
 
@@ -85,11 +86,12 @@ public class UtilSerialize {
     }
 
     public static boolean writeJson(Serializable obj, boolean prettyPrint, File file) {
+        return writeJson(obj, prettyPrint, file, true);
+    }
+
+    public static boolean writeJson(Serializable obj, boolean prettyPrint, File file, boolean logIOError) {
         String json = toJson(obj, prettyPrint);
-        boolean written = writeFile(file, json);
-        if (!written) {
-            Debug.log("Error writing json file. Unable to write " + file, new RuntimeException());
-        }
+        boolean written = writeFile(file, json, logIOError);
         return written;
     }
 
@@ -99,10 +101,12 @@ public class UtilSerialize {
     }
 
     public static <T extends Serializable> T readJson(File file, Class<T> type) {
-        String json = readFile(file);
+        return readJson(file, type, true);
+    }
+
+    public static <T extends Serializable> T readJson(File file, Class<T> type, boolean logIOErrors) {
+        String json = readFile(file, logIOErrors);
         if (json == null) {
-            //Debug.log("Error reading json file. Returned null.\nFile: " + file + "\nDataType: " + type, new RuntimeException());
-            Debug.log("Error reading json file. Returned null.\nFile: " + file + "\nDataType: " + type);
             return null;
         }
         return fromJson(json, type);
@@ -164,26 +168,34 @@ public class UtilSerialize {
     }
 
     public static String readFile(File file) {
+        return readFile(file, true);
+    }
+
+    public static String readFile(File file, boolean logIOError) {
         try {
             return new String(Files.readAllBytes(file.toPath()));
         } catch (IOException e) {
-            Debug.log("Error reading file file.\nFile: " + file);
-            Debug.log(e.getLocalizedMessage());
-            //Debug.log("Error reading file file.\nFile: " + file, e);
-            //e.printStackTrace();
+            if (logIOError) {
+                AngelProtect.getLog().log(Level.WARNING, "Error reading file file.\nFile: " + file, e);
+                e.printStackTrace();
+            }
             return null;
         }
     }
 
     public static boolean writeFile(File file, String data) {
+        return writeFile(file, data, true);
+    }
+
+    public static boolean writeFile(File file, String data, boolean logIOError) {
         try {
             Files.write(file.toPath(), data.getBytes());
-//            file.delete(); // TODO: delete this
-//            Debug.log("Wrote and deleted file " + file);
             return true;
         } catch (IOException e) {
-            Debug.log("Error writing file.\nFile: " + file + "\nData: " + data, e);
-            e.printStackTrace();
+            if (logIOError) {
+                AngelProtect.getLog().log(Level.WARNING, "Error writing file.\nFile: " + file + "\nData: " + data, e);
+                e.printStackTrace();
+            }
             return false;
         }
     }
