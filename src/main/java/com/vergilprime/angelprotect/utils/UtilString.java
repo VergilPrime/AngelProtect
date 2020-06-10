@@ -47,8 +47,16 @@ public class UtilString {
     }
 
     public static String prettyPrintEntityCollection(Collection<? extends APEntity> collection) {
+        return prettyPrintEntityCollection(collection, true);
+    }
+
+    public static String prettyPrintEntityCollection(Collection<? extends APEntity> collection, boolean replaceEmpty) {
         if (collection == null) {
-            return C.body + "[]";
+            if (replaceEmpty) {
+                return C.body + C.italic + "none";
+            } else {
+                return C.body + "[]";
+            }
         }
         return C.body + "[" + collection.stream().map(e -> C.entity(e)).collect(Collectors.joining(", ")) + "]";
     }

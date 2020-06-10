@@ -9,11 +9,17 @@ import com.vergilprime.angelprotect.commands.common.ListClaimsCommand;
 import com.vergilprime.angelprotect.commands.common.MapCommand;
 import com.vergilprime.angelprotect.commands.common.PermissionsCommand;
 import com.vergilprime.angelprotect.commands.common.ProtectionCommand;
+import com.vergilprime.angelprotect.datamodels.APPlayer;
+import com.vergilprime.angelprotect.datamodels.APTown;
 import com.vergilprime.angelprotect.utils.C;
 import com.vergilprime.angelprotect.utils.UtilBook;
+import com.vergilprime.angelprotect.utils.UtilString;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class TownCommand extends RootCommand {
 
@@ -48,17 +54,55 @@ public class TownCommand extends RootCommand {
         subCommands.add(new AllyCommand());
         subCommands.add(new TransferOwnerCommand());
         setSubCommands(subCommands.toArray(new CommandHandler[0]));
+    }
 
-        setBookInfo(new UtilBook.BookBuilder()
+    @Override
+    public ItemStack getBookInfo(APPlayer player) {
+        String v = C.gold;
+        UtilBook.BookBuilder builder = new UtilBook.BookBuilder()
                 .add(C.black + "Help").underline().bold()
                 .add("\n\n")
-                .addGoto("Basic", 2).newline()
-                .addGoto("Claims", 3).newline()
-                .addGoto("Manage", 4).newline()
-                .addGoto("Owner", 5).newline()
-                .newPage()
+                .addGoto("Town Info", 2).newline()
+                .addGoto("Basic Commands", 3).newline()
+                .addGoto("Claims Commands", 4).newline()
+                .addGoto("Manage Commands", 5).newline()
+                .addGoto("Owner Commands", 6).newline()
+                .newPage();
 
-                .add(C.black + C.underline + "Basic").bold()
+        builder.add(C.black + "Town Info").underline().bold()
+                .add("\n\n");
+        if (player.hasTown()) {
+            APTown town = player.getTown();
+            APPlayer mayor = town.getMayor();
+            Set<APPlayer> assistants = town.getAssistants();
+            Set<APPlayer> members = new HashSet<>(town.getMembers());
+            members.remove(mayor);
+            members.removeAll(assistants);
+
+
+            builder.add("Town: " + C.town(town.getName())).newline()
+                    .add("Mayor: " + v + mayor.getName()).newline()
+                    .add("Assistants: *").hover(UtilString.prettyPrintEntityCollection(assistants)).newline()
+                    .add("Members: *").hover(UtilString.prettyPrintEntityCollection(members)).newline()
+                    .add("Total Runes: " + v + town.getRunes()).newline()
+                    .add("Runes In Use: " + v + town.getRunesInUse()).newline()
+                    .add("Runes Available: " + v + town.getRunesAvailable()).newline()
+                    .add("Claims: " + v + town.getClaims().size()).newline()
+                    .add("Allies: *").hover(UtilString.prettyPrintEntityCollection(town.getAllies())).newline()
+                    .add("New Claim Cost: " + v + town.getCostOfNewClaim()).newline();
+            if (town.isAssistantOrHigher(player)) {
+                builder.add("Default permissions: *").hover(town.getDefaultPermissions().toColorString()).newline()
+                        .add("Default protections: *").hover(town.getDefaultPermissions().toColorString()).newline();
+            }
+        } else {
+            builder.add("You are currently not part of a town.")
+                    .add("\n\n\n\n\n\n\n\n\n\n\n\n\n")
+                    .addGoto("Back", 1);
+        }
+        return builder.newPage()
+
+
+                .add(C.black + C.underline + "Basic Commands").bold()
                 .add("\n\n")
                 .addRunCommand("Town Info", "/t info", "Display information about your current town.").newline()
                 .addSuggestCommand("Accept Invite", "/t acceptInvite ", "Accept an invite from a town.").newline()
@@ -68,7 +112,7 @@ public class TownCommand extends RootCommand {
                 .addGoto("Back", 1)
                 .newPage()
 
-                .add(C.black + C.underline + "Claims").bold()
+                .add(C.black + C.underline + "Claims Commands").bold()
                 .add("\n\n")
                 .addRunCommand("Claim Info", "/t claimInfo", "Display info about this claim.").newline()
                 .addRunCommand("Map", "/t map", "Display map over nearby claims.").newline()
@@ -82,7 +126,7 @@ public class TownCommand extends RootCommand {
                 .addGoto("Back", 1)
                 .newPage()
 
-                .add(C.black + C.underline + "Manage").bold()
+                .add(C.black + C.underline + "Manage Commands").bold()
                 .add("\n\n")
                 .addSuggestCommand("Invite", "/t invite ", "Invite a player to join the town.").newline()
                 .addSuggestCommand("Promote", "/t promote ", "Promote a member.").newline()
@@ -94,7 +138,7 @@ public class TownCommand extends RootCommand {
                 .addGoto("Back", 1)
                 .newPage()
 
-                .add(C.black + C.underline + "Owner").bold()
+                .add(C.black + C.underline + "Owner Commands").bold()
                 .add("\n\n")
                 .addSuggestCommand("Create Town", "/t create ", "Create a new town.").newline()
                 .addSuggestCommand("Rename Town", "/t setName ", "Set a new name for the town.").newline()
@@ -104,6 +148,6 @@ public class TownCommand extends RootCommand {
                 .add("\n\n\n\n\n")
                 .addGoto("Back", 1)
 
-                .build());
+                .build();
     }
 }

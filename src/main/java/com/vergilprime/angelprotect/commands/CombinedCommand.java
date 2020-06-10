@@ -1,7 +1,10 @@
 package com.vergilprime.angelprotect.commands;
 
+import com.vergilprime.angelprotect.AngelProtect;
+import com.vergilprime.angelprotect.datamodels.APPlayer;
 import com.vergilprime.angelprotect.utils.C;
 import com.vergilprime.angelprotect.utils.UtilString;
+import com.vergilprime.angelprotect.utils.UtilTiming;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -38,12 +41,8 @@ public class CombinedCommand extends CommandHandler {
         this.bookInfo = bookInfo;
     }
 
-    public ItemStack getBookInfo() {
+    public ItemStack getBookInfo(APPlayer player) {
         return bookInfo;
-    }
-
-    public boolean hasBookInfo() {
-        return bookInfo != null;
     }
 
     public CommandHandler[] getSubCommands() {
@@ -81,8 +80,12 @@ public class CombinedCommand extends CommandHandler {
     @Override
     public void onCommand(CommandSender sender, String cmd, String[] args) {
         if (args.length == 0) {
-            if (sender instanceof Player && hasBookInfo()) {
-                ((Player) sender).openBook(bookInfo);
+            ItemStack book = null;
+            if (sender instanceof Player) {
+                book = getBookInfo(AngelProtect.getInstance().getStorageManager().getPlayer(((Player) sender).getUniqueId()));
+            }
+            if (book != null) {
+                ((Player) sender).openBook(book);
             } else {
                 for (String line : getInfo()) {
                     sender.sendMessage(line);
@@ -97,7 +100,13 @@ public class CombinedCommand extends CommandHandler {
             } else {
                 String[] subArgs = new String[args.length - 1];
                 System.arraycopy(args, 1, subArgs, 0, subArgs.length);
+                if (!(handler instanceof CombinedCommand)) {
+                    UtilTiming.start("Command:" + handler.getCommand() + ":onCommand");
+                }
                 handler.onCommand(sender, subCmd, subArgs);
+                if (!(handler instanceof CombinedCommand)) {
+                    UtilTiming.stop("Command:" + handler.getCommand() + ":onCommand");
+                }
             }
         }
     }
@@ -117,7 +126,14 @@ public class CombinedCommand extends CommandHandler {
         }
         String[] subArgs = new String[args.length - 1];
         System.arraycopy(args, 1, subArgs, 0, subArgs.length);
-        return handler.onTab(sender, subCmd, subArgs);
+        if (!(handler instanceof CombinedCommand)) {
+            UtilTiming.start("Command:" + handler.getCommand() + ":onTab");
+        }
+        List<String> tab = handler.onTab(sender, subCmd, subArgs);
+        if (!(handler instanceof CombinedCommand)) {
+            UtilTiming.stop("Command:" + handler.getCommand() + ":onTab");
+        }
+        return tab;
     }
 
 
