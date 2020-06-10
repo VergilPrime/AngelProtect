@@ -27,6 +27,9 @@ public class APConfig implements Serializable {
     public boolean announceTownCreateDelete = true;
     public boolean preventTramplingCropsGlobally = true;
 
+    // Debugging stuff
+    public boolean doTimings = true;
+
     // database stuff
     public String hostname = "localhost";
     public int port = 3306;

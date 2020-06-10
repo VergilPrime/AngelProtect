@@ -5,6 +5,7 @@ import com.vergilprime.angelprotect.datamodels.APConfig;
 import com.vergilprime.angelprotect.events.EventsManager;
 import com.vergilprime.angelprotect.storage.FileStorageManager;
 import com.vergilprime.angelprotect.storage.StorageManager;
+import com.vergilprime.angelprotect.utils.UtilTiming;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class AngelProtect extends JavaPlugin {
@@ -39,5 +40,9 @@ public class AngelProtect extends JavaPlugin {
         return plugin;
     }
 
-
+    @Override
+    public void onDisable() {
+        UtilTiming.dumpFiles();
+        APConfig.get().save();
+    }
 }

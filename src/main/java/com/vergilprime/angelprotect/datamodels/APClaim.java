@@ -1,5 +1,6 @@
 package com.vergilprime.angelprotect.datamodels;
 
+import com.vergilprime.angelprotect.AngelProtect;
 import com.vergilprime.angelprotect.datamodels.claimparts.Permissions;
 import com.vergilprime.angelprotect.datamodels.claimparts.Protections;
 import com.vergilprime.angelprotect.utils.Debug;
@@ -82,7 +83,7 @@ public class APClaim implements Serializable {
     }
 
     public void save() {
-        getOwner().save();
+        AngelProtect.getInstance().getStorageManager().saveClaim(this);
     }
 
     public void delete() {

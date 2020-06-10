@@ -45,4 +45,57 @@ public class UtilString {
         return C.body + "[" + collection.stream().map(e -> C.entity(e)).collect(Collectors.joining(", ")) + "]";
     }
 
+    public static String roundNanoSeconds(double ns) {
+        if (ns < 1000000) {
+            return ns + "ns";
+        }
+        return roundMiliSeconds(ns / 1000000.0);
+    }
+
+    public static String roundMiliSeconds(double ms) {
+        if (ms < 1000) {
+            return ms + "ms";
+        }
+        return roundSeconds(ms / 1000.0);
+    }
+
+    public static String roundSeconds(double s) {
+        if (s < 60) {
+            return s + "s";
+        }
+        return roundMinutes(s / 60.0);
+    }
+
+    public static String roundMinutes(double m) {
+        if (m < 60) {
+            return m + "m";
+        }
+        return roundHours(m / 60.0);
+    }
+
+    public static String roundHours(double h) {
+        if (h < 24) {
+            return h + "h";
+        }
+        return roundDays(h / 24.0);
+    }
+
+    public static String roundDays(double d) {
+        if (d < 24) {
+            return d + " days";
+        }
+        return roundDays(d / 30.0);
+    }
+
+    public static String roundMonths(double m) {
+        if (m < 24) {
+            return m + "h";
+        }
+        return roundYears(m / 12.0);
+    }
+
+    public static String roundYears(double y) {
+        return y + " years";
+    }
+
 }
