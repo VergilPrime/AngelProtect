@@ -71,7 +71,7 @@ public class UtilTiming {
 
     public double getStDev() {
         double avg = getAverage();
-        return stream().mapToDouble(l -> avg - Math.pow(l - avg, 2)).sum();
+        return Math.sqrt(stream().mapToDouble(l -> Math.pow(l - avg, 2)).sum());
     }
 
     public long min() {
