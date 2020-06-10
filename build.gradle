@@ -11,19 +11,23 @@ plugins {
 
 repositories {
     mavenCentral()
-
-    maven {
-        url = uri('https://jitpack.io')
-    }
 }
 
 dependencies {
     compileOnly spigot()
 }
 
+def getVersionName = { ->
+    def stdout = new ByteArrayOutputStream()
+    exec {
+        commandLine 'git', 'describe', '--tags', '--always'
+        standardOutput = stdout
+    }
+    return stdout.toString().trim()
+}
 
 group = 'com.vergilprime'
-version = '1.0.0 Beta'
+version = getVersionName()
 description = 'AngelProtect'
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
