@@ -164,15 +164,32 @@ public class Permissions implements Serializable {
     }
 
     public String toColorString() {
-        return C.gold + "Build: " + toColorString(getCanBuild()) + "\n" +
-                C.gold + "Switch: " + toColorString(getCanSwitch()) + "\n" +
-                C.gold + "Teleport: " + toColorString(getCanTeleport()) + "\n" +
-                C.gold + "Manage: " + toColorString(getCanManage()) + "\n" +
-                C.gold + "Container: " + toColorString(getCanContainer());
+        return Arrays.asList("build", "switch", "teleport", "manage", "container").stream()
+                .map(s -> toColorString(s))
+                .collect(Collectors.joining("\n"));
+    }
+
+    public String toColorString(String field) {
+        if (field == null) {
+            return null;
+        } else if (field.equalsIgnoreCase("build")) {
+            return C.gold + "Build: " + toColorString(getCanBuild());
+        } else if (field.equalsIgnoreCase("switch")) {
+            return C.gold + "Switch: " + toColorString(getCanSwitch());
+        } else if (field.equalsIgnoreCase("teleport")) {
+            return C.gold + "Teleport: " + toColorString(getCanTeleport());
+        } else if (field.equalsIgnoreCase("manage")) {
+            return C.gold + "Manage: " + toColorString(getCanManage());
+        } else if (field.equalsIgnoreCase("container")) {
+            return C.gold + "Container: " + toColorString(getCanContainer());
+        }
+        return null;
     }
 
     private String toColorString(List<Permission> list) {
-        return C.body + "[" + String.join(", ", list.stream().map(Permission::getColorName).collect(Collectors.toList())) + "]";
+        return C.body + "[" + String.join(", ", list.stream()
+                .map(Permission::getColorName)
+                .collect(Collectors.toList())) + "]";
     }
 
     public static class Permission {

@@ -5,6 +5,7 @@ import com.vergilprime.angelprotect.datamodels.APChunk;
 import com.vergilprime.angelprotect.datamodels.APClaim;
 import com.vergilprime.angelprotect.datamodels.APEntity;
 import com.vergilprime.angelprotect.datamodels.APPlayer;
+import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -70,6 +71,32 @@ public class UtilMap {
         } else {
             return colorOtherPlayer;
         }
+    }
+
+    public static String getSingleCell(int deltaX, int deltaZ, APPlayer player) {
+        Player p = player.getOnlinePlayer();
+        if (p == null) {
+            return C.gray + C.magic + "[ ]";
+        }
+        APClaim claim = AngelProtect.getInstance().getStorageManager().getClaim(new APChunk(p).add(deltaX, deltaZ));
+        APEntity owner = claim != null ? claim.getOwner() : null;
+        String color = getColor(player, owner);
+        String mid = "  ";
+
+        if (p != null && deltaX == 0 && deltaZ == 0) {
+            float yaw = p.getLocation().getYaw() + 22.5f;
+            while (yaw < 0) {
+                yaw += 360;
+            }
+            yaw %= 360;
+            // TODO: Not all directions match in pixel width.
+            //   Making some bold seem to help, but still not equal.
+            String[] dirs = new String[]{"→", "⬊", "↓", "⬋", "←", "⬉", "↑", "⬈", "→"};
+            int index = (int) (yaw / 45f);
+            index = Math.max(Math.min(index, dirs.length - 1), 0);
+            mid = C.bold + dirs[index];
+        }
+        return color + "[" + mid + color + "]";
     }
 
     public static String getSymbol(List<APEntity> indexes, String symbols, String empty, APEntity entity) {

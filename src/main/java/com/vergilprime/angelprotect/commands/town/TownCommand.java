@@ -1,5 +1,6 @@
 package com.vergilprime.angelprotect.commands.town;
 
+import com.vergilprime.angelprotect.api.placeholder.Placeholder;
 import com.vergilprime.angelprotect.commands.CommandHandler;
 import com.vergilprime.angelprotect.commands.RootCommand;
 import com.vergilprime.angelprotect.commands.common.ClaimChunkCommand;
@@ -13,13 +14,10 @@ import com.vergilprime.angelprotect.datamodels.APPlayer;
 import com.vergilprime.angelprotect.datamodels.APTown;
 import com.vergilprime.angelprotect.utils.C;
 import com.vergilprime.angelprotect.utils.UtilBook;
-import com.vergilprime.angelprotect.utils.UtilString;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class TownCommand extends RootCommand {
 
@@ -73,30 +71,27 @@ public class TownCommand extends RootCommand {
                 .add("\n\n");
         if (player.hasTown()) {
             APTown town = player.getTown();
-            APPlayer mayor = town.getMayor();
-            Set<APPlayer> assistants = town.getAssistants();
-            Set<APPlayer> members = new HashSet<>(town.getMembers());
-            members.remove(mayor);
-            members.removeAll(assistants);
 
-
-            builder.add("Town: " + C.town(town.getName())).newline()
-                    .add("Mayor: " + v + mayor.getName()).newline()
-                    .add("Assistants: *").hover(UtilString.prettyPrintEntityCollection(assistants)).newline()
-                    .add("Members: *").hover(UtilString.prettyPrintEntityCollection(members)).newline()
-                    .add("Total Runes: " + v + town.getRunes()).newline()
-                    .add("Runes In Use: " + v + town.getRunesInUse()).newline()
-                    .add("Runes Available: " + v + town.getRunesAvailable()).newline()
-                    .add("Claims: " + v + town.getClaims().size()).newline()
-                    .add("Allies: *").hover(UtilString.prettyPrintEntityCollection(town.getAllies())).newline()
-                    .add("New Claim Cost: " + v + town.getCostOfNewClaim()).newline();
+            builder.add("Town: " + Placeholder.town_name.getValue(player)).newline()
+                    .add("Mayor: " + Placeholder.town_mayor.getValue(player)).newline()
+                    .add("Assistants: *").hover(Placeholder.town_assistants.getValue(player)).newline()
+                    .add("Members: *").hover(Placeholder.town_members.getValue(player)).newline()
+                    .add("Total Runes: " + Placeholder.town_runesTotal.getValue(player)).newline()
+                    .add("Runes In Use: " + Placeholder.town_runesInUse.getValue(player)).newline()
+                    .add("Runes Available: " + Placeholder.town_runesAvailable.getValue(player)).newline()
+                    .add("Claims: " + Placeholder.town_claims.getValue(player)).newline()
+                    .add("Allies: *").hover(Placeholder.town_allies.getValue(player)).newline()
+                    .add("New Claim Cost: " + Placeholder.town_newClaimCost.getValue(player)).newline();
             if (town.isAssistantOrHigher(player)) {
-                builder.add("Default permissions: *").hover(town.getDefaultPermissions().toColorString()).newline()
-                        .add("Default protections: *").hover(town.getDefaultPermissions().toColorString()).newline();
+                builder.add("Default permissions: *").hover(Placeholder.town_defaultPermissions.getValue(player)).newline()
+                        .add("Default protections: *").hover(Placeholder.town_defaultProtections.getValue(player)).newline();
+            } else {
+                builder.newline()
+                        .addGoto("Back", 1);
             }
         } else {
             builder.add("You are currently not part of a town.")
-                    .add("\n\n\n\n\n\n\n\n\n\n\n\n\n")
+                    .add("\n\n\n\n\n\n\n\n\n\n\n\n")
                     .addGoto("Back", 1);
         }
         return builder.newPage()

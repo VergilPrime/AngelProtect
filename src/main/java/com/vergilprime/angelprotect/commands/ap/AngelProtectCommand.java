@@ -1,6 +1,6 @@
 package com.vergilprime.angelprotect.commands.ap;
 
-import com.vergilprime.angelprotect.AngelProtect;
+import com.vergilprime.angelprotect.api.placeholder.Placeholder;
 import com.vergilprime.angelprotect.commands.CommandHandler;
 import com.vergilprime.angelprotect.commands.RootCommand;
 import com.vergilprime.angelprotect.commands.common.ClaimChunkCommand;
@@ -10,15 +10,9 @@ import com.vergilprime.angelprotect.commands.common.ListClaimsCommand;
 import com.vergilprime.angelprotect.commands.common.MapCommand;
 import com.vergilprime.angelprotect.commands.common.PermissionsCommand;
 import com.vergilprime.angelprotect.commands.common.ProtectionCommand;
-import com.vergilprime.angelprotect.datamodels.APChunk;
-import com.vergilprime.angelprotect.datamodels.APClaim;
-import com.vergilprime.angelprotect.datamodels.APEntity;
 import com.vergilprime.angelprotect.datamodels.APPlayer;
-import com.vergilprime.angelprotect.datamodels.APTown;
 import com.vergilprime.angelprotect.utils.C;
 import com.vergilprime.angelprotect.utils.UtilBook;
-import com.vergilprime.angelprotect.utils.UtilSerialize;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -45,11 +39,6 @@ public class AngelProtectCommand extends RootCommand {
 
     @Override
     public ItemStack getBookInfo(APPlayer apPlayer) {
-        String v = C.gold;
-        Player player = apPlayer.getOnlinePlayer();
-        APTown town = apPlayer.getTown();
-        APClaim claim = AngelProtect.getInstance().getStorageManager().getClaim(new APChunk(apPlayer.getOnlinePlayer()));
-
 
         UtilBook.BookBuilder builder = new UtilBook.BookBuilder()
                 .add(C.black + "Help").underline().bold()
@@ -62,48 +51,36 @@ public class AngelProtectCommand extends RootCommand {
 
                 .add(C.black + "Basic Info").underline().bold()
                 .add("\n\n")
-                .add("Town: " + v + (apPlayer.hasTown() ? C.town(apPlayer.getTown()) : C.italic + "none")).newline()
-                .add("Town Role: " + v + (apPlayer.hasTown() ? town.isMayor(apPlayer) ? "Mayor" : town.isAssistantOnly(apPlayer) ? "Assistant" : "Member" : "N/A")).newline()
-                .add("Total Runes: " + C.runes + apPlayer.getRunes()).newline()
-                .add("Runes In Use: " + C.runes + apPlayer.getRunesInUse()).newline()
-                .add("Runes Available: " + C.runes + apPlayer.getRunesAvailable()).newline()
-                .add("Claims: " + v + apPlayer.getClaims().size()).newline()
-                .add("Friends: *").hover(apPlayer.getPrettyPrintFriends()).newline()
-                .add("Open Town Invites: *").hover(apPlayer.hasTown() ? "N/A" : apPlayer.getPrettyPrintOpenInvites()).newline()
-                .add("Default permissions: *").hover(apPlayer.getDefaultPermissions().toColorString()).newline()
-                .add("Default protections: *").hover(C.colorYAML(UtilSerialize.toYaml(apPlayer.getDefaultProtections()))).newline()
-                .add("New Claim Cost: " + v + apPlayer.getCostOfNewClaim()).newline()
+                .add("Town: " + Placeholder.town_name.getValue(apPlayer)).newline()
+                .add("Town Role: " + Placeholder.town_role.getValue(apPlayer)).newline()
+                .add("Total Runes: " + Placeholder.personal_runesTotal.getValue(apPlayer)).newline()
+                .add("Runes In Use: " + Placeholder.personal_runesInUse.getValue(apPlayer)).newline()
+                .add("Runes Available: " + Placeholder.personal_runesAvailable.getValue(apPlayer)).newline()
+                .add("Claims: " + Placeholder.personal_claims.getValue(apPlayer)).newline()
+                .add("Friends: *").hover(Placeholder.personal_friends.getValue(apPlayer)).newline()
+                .add("Open Town Invites: *").hover(Placeholder.personal_openInvites.getValue(apPlayer)).newline()
+                .add("Default permissions: *").hover(Placeholder.personal_defaultPermissions.getValue(apPlayer)).newline()
+                .add("Default protections: *").hover(Placeholder.personal_defaultProtections.getValue(apPlayer)).newline()
+                .add("New Claim Cost: " + Placeholder.personal_newClaimCost.getValue(apPlayer)).newline()
                 .newPage()
 
                 .add(C.black + "Chunk Info").underline().bold()
-                .add("\n\n");
-        if (claim == null) {
-            builder.add("Status: " + C.italic + "unclaimed")
-                    .add("\n\n\n\n\n\n\n\n\n\n")
-                    .addGoto("Back", 1);
+                .add("\n\n")
+                .add("Status: " + Placeholder.claim_status.getValue(apPlayer)).newline()
+                .add("Owner: " + Placeholder.claim_owner.getValue(apPlayer)).newline()
+                .add("Owner Type: " + Placeholder.claim_owner_type.getValue(apPlayer)).newline();
+        if (!Placeholder.claim_permissions.getValue(apPlayer, false).equals("N/A")) {
+            builder.add("Permissions: *").hover(Placeholder.claim_permissions.getValue(apPlayer)).newline()
+                    .add("Protections: *").hover(Placeholder.claim_protections.getValue(apPlayer)).newline();
         } else {
-            String lines = "\n\n\n\n\n\n\n";
-            APEntity owner = claim.getOwner();
-            builder.add("Status: " + v + "claimed").newline()
-                    .add("Owner: " + v + owner.getName()).newline()
-                    .add("Owner Type: " + v + (owner.isTown() ? "Town" : "Player")).newline();
-            if (owner.isPartOfEntity(apPlayer.getOfflinePlayer())) {
-                builder.add("Permissions: *").hover(claim.getPermissions().toColorString()).newline()
-                        .add("Protections: *").hover(C.colorYAML(UtilSerialize.toYaml(claim.getProtections()))).newline();
-                lines = "\n\n\n\n\n";
-            }
-            builder.add("You can: *").hover(
-                    C.gold + "Build: " + C.aqua + claim.canBuild(player) + "\n" +
-                            C.gold + "Switch: " + C.aqua + claim.canSwitch(player) + "\n" +
-                            C.gold + "Container: " + C.aqua + claim.canContainer(player) + "\n" +
-                            C.gold + "Teleport: " + C.aqua + claim.canTeleport(player) + "\n" +
-                            C.gold + "Manage: " + C.aqua + claim.canManage(player))
-                    .add(lines)
-                    .addGoto("Back", 1);
+            builder.add("\n\n");
         }
-        builder.newPage();
+        return builder.add("You can: *").hover(Placeholder.claim_canAll.getValue(apPlayer)).newline()
+                .add("\n\n\n\n")
+                .addGoto("Back", 1)
+                .newPage()
 
-        return builder.add(C.black + C.underline + "Basic Commands").bold()
+                .add(C.black + C.underline + "Basic Commands").bold()
                 .add("\n\n")
                 .addRunCommand("Info", "/ap info").newline()
                 .newline()

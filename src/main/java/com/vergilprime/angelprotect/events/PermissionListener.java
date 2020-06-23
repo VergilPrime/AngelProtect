@@ -87,8 +87,10 @@ public class PermissionListener implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onTeleport(PlayerTeleportEvent event) {
         Player player = event.getPlayer();
-        APClaim from = AngelProtect.getInstance().getStorageManager().getClaim(new APChunk(event.getFrom()));
-        APClaim to = AngelProtect.getInstance().getStorageManager().getClaim(new APChunk(event.getTo()));
+        Location lfrom = event.getFrom();
+        Location lto = event.getTo();
+        APClaim from = lfrom == null ? null : AngelProtect.getInstance().getStorageManager().getClaim(new APChunk(lfrom));
+        APClaim to = lto == null ? null : AngelProtect.getInstance().getStorageManager().getClaim(new APChunk(lto));
         if (from != null) {
             if (!from.canTeleport(player)) {
                 event.setCancelled(true);
@@ -104,7 +106,6 @@ public class PermissionListener implements Listener {
                 if (UtilTimer.timeout(player, "Claim Teleport")) {
                     player.sendMessage(C.error("You do not have permission to teleport to " + C.entityPosessive(to.getOwner()) + " land."));
                 }
-                return;
             }
         }
     }

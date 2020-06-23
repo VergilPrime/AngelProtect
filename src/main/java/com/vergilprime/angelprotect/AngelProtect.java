@@ -1,5 +1,6 @@
 package com.vergilprime.angelprotect;
 
+import com.vergilprime.angelprotect.api.APIManager;
 import com.vergilprime.angelprotect.commands.CommandManager;
 import com.vergilprime.angelprotect.datamodels.APConfig;
 import com.vergilprime.angelprotect.events.EventsManager;
@@ -30,8 +31,9 @@ public class AngelProtect extends JavaPlugin {
 
         new CommandManager();
 
+        new APIManager();
         // Temporary debug and testing class
-        new Tester(this);
+        // new Tester(this);
     }
 
     public StorageManager getStorageManager() {

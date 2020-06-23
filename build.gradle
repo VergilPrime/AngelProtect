@@ -11,10 +11,15 @@ plugins {
 
 repositories {
     mavenCentral()
+
+    maven {
+        url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/'
+    }
 }
 
 dependencies {
     compileOnly spigot()
+    compileOnly 'me.clip:placeholderapi:2.10.6'
 }
 
 def getVersionName = { ->
@@ -59,6 +64,8 @@ spigot {
             permissionMessage = '§7[§4§l!§7] Only admins can use that command!'
         }
     }
+    authors = ['kristianvld']
+    softDepends = ['PlaceholderAPI']
     apiVersion = '1.15'
     website = 'https://github.com/VergilPrime/AngelProtect'
 }

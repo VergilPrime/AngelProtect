@@ -6,11 +6,8 @@ import com.vergilprime.angelprotect.datamodels.APEntity;
 import com.vergilprime.angelprotect.datamodels.APEntityRelation;
 import com.vergilprime.angelprotect.datamodels.APPlayer;
 import com.vergilprime.angelprotect.datamodels.APTown;
-import com.vergilprime.angelprotect.utils.Debug;
-import com.vergilprime.angelprotect.utils.UtilSerialize;
 import com.vergilprime.angelprotect.utils.UtilTiming;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -25,8 +22,6 @@ public abstract class StorageManager {
         UtilTiming.start("Storage:getPlayer");
         APPlayer player = null;
         if (uuid != null) {
-            Debug.log("Players:" + UtilSerialize.toJson((Serializable) players, true));
-            Debug.log("Towns:" + UtilSerialize.toJson((Serializable) towns, true));
             player = players.get(uuid);
             if (player == null) {
                 player = loadPlayer(uuid);

@@ -4,6 +4,7 @@ import com.google.common.base.Predicates;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.vergilprime.angelprotect.datamodels.APEntity;
+import org.apache.commons.lang.StringUtils;
 
 import java.text.DecimalFormat;
 import java.util.Collection;
@@ -59,6 +60,15 @@ public class UtilString {
             }
         }
         return C.body + "[" + collection.stream().map(e -> C.entity(e)).collect(Collectors.joining(", ")) + "]";
+    }
+
+    public static String indent(String str, int spaces) {
+        String prefix = StringUtils.repeat(" ", spaces);
+        return str.replaceAll("(^|\n)", prefix + "\n");
+    }
+
+    public static String outdent(String str, int spaces) {
+        return str.replaceAll("(^|\n) {0," + spaces + "}", "");
     }
 
     /**
