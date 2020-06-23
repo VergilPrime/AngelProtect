@@ -1,9 +1,10 @@
 on:
-  push:
+  create:
     branches:
       - master
-    tags:        
+    tags:
       - '*'
+
 
 name: build
 
@@ -17,7 +18,7 @@ jobs:
       - name: Init checkout
         uses: actions/checkout@v2
       - name: Extract version to env
-        run: echo ::set-env name=RELEASE_VERSION::${GITHUB_REF#refs/*/}
+        run: echo ::set-env name=version::${GITHUB_REF#refs/*/}
       - name: Gradle build
         uses: eskatos/gradle-command-action@v1
         with:
