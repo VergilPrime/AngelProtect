@@ -19,7 +19,7 @@ public abstract class StorageManager {
     protected Map<APChunk, APClaim> claims = new HashMap<>();
 
     public APPlayer getPlayer(UUID uuid) {
-        UtilTiming.start("Storage:getPlayer");
+        UtilTiming.Timing timing = UtilTiming.start("Storage:getPlayer");
         APPlayer player = null;
         if (uuid != null) {
             player = players.get(uuid);
@@ -27,12 +27,12 @@ public abstract class StorageManager {
                 player = loadPlayer(uuid);
             }
         }
-        UtilTiming.stop("Storage:getPlayer");
+        timing.stop();
         return player;
     }
 
     public APTown getTown(UUID uuid) {
-        UtilTiming.start("Storage:getTown(UUID)");
+        UtilTiming.Timing timing = UtilTiming.start("Storage:getTown(UUID)");
         APTown town = null;
         if (uuid != null) {
             town = towns.get(uuid);
@@ -40,12 +40,12 @@ public abstract class StorageManager {
                 town = loadTown(uuid);
             }
         }
-        UtilTiming.stop("Storage:getTown(UUID)");
+        timing.stop();
         return town;
     }
 
     public APTown getTown(String name) {
-        UtilTiming.start("Storage:getTown(String)");
+        UtilTiming.Timing timing = UtilTiming.start("Storage:getTown(String)");
         APTown town = null;
         for (APTown t : towns.values()) {
             if (t.getTownDisplayName().equalsIgnoreCase(name)) {
@@ -53,13 +53,13 @@ public abstract class StorageManager {
                 break;
             }
         }
-        UtilTiming.stop("Storage:getTown(String)");
+        timing.stop();
         return town;
     }
 
     public APClaim getClaim(APChunk chunk) {
         APClaim claim = null;
-        UtilTiming.start("Storage:getClaim");
+        UtilTiming.Timing timing = UtilTiming.start("Storage:getClaim");
         if (chunk != null) {
             if (claims.containsKey(chunk)) {
                 claim = claims.get(chunk);
@@ -67,7 +67,7 @@ public abstract class StorageManager {
                 claim = claims.put(chunk, loadClaim(chunk));
             }
         }
-        UtilTiming.stop("Storage:getClaim");
+        timing.stop();
         return claim;
     }
 
@@ -85,68 +85,68 @@ public abstract class StorageManager {
 
 
     public APPlayer loadPlayer(UUID player) {
-        UtilTiming.start("Storage:loadPlayer");
+        UtilTiming.Timing timing = UtilTiming.start("Storage:loadPlayer");
         APPlayer apPlayer = doLoadPlayer(player);
-        UtilTiming.stop("Storage:loadPlayer");
+        timing.stop();
         return apPlayer;
     }
 
     public boolean savePlayer(APPlayer apPlayer) {
-        UtilTiming.start("Storage:savePlayer");
+        UtilTiming.Timing timing = UtilTiming.start("Storage:savePlayer");
         boolean save = doSavePlayer(apPlayer);
-        UtilTiming.stop("Storage:savePlayer");
+        timing.stop();
         return save;
     }
 
 
     public APTown loadTown(UUID townUUID) {
-        UtilTiming.start("Storage:loadTown");
+        UtilTiming.Timing timing = UtilTiming.start("Storage:loadTown");
         APTown town = doLoadTown(townUUID);
-        UtilTiming.stop("Storage:loadTown");
+        timing.stop();
         return town;
     }
 
     public boolean saveTown(APTown town) {
-        UtilTiming.start("Storage:saveTown");
+        UtilTiming.Timing timing = UtilTiming.start("Storage:saveTown");
         boolean save = doSaveTown(town);
-        UtilTiming.stop("Storage:saveTown");
+        timing.stop();
         return save;
     }
 
     public boolean deleteTown(APTown town) {
-        UtilTiming.start("Storage:deleteTown");
+        UtilTiming.Timing timing = UtilTiming.start("Storage:deleteTown");
         boolean delete = doDeleteTown(town);
-        UtilTiming.stop("Storage:deleteTown");
+        timing.stop();
         return delete;
     }
 
 
     public boolean saveClaim(APClaim claim) {
-        UtilTiming.start("Storage:saveClaim");
+        UtilTiming.Timing timing = UtilTiming.start("Storage:saveClaim");
         boolean save = doSaveClaim(claim);
-        UtilTiming.stop("Storage:saveClaim");
+        timing.stop();
         return save;
     }
 
     public APClaim loadClaim(APChunk chunk) {
-        UtilTiming.start("Storage:loadClaim");
+        UtilTiming.Timing timing = UtilTiming.start("Storage:loadClaim");
         APClaim claim = doLoadClaim(chunk);
-        UtilTiming.stop("Storage:loadClaim");
+        timing.stop();
         return claim;
     }
 
     public boolean deleteClaim(APClaim claim) {
-        UtilTiming.start("Storage:deleteClaim");
+        UtilTiming.Timing timing = UtilTiming.start("Storage:deleteClaim");
         boolean save = doDeleteClaim(claim);
-        UtilTiming.stop("Storage:deleteClaim");
+        timing.stop();
         return save;
     }
 
 
     public boolean loadAll() {
-        UtilTiming.start("Storage:loadAll");
+        UtilTiming.Timing timing = UtilTiming.start("Storage:loadAll");
         boolean success = doLoadAll();
-        UtilTiming.stop("Storage:loadAll");
+        timing.stop();
         return success;
     }
 

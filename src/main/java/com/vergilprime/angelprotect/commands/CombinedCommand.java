@@ -100,13 +100,9 @@ public class CombinedCommand extends CommandHandler {
             } else {
                 String[] subArgs = new String[args.length - 1];
                 System.arraycopy(args, 1, subArgs, 0, subArgs.length);
-                if (!(handler instanceof CombinedCommand)) {
-                    UtilTiming.start("Command:" + handler.getCommand() + ":onCommand");
-                }
+                UtilTiming.Timing timing = handler instanceof CombinedCommand ? UtilTiming.dummy() : UtilTiming.start("Command:" + handler.getCommand() + ":onCommand");
                 handler.onCommand(sender, subCmd, subArgs);
-                if (!(handler instanceof CombinedCommand)) {
-                    UtilTiming.stop("Command:" + handler.getCommand() + ":onCommand");
-                }
+                timing.stop();
             }
         }
     }
@@ -126,13 +122,9 @@ public class CombinedCommand extends CommandHandler {
         }
         String[] subArgs = new String[args.length - 1];
         System.arraycopy(args, 1, subArgs, 0, subArgs.length);
-        if (!(handler instanceof CombinedCommand)) {
-            UtilTiming.start("Command:" + handler.getCommand() + ":onTab");
-        }
+        UtilTiming.Timing timing = handler instanceof CombinedCommand ? UtilTiming.dummy() : UtilTiming.start("Command:" + handler.getCommand() + ":onTab");
         List<String> tab = handler.onTab(sender, subCmd, subArgs);
-        if (!(handler instanceof CombinedCommand)) {
-            UtilTiming.stop("Command:" + handler.getCommand() + ":onTab");
-        }
+        timing.stop();
         return tab;
     }
 

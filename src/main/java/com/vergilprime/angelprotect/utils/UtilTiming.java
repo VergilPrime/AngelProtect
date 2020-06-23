@@ -18,37 +18,20 @@ import java.util.stream.LongStream;
 public class UtilTiming {
 
     private final String name;
-    private long start = -1;
     private final List<Long> log = new ArrayList<>();
 
     public UtilTiming(String name) {
         this.name = name;
     }
 
-    public void start() {
+    public void submit(long nanoTime) {
         synchronized (log) {
-            if (start != -1) {
-                Debug.log("Warning trying to start timing " + this + ". Timing already started! Old timing has been swallowed");
-            }
-            start = System.nanoTime();
-        }
-    }
-
-    public boolean stop() {
-        synchronized (log) {
-            if (start != -1) {
-                log.add(System.nanoTime() - start);
-                start = -1;
-                return true;
-            }
-            Debug.log("Error trying to stop timing " + this + ". Timing already stopped!");
-            return false;
+            log.add(nanoTime);
         }
     }
 
     public void reset() {
         synchronized (log) {
-            start = -1;
             log.clear();
         }
     }
@@ -87,8 +70,27 @@ public class UtilTiming {
         return "UtilTiming{" +
                 "name='" + name + '\'' +
                 ",sync=" + Bukkit.isPrimaryThread() +
-                ",running=" + (start != -1) +
                 '}';
+    }
+
+    public static class Timing {
+        private long start = System.nanoTime();
+        private UtilTiming timing;
+
+        public Timing(UtilTiming timing) {
+            this.timing = timing;
+        }
+
+        public void stop() {
+            if (timing != null) {
+                if (start != -1) {
+                    timing.submit(System.nanoTime() - start);
+                    start = -1;
+                } else {
+                    Debug.log("Error stopping timing '" + timing.getName() + "', already stopped!");
+                }
+            }
+        }
     }
 
     private static final Map<String, UtilTiming> syncRecords = new HashMap<>();
@@ -106,18 +108,15 @@ public class UtilTiming {
         }
     }
 
-    public static void start(String name) {
+    public static Timing start(String name) {
         if (!APConfig.get().doTimings) {
-            return;
+            return new Timing(null);
         }
-        get(name).start();
+        return new Timing(get(name));
     }
 
-    public static boolean stop(String name) {
-        if (!APConfig.get().doTimings) {
-            return true;
-        }
-        return get(name).stop();
+    public static Timing dummy() {
+        return new Timing(null);
     }
 
     public static void resetAll() {

@@ -8,6 +8,7 @@ import com.vergilprime.angelprotect.utils.C;
 import com.vergilprime.angelprotect.utils.Cache;
 import com.vergilprime.angelprotect.utils.UtilMap;
 import com.vergilprime.angelprotect.utils.UtilString;
+import com.vergilprime.angelprotect.utils.UtilTiming;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -28,7 +29,7 @@ public class PlaceholderAPI implements Listener {
     private static Map<UUID, Cache<String, String>> cache = new HashMap<>();
 
     public static String get(APPlayer player, String identifier) {
-        // UtilTiming.start("Placeholder:get");
+        UtilTiming.Timing timing = UtilTiming.start("Placeholder:get");
         Cache<String, String> playerCache;
         synchronized (cache) {
             playerCache = cache.computeIfAbsent(player.getUUID(), u -> new Cache<>(CACHE_MS));
@@ -36,7 +37,7 @@ public class PlaceholderAPI implements Listener {
         synchronized (playerCache) {
             String cached = playerCache.get(identifier);
             if (cached != null) {
-                // UtilTiming.stop("Placeholder:get");
+                timing.stop();
                 return cached;
             }
 
@@ -44,13 +45,13 @@ public class PlaceholderAPI implements Listener {
 
             playerCache.put(identifier, value);
 
-            // UtilTiming.stop("Placeholder:get");
+            timing.stop();
             return value;
         }
     }
 
     public static String activeLookupPlaceholder(APPlayer player, String identifier) {
-        // UtilTiming.start("Placeholder:getActive");
+        UtilTiming.Timing timing = UtilTiming.start("Placeholder:getActive");
         boolean noColor = false;
         if (identifier.endsWith("_noColor")) {
             noColor = true;
@@ -58,7 +59,7 @@ public class PlaceholderAPI implements Listener {
         }
         Placeholder placeholder = Placeholder.get(identifier);
         if (placeholder == null) {
-            // UtilTiming.stop("Placeholder:getActive");
+            timing.stop();
             return null;
         }
 
@@ -245,15 +246,15 @@ public class PlaceholderAPI implements Listener {
 
                     value = UtilMap.getSingleCell(dx, dz, apPlayer);
                 } catch (NumberFormatException e) {
-                    // UtilTiming.stop("Placeholder:getActive");
+                    timing.stop();
                     return null;
                 }
             } else {
-                // UtilTiming.stop("Placeholder:getActive");
+                timing.stop();
                 return null;
             }
         } else {
-            // UtilTiming.stop("Placeholder:getActive");
+            timing.stop();
             return null;
         }
 
@@ -265,7 +266,7 @@ public class PlaceholderAPI implements Listener {
             }
         }
 
-        // UtilTiming.stop("Placeholder:getActive");
+        timing.stop();
         return value;
     }
 
