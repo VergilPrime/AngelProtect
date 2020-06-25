@@ -34,20 +34,23 @@ public class PlaceholderAPI implements Listener {
         synchronized (cache) {
             playerCache = cache.computeIfAbsent(player.getUUID(), u -> new Cache<>(CACHE_MS));
         }
+        String cached;
         synchronized (playerCache) {
-            String cached = playerCache.get(identifier);
-            if (cached != null) {
-                timing.stop();
-                return cached;
-            }
-
-            String value = activeLookupPlaceholder(player, identifier);
-
-            playerCache.put(identifier, value);
-
-            timing.stop();
-            return value;
+            cached = playerCache.get(identifier);
         }
+        if (cached != null) {
+            timing.stop();
+            return cached;
+        }
+
+        String value = activeLookupPlaceholder(player, identifier);
+
+        synchronized (playerCache) {
+            playerCache.put(identifier, value);
+        }
+
+        timing.stop();
+        return value;
     }
 
     public static String activeLookupPlaceholder(APPlayer player, String identifier) {
@@ -225,15 +228,19 @@ public class PlaceholderAPI implements Listener {
                 } else if (placeholder.name().startsWith("claim_can")) {
                     List<String> out = new ArrayList<>();
                     if (placeholder == Placeholder.claim_canBuild || placeholder == Placeholder.claim_canAll) {
-                        out.add(claim.getPermissions().canBuild(player.getOfflinePlayer(), claim.getOwner()) + "");
-                    } else if (placeholder == Placeholder.claim_canSwitch || placeholder == Placeholder.claim_canAll) {
-                        out.add(claim.getPermissions().canSwitch(player.getOfflinePlayer(), claim.getOwner()) + "");
-                    } else if (placeholder == Placeholder.claim_canContainer || placeholder == Placeholder.claim_canAll) {
-                        out.add(claim.getPermissions().canContainer(player.getOfflinePlayer(), claim.getOwner()) + "");
-                    } else if (placeholder == Placeholder.claim_canTeleport || placeholder == Placeholder.claim_canAll) {
-                        out.add(claim.getPermissions().canBuild(player.getOfflinePlayer(), claim.getOwner()) + "");
-                    } else if (placeholder == Placeholder.claim_canManage || placeholder == Placeholder.claim_canAll) {
-                        out.add(claim.getPermissions().canManage(player.getOfflinePlayer(), claim.getOwner()) + "");
+                        out.add(C.key + "Build: " + C.value + claim.getPermissions().canBuild(player.getOfflinePlayer(), claim.getOwner()));
+                    }
+                    if (placeholder == Placeholder.claim_canSwitch || placeholder == Placeholder.claim_canAll) {
+                        out.add(C.key + "Switch: " + C.value + claim.getPermissions().canSwitch(player.getOfflinePlayer(), claim.getOwner()));
+                    }
+                    if (placeholder == Placeholder.claim_canContainer || placeholder == Placeholder.claim_canAll) {
+                        out.add(C.key + "Container: " + C.value + claim.getPermissions().canContainer(player.getOfflinePlayer(), claim.getOwner()));
+                    }
+                    if (placeholder == Placeholder.claim_canTeleport || placeholder == Placeholder.claim_canAll) {
+                        out.add(C.key + "Teleport: " + C.value + claim.getPermissions().canBuild(player.getOfflinePlayer(), claim.getOwner()));
+                    }
+                    if (placeholder == Placeholder.claim_canManage || placeholder == Placeholder.claim_canAll) {
+                        out.add(C.key + "Manage: " + C.value + claim.getPermissions().canManage(player.getOfflinePlayer(), claim.getOwner()));
                     }
                     value = String.join("\n", out);
                 }
