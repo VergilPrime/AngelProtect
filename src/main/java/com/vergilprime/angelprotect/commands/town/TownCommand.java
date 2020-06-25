@@ -76,9 +76,9 @@ public class TownCommand extends RootCommand {
                     .add("Mayor: " + Placeholder.town_mayor.getValue(player)).newline()
                     .add("Assistants: *").hover(Placeholder.town_assistants.getValue(player)).newline()
                     .add("Members: *").hover(Placeholder.town_members.getValue(player)).newline()
-                    .add("Total Runes: " + Placeholder.town_runesTotal.getValue(player)).newline()
-                    .add("Runes In Use: " + Placeholder.town_runesInUse.getValue(player)).newline()
-                    .add("Runes Available: " + Placeholder.town_runesAvailable.getValue(player)).newline()
+                    .add("Total: " + Placeholder.town_runesTotal.getValue(player)).newline()
+                    .add("In Use: " + Placeholder.town_runesInUse.getValue(player)).newline()
+                    .add("Available: " + Placeholder.town_runesAvailable.getValue(player)).newline()
                     .add("Claims: " + Placeholder.town_claims.getValue(player)).newline()
                     .add("Allies: *").hover(Placeholder.town_allies.getValue(player)).newline()
                     .add("New Claim Cost: " + Placeholder.town_newClaimCost.getValue(player)).newline();
@@ -91,7 +91,7 @@ public class TownCommand extends RootCommand {
             }
         } else {
             builder.add("You are currently not part of a town.")
-                    .add("\n\n\n\n\n\n\n\n\n\n\n\n")
+                    .add("\n\n\n\n\n\n\n\n\n\n")
                     .addGoto("Back", 1);
         }
         return builder.newPage()
@@ -103,7 +103,7 @@ public class TownCommand extends RootCommand {
                 .addSuggestCommand("Accept Invite", "/t acceptInvite ", "Accept an invite from a town.").newline()
                 .addSuggestCommand("Decline Invite", "/t declineInvite ", "Decline an invite from a town.").newline()
                 .addRunCommand("Leave Town", "/t leave", "Leave your current town.").newline()
-                .add("\n\n\n\n\n\n")
+                .add("\n\n\n\n\n\n\n")
                 .addGoto("Back", 1)
                 .newPage()
 
@@ -117,7 +117,7 @@ public class TownCommand extends RootCommand {
                 .newline()
                 .addSuggestCommand("Protections", "/t protection ", "Set protections for this claim.").newline()
                 .addSuggestCommand("Permission", "/t permission ", "Set permissions for this claim.").newline()
-                .add("\n\n")
+                .add("\n\n\n")
                 .addGoto("Back", 1)
                 .newPage()
 
@@ -129,7 +129,7 @@ public class TownCommand extends RootCommand {
                 .newline()
                 .addSuggestCommand("Default Protections", "/t protection  ", "Set default protections for claiming new land.").newline()
                 .addSuggestCommand("Default Permission", "/t permission  ", "Set default permissions for claiming new land.").newline()
-                .add("\n\n\n\n")
+                .add("\n\n\n\n\n")
                 .addGoto("Back", 1)
                 .newPage()
 
@@ -140,7 +140,7 @@ public class TownCommand extends RootCommand {
                 .addSuggestCommand("Add Ally", "/t ally add ", "Add a new player or town as ally.").newline()
                 .addSuggestCommand("Remove Ally", "/t ally remove ", "Remove a new player or town as ally.").newline()
                 .addSuggestCommand("Transfer Ownership", "/t transferOwner ", "Transfer ownership of this town to another player.").newline()
-                .add("\n\n\n\n\n")
+                .add("\n\n\n\n\n\n")
                 .addGoto("Back", 1)
 
                 .build();

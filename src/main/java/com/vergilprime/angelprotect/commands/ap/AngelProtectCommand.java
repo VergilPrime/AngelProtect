@@ -53,30 +53,32 @@ public class AngelProtectCommand extends RootCommand {
                 .add("\n\n")
                 .add("Town: " + Placeholder.town_name.getValue(apPlayer)).newline()
                 .add("Town Role: " + Placeholder.town_role.getValue(apPlayer)).newline()
-                .add("Total Runes: " + Placeholder.personal_runesTotal.getValue(apPlayer)).newline()
-                .add("Runes In Use: " + Placeholder.personal_runesInUse.getValue(apPlayer)).newline()
-                .add("Runes Available: " + Placeholder.personal_runesAvailable.getValue(apPlayer)).newline()
+                .add("Total: " + Placeholder.personal_runesTotal.getValue(apPlayer)).newline()
+                .add("In Use: " + Placeholder.personal_runesInUse.getValue(apPlayer)).newline()
+                .add("Available: " + Placeholder.personal_runesAvailable.getValue(apPlayer)).newline()
                 .add("Claims: " + Placeholder.personal_claims.getValue(apPlayer)).newline()
                 .add("Friends: *").hover(Placeholder.personal_friends.getValue(apPlayer)).newline()
                 .add("Open Town Invites: *").hover(Placeholder.personal_openInvites.getValue(apPlayer)).newline()
                 .add("Default permissions: *").hover(Placeholder.personal_defaultPermissions.getValue(apPlayer)).newline()
                 .add("Default protections: *").hover(Placeholder.personal_defaultProtections.getValue(apPlayer)).newline()
                 .add("New Claim Cost: " + Placeholder.personal_newClaimCost.getValue(apPlayer)).newline()
+                .addGoto("Back", 1)
                 .newPage()
 
                 .add(C.black + "Chunk Info").underline().bold()
                 .add("\n\n")
                 .add("Status: " + Placeholder.claim_status.getValue(apPlayer)).newline()
-                .add("Owner: " + Placeholder.claim_owner.getValue(apPlayer)).newline()
-                .add("Owner Type: " + Placeholder.claim_owner_type.getValue(apPlayer)).newline();
+                .add("Owner: " + Placeholder.claim_owner.getValue(apPlayer).replaceAll(C.yellow, C.gold)).newline()
+                .add("Owner Type: " + Placeholder.claim_owner_type.getValue(apPlayer).replaceAll(C.yellow, C.gold)).newline();
+        String lines = "";
         if (!Placeholder.claim_permissions.getValue(apPlayer, false).equals("N/A")) {
             builder.add("Permissions: *").hover(Placeholder.claim_permissions.getValue(apPlayer)).newline()
                     .add("Protections: *").hover(Placeholder.claim_protections.getValue(apPlayer)).newline();
         } else {
-            builder.add("\n\n");
+            lines = "\n\n";
         }
         return builder.add("You can: *").hover(Placeholder.claim_canAll.getValue(apPlayer)).newline()
-                .add("\n\n\n\n")
+                .add("\n\n\n\n\n" + lines)
                 .addGoto("Back", 1)
                 .newPage()
 
@@ -89,7 +91,7 @@ public class AngelProtectCommand extends RootCommand {
                 .newline()
                 .addSuggestCommand("Default Protections", "/ap protection  ", "Set default protections for claiming new land.").newline()
                 .addSuggestCommand("Default Permission", "/ap permission  ", "Set default permissions for claiming new land.").newline()
-                .add("\n\n\n")
+                .add("\n\n\n\n")
                 .addGoto("Back", 1)
                 .newPage()
 
@@ -103,7 +105,7 @@ public class AngelProtectCommand extends RootCommand {
                 .newline()
                 .addSuggestCommand("Protections", "/ap protection  ", "Set protections for this claim.").newline()
                 .addSuggestCommand("Permission", "/ap permission  ", "Set permissions for this claim.").newline()
-                .add("\n\n")
+                .add("\n\n\n")
                 .addGoto("Back", 1)
 
                 .build();

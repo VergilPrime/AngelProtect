@@ -52,7 +52,7 @@ public class UtilString {
     }
 
     public static String prettyPrintEntityCollection(Collection<? extends APEntity> collection, boolean replaceEmpty) {
-        if (collection == null) {
+        if (collection == null || collection.isEmpty()) {
             if (replaceEmpty) {
                 return C.body + C.italic + "none";
             } else {
