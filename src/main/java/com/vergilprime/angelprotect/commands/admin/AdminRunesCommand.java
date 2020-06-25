@@ -1,6 +1,6 @@
 package com.vergilprime.angelprotect.commands.admin;
 
-import com.vergilprime.angelprotect.commands.APEntityCommandHandler;
+import com.vergilprime.angelprotect.commands.CommandHandler;
 import com.vergilprime.angelprotect.datamodels.APPlayer;
 import com.vergilprime.angelprotect.utils.C;
 import com.vergilprime.angelprotect.utils.UtilPlayer;
@@ -11,15 +11,15 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class AdminRunesCommand extends APEntityCommandHandler<APPlayer> {
+public class AdminRunesCommand extends CommandHandler {
 
 
     public AdminRunesCommand() {
-        super("runes", "Edit runes of a player", false);
+        super("runes", "Edit runes of a player");
     }
 
     @Override
-    public void onCommand(APPlayer entity, CommandSender sender, String cmd, String[] args) {
+    public void onCommand(CommandSender sender, String cmd, String[] args) {
         if (args.length < 3 || !Arrays.asList("set", "add").contains(args[0].toLowerCase())) {
             sender.sendMessage(C.usage("/aap runes [set/add] [player] [#amount]"));
             return;
@@ -53,7 +53,7 @@ public class AdminRunesCommand extends APEntityCommandHandler<APPlayer> {
     }
 
     @Override
-    public List<String> onTab(APPlayer entity, CommandSender sender, String cmd, String[] args) {
+    public List<String> onTab(CommandSender sender, String cmd, String[] args) {
         if (args.length == 1) {
             return UtilString.filterPrefixIgnoreCase(args[0], "add", "set");
         } else if (args.length == 2) {
