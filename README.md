@@ -1,7 +1,7 @@
 # AngelProtect
 AngelProtect is a protection and claims bukkit plugin used at the minecraft server [angels-reach.com](https://angels-reach.com).
 
-![build](https://github.com/VergilPrime/AngelProtect/workflows/build/badge.svg)
+![Latest Release](https://img.shields.io/github/v/release/VergilPrime/AngelProtect?include_prereleases&label=Latest%20Release)
 
 **Features:**
 * Towns
