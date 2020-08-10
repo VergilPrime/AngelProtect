@@ -27,7 +27,7 @@ public class PromoteCommand extends APEntityCommandHandler<APTown> {
     @Override
     public void onCommand(APTown town, CommandSender sender, String cmd, String[] args) {
         if (args.length == 0) {
-            sender.sendMessage(C.usage(demote ? "/t demote <assistant>" : "/t promote <member>"));
+            sender.sendMessage(C.usage(demote ? "/town demote <assistant>" : "/town promote <member>"));
             return;
         } else {
             APPlayer target = UtilPlayer.getAPPlayer(args[0]);

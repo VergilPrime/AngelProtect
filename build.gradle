@@ -52,9 +52,9 @@ spigot {
             usage = '/ap <sub command> [args...]'
         }
         Town {
-            aliases = ['t', 'angelprotecttown']
+            aliases = ['aptown','angelprotecttown']
             description = 'AngelProtect towns command'
-            usage = '/t <sub command> [args...]'
+            usage = '/town <sub command> [args...]'
         }
         AdminAngelProtect {
             aliases = ['aap', 'adminap']
@@ -64,7 +64,7 @@ spigot {
             permissionMessage = '§7[§4§l!§7] Only admins can use that command!'
         }
     }
-    authors = ['kristianvld']
+    authors = ['kristianvld','VergilPrime']
     softDepends = ['PlaceholderAPI']
     apiVersion = '1.15'
     website = 'https://github.com/VergilPrime/AngelProtect'

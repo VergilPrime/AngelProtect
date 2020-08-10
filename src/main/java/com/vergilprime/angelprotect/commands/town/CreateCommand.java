@@ -22,7 +22,7 @@ public class CreateCommand extends APEntityCommandHandler<APPlayer> {
     @Override
     public void onCommand(APPlayer player, CommandSender sender, String cmd, String[] args) {
         if (args.length == 0) {
-            sender.sendMessage(C.usage("/t create [town name]"));
+            sender.sendMessage(C.usage("/town create [town name]"));
             return;
         }
         if (player.hasTown()) {

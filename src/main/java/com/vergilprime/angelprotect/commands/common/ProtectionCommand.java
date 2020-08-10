@@ -52,13 +52,13 @@ public class ProtectionCommand extends APEntityCommandHandler {
             return;
         }
         if (args.length < 2 || !fields.contains(args[0].toLowerCase()) || !valuesAll.contains(args[1].toLowerCase())) {
-            String pref = def ? "/t defProt " : "/t prot ";
+            String pref = def ? "/town defProt " : "/town prot ";
             sender.sendMessage(C.error("Please use one of the following:"));
-            sender.sendMessage(C.usageList(pref + "fire <enable/disable/toggle>", "Prevent fire spread"));
-            sender.sendMessage(C.usageList(pref + "tnt <enable/disable/toggle>", "Prevent destruction by TNT"));
-            sender.sendMessage(C.usageList(pref + "mob <enable/disable/toggle>", "Prevent destruction by mobs"));
-            sender.sendMessage(C.usageList(pref + "pvp <enable/disable/toggle>", "Prevent PvP"));
-            sender.sendMessage(C.usageList(pref + "con <enable/disable/toggle>", "Prevent people from accessing containers. If enabled, then this can be further fine tuned with claim permissions."));
+            sender.sendMessage(C.usageList(pref + "fire <enable|disable|toggle>", "Prevent fire spread"));
+            sender.sendMessage(C.usageList(pref + "tnt <enable|disable|toggle>", "Prevent destruction by TNT"));
+            sender.sendMessage(C.usageList(pref + "mob <enable|disable|toggle>", "Prevent destruction by mobs"));
+            sender.sendMessage(C.usageList(pref + "pvp <enable|disable|toggle>", "Prevent PvP"));
+            sender.sendMessage(C.usageList(pref + "con <enable|disable|toggle>", "Prevent people from accessing containers. If enabled, then this can be further fine tuned with claim permissions."));
             return;
         }
         Protections oldProt;

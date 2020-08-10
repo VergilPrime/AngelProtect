@@ -25,7 +25,7 @@ public class InviteResponseCommand extends APEntityCommandHandler<APPlayer> {
     @Override
     public void onCommand(APPlayer player, CommandSender sender, String cmd, String[] args) {
         if (args.length == 0) {
-            sender.sendMessage(C.usage("/t " + getCommand() + " <town>"));
+            sender.sendMessage(C.usage("/town " + getCommand() + " <town>"));
             return;
         }
         APTown town = AngelProtect.getInstance().getStorageManager().getTown(args[0]);
