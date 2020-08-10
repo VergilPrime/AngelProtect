@@ -24,7 +24,7 @@ public class TransferOwnerCommand extends APEntityCommandHandler<APTown> {
     @Override
     public void onCommand(APTown town, CommandSender sender, String cmd, String[] args) {
         if (args.length == 0) {
-            sender.sendMessage(C.usage("/t transferOwner <member>"));
+            sender.sendMessage(C.usage("/town transferOwner <member>"));
             return;
         }
         APPlayer target = UtilPlayer.getAPPlayer(args[0]);

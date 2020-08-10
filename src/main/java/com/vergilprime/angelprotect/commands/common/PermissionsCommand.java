@@ -76,7 +76,7 @@ public class PermissionsCommand extends APEntityCommandHandler {
                 !actions.contains(action) ||
                 !typeAll.contains(type) ||
                 (typeEntity.contains(action) && targetName == null)) {
-            String pref = isTown() ? "/t " : "/ap ";
+            String pref = isTown() ? "/town " : "/ap ";
             pref += def ? "defPerm " : "perm ";
 
             String actions = "add, remove";

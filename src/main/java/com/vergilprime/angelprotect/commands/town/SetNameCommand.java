@@ -20,7 +20,7 @@ public class SetNameCommand extends APEntityCommandHandler<APTown> {
     @Override
     public void onCommand(APTown town, CommandSender sender, String cmd, String[] args) {
         if (args.length == 0) {
-            sender.sendMessage(C.usage("/t setName <new town name>"));
+            sender.sendMessage(C.usage("/town setName <new town name>"));
             return;
         }
         String name = args[0];

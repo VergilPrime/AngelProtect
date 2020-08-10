@@ -35,8 +35,8 @@ public class AllyCommand extends APEntityCommandHandler<APTown> {
     public void onCommand(APTown town, CommandSender sender, String cmd, String[] args) {
         if (args.length < 3 || !actions.contains(args[0]) || !types.contains(args[1].toLowerCase())) {
             sender.sendMessage(C.error("Please use one of the following:"));
-            sender.sendMessage(C.usageList("/t ally [add/remove] player [player name]"));
-            sender.sendMessage(C.usageList("/t ally [add/remove] town [town name]"));
+            sender.sendMessage(C.usageList("/town ally [add/remove] player [player name]"));
+            sender.sendMessage(C.usageList("/town ally [add/remove] town [town name]"));
             return;
         }
         boolean add = actionAdd.contains(args[0]);

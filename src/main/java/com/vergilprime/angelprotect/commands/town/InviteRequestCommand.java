@@ -25,7 +25,7 @@ public class InviteRequestCommand extends APEntityCommandHandler<APTown> {
     @Override
     public void onCommand(APTown town, CommandSender sender, String cmd, String[] args) {
         if (args.length == 0) {
-            sender.sendMessage(C.usage("/t invite <player>"));
+            sender.sendMessage(C.usage("/town invite <player>"));
             return;
         }
         APPlayer target = UtilPlayer.getAPPlayer(args[0]);
