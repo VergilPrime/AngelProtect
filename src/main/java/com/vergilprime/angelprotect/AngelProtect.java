@@ -32,8 +32,6 @@ public class AngelProtect extends JavaPlugin {
         new CommandManager();
 
         new APIManager();
-        // Temporary debug and testing class
-        // new Tester(this);
     }
 
     public StorageManager getStorageManager() {
