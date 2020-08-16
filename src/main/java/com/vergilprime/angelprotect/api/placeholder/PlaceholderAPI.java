@@ -1,26 +1,18 @@
 package com.vergilprime.angelprotect.api.placeholder;
 
 import com.vergilprime.angelprotect.AngelProtect;
+import com.vergilprime.angelprotect.api.worldguard.WorldGuardHook;
 import com.vergilprime.angelprotect.datamodels.APChunk;
 import com.vergilprime.angelprotect.datamodels.APClaim;
+import com.vergilprime.angelprotect.datamodels.APConfig;
 import com.vergilprime.angelprotect.datamodels.APPlayer;
-import com.vergilprime.angelprotect.utils.C;
-import com.vergilprime.angelprotect.utils.Cache;
-import com.vergilprime.angelprotect.utils.UtilMap;
-import com.vergilprime.angelprotect.utils.UtilString;
-import com.vergilprime.angelprotect.utils.UtilTiming;
+import com.vergilprime.angelprotect.utils.*;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class PlaceholderAPI implements Listener {
 
@@ -260,6 +252,46 @@ public class PlaceholderAPI implements Listener {
                 timing.stop();
                 return null;
             }
+        } else if (placeholder == Placeholder.dynamic_location) {
+            String location = null;
+
+            WorldGuardHook worldGuardHook = AngelProtect.
+                    getInstance().
+                    getApiManager().
+                    getWorldGuardHook();
+
+            if (worldGuardHook != null) {
+                List<String> currentRegions = worldGuardHook.getRegionsAt(player.getOnlinePlayer().getLocation());
+                Map<String, String> handledRegions = APConfig.get().dynamicLocationRegions;
+                for (String region : currentRegions) {
+                    if (handledRegions.containsKey(region)) {
+                        location = handledRegions.get(region);
+                        break;
+                    }
+                }
+
+            }
+
+            if (location == null) {
+                APClaim claim = AngelProtect.getInstance().getStorageManager().getClaim(new APChunk(player.getOnlinePlayer()));
+                if (claim == null) {
+                    value = "Wilderness";
+                } else if (claim.getOwner().isTown()) {
+                    value = "Town of " + C.entity(claim.getOwner());
+
+                } else if (!claim.getOwner().isTown()) {
+                    if (claim.getOwner().isPartOfEntity(player.getOfflinePlayer())) {
+                        value = "Your claimed land";
+                    } else {
+                        value = "Land of " + C.entity(claim.getOwner());
+                    }
+                }
+
+            } else {
+                value = location;
+            }
+
+
         } else {
             timing.stop();
             return null;
