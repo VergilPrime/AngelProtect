@@ -9,6 +9,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Serializable;
 import java.nio.file.Files;
+import java.util.HashMap;
+import java.util.Map;
 
 public class APConfig implements Serializable {
 
@@ -26,6 +28,7 @@ public class APConfig implements Serializable {
     public short protectionContainerCost = 2;
     public boolean announceTownCreateDelete = true;
     public boolean preventTramplingCropsGlobally = true;
+    public Map<String, String> dynamicLocationRegions = new HashMap<>();
 
     // Debugging stuff
     public boolean doTimings = true;
@@ -36,6 +39,11 @@ public class APConfig implements Serializable {
     public String database = "angelprotect";
     public String username = "root";
     public String password = "toor";
+
+    public APConfig() {
+        dynamicLocationRegions.put("angelpeaksummit", "Angel Peak Summit");
+        dynamicLocationRegions.put("angelpeak", "Angel Peak");
+    }
 
 
     public boolean save() {

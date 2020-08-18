@@ -15,11 +15,17 @@ repositories {
     maven {
         url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/'
     }
+
+    maven {
+        url = 'https://maven.enginehub.org/repo/'
+    }
 }
 
 dependencies {
     compileOnly spigot()
     compileOnly 'me.clip:placeholderapi:2.10.6'
+    compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.0'
+    compileOnly 'com.sk89q.worldedit:worldedit-bukkit:7.1.0'
 }
 
 def getVersionName = { ->
@@ -52,7 +58,7 @@ spigot {
             usage = '/ap <sub command> [args...]'
         }
         Town {
-            aliases = ['aptown','angelprotecttown']
+            aliases = ['aptown', 'angelprotecttown']
             description = 'AngelProtect towns command'
             usage = '/town <sub command> [args...]'
         }
@@ -64,8 +70,8 @@ spigot {
             permissionMessage = '§7[§4§l!§7] Only admins can use that command!'
         }
     }
-    authors = ['kristianvld','VergilPrime']
-    softDepends = ['PlaceholderAPI']
+    authors = ['kristianvld', 'VergilPrime']
+    softDepends = ['PlaceholderAPI', 'WorldGuard']
     apiVersion = '1.15'
     website = 'https://github.com/VergilPrime/AngelProtect'
 }

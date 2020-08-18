@@ -18,6 +18,8 @@ public class AngelProtect extends JavaPlugin {
 
     private StorageManager storageManager;
 
+    private APIManager apiManager;
+
     @Override
     public void onEnable() {
         plugin = this;
@@ -31,9 +33,13 @@ public class AngelProtect extends JavaPlugin {
 
         new CommandManager();
 
-        new APIManager();
+        apiManager = new APIManager();
         // Temporary debug and testing class
         // new Tester(this);
+    }
+
+    public APIManager getApiManager() {
+        return apiManager;
     }
 
     public StorageManager getStorageManager() {
