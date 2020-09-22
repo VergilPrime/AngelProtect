@@ -10,7 +10,6 @@ import com.vergilprime.angelprotect.utils.Debug;
 import com.vergilprime.angelprotect.utils.UtilSerialize;
 
 import java.io.File;
-import java.io.Serializable;
 import java.util.UUID;
 import java.util.logging.Level;
 
@@ -138,7 +137,6 @@ public class FileStorageManager extends StorageManager {
                 AngelProtect.getLog().log(Level.WARNING, "Error loading player " + playerFile + ".", e);
             }
         }
-        Debug.log("Loaded " + players.size() + " players.");
 
         for (File townFile : townFolder.listFiles(f -> f.isFile() && f.getName().endsWith(".json"))) {
             try {
@@ -166,9 +164,9 @@ public class FileStorageManager extends StorageManager {
         Debug.log("Loaded " + towns.size() + " towns.");
         Debug.log("Loaded " + claims.size() + " claims.");
 
-        Debug.log("Players:" + UtilSerialize.toJson((Serializable) players, true));
-        Debug.log("Towns:" + UtilSerialize.toJson((Serializable) towns, true));
-        Debug.log("Claims:" + UtilSerialize.toJson((Serializable) claims, true));
+//        Debug.log("Players:" + UtilSerialize.toJson((Serializable) players, true));
+//        Debug.log("Towns:" + UtilSerialize.toJson((Serializable) towns, true));
+//        Debug.log("Claims:" + UtilSerialize.toJson((Serializable) claims, true));
 
         return true;
     }
