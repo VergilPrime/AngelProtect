@@ -34,8 +34,7 @@ public class AngelProtect extends JavaPlugin {
         new CommandManager();
 
         apiManager = new APIManager();
-        // Temporary debug and testing class
-        // new Tester(this);
+        new APIManager();
     }
 
     public APIManager getApiManager() {
