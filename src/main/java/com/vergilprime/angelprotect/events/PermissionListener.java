@@ -3,22 +3,26 @@ package com.vergilprime.angelprotect.events;
 import com.vergilprime.angelprotect.AngelProtect;
 import com.vergilprime.angelprotect.datamodels.APChunk;
 import com.vergilprime.angelprotect.datamodels.APClaim;
+import com.vergilprime.angelprotect.datamodels.APConfig;
 import com.vergilprime.angelprotect.utils.C;
 import com.vergilprime.angelprotect.utils.UtilEntity;
 import com.vergilprime.angelprotect.utils.UtilTimer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityInteractEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
@@ -28,6 +32,8 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class PermissionListener implements Listener {
+
+    private static String playerLastDamageTimer = "PlayerLastDamageTimer";
 
     public PermissionListener(JavaPlugin plugin) {
         Bukkit.getPluginManager().registerEvents(this, plugin);
@@ -85,6 +91,13 @@ public class PermissionListener implements Listener {
         }
     }
 
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    public void onDamage(EntityDamageEvent event) {
+        if (event.getEntity() instanceof Player) {
+            UtilTimer.setSecondsLeft((OfflinePlayer) event.getEntity(), playerLastDamageTimer, APConfig.get().preventTeleportExitTimeout);
+        }
+    }
+
     @EventHandler(ignoreCancelled = true)
     public void onTeleport(PlayerTeleportEvent event) {
         Player player = event.getPlayer();
@@ -94,11 +107,14 @@ public class PermissionListener implements Listener {
         APClaim to = lto == null ? null : AngelProtect.getInstance().getStorageManager().getClaim(new APChunk(lto));
         if (from != null) {
             if (!from.canTeleport(player)) {
-                event.setCancelled(true);
-                if (UtilTimer.timeout(player, "Claim Teleport")) {
-                    player.sendMessage(C.error("You do not have permission to teleport away from " + C.entityPosessive(from.getOwner()) + " land."));
+                double seconds = UtilTimer.getSecondsLeft(player, playerLastDamageTimer);
+                if (seconds > 0) {
+                    event.setCancelled(true);
+                    if (UtilTimer.timeout(player, "Claim Teleport")) {
+                        player.sendMessage(C.error("You have to wait another " + C.item(C.number(seconds)) + " seconds" + " before you can teleport way from " + C.entityPosessive(from.getOwner()) + " land."));
+                    }
+                    return;
                 }
-                return;
             }
         }
         if (to != null) {

@@ -29,6 +29,12 @@ public class APConfig implements Serializable {
     public boolean announceTownCreateDelete = true;
     public boolean preventTramplingCropsGlobally = true;
     public Map<String, String> dynamicLocationRegions = new HashMap<>();
+    /**
+     * Time in seconds before a player without teleport permission has to go without taking damage to be able to
+     * teleport out of the claim.
+     * Set to 0 to disable.
+     */
+    public double preventTeleportExitTimeout = 5.0;
 
     // Debugging stuff
     public boolean doTimings = true;

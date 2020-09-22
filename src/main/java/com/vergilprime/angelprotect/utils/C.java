@@ -3,9 +3,11 @@ package com.vergilprime.angelprotect.utils;
 import com.vergilprime.angelprotect.datamodels.APEntity;
 import com.vergilprime.angelprotect.datamodels.APPlayer;
 import com.vergilprime.angelprotect.datamodels.APTown;
+import jdk.internal.joptsimple.internal.Strings;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -158,6 +160,15 @@ public class C {
 
     public static String runes(int number) {
         return color(runes, number + " " + (number == 1 ? "rune" : "runes"));
+    }
+
+    public static String number(Number num) {
+        return number(num, 2, false);
+    }
+
+    public static String number(Number num, int places, boolean strict) {
+        String format = strict ? "0." + Strings.repeat('0', places) : "#." + Strings.repeat('#', places);
+        return new DecimalFormat(format).format(num);
     }
 
     public static int getCharWidth(char c, boolean bold) {
