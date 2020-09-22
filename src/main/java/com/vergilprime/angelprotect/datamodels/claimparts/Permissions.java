@@ -21,6 +21,11 @@ public class Permissions implements Serializable {
 
     private static final long serialVersionUID = 7086941137653951357L;
 
+    private static final String adminBypassBuild = "AngelProtect.Admin.Build";
+    private static final String adminBypassContainer = "AngelProtect.Admin.Container";
+    private static final String adminBypassTeleport = "AngelProtect.Admin.Teleport";
+    private static final String adminBypassSwitches = "AngelProtect.Admin.Switches";
+
     // If a player can break or place blocks, frames, armor stands, trophies, etc here.
     private List<Permission> build;
 
@@ -62,7 +67,7 @@ public class Permissions implements Serializable {
     }
 
     public boolean canBuild(OfflinePlayer player, APEntity relativeTo) {
-        return hasPermission(player, relativeTo, build);
+        return hasPermission(player, relativeTo, build, adminBypassBuild);
     }
 
     public List<Permission> getCanSwitch() {
@@ -70,7 +75,7 @@ public class Permissions implements Serializable {
     }
 
     public boolean canSwitch(OfflinePlayer player, APEntity relativeTo) {
-        return hasPermission(player, relativeTo, switches);
+        return hasPermission(player, relativeTo, switches, adminBypassSwitches);
     }
 
     public List<Permission> getCanTeleport() {
@@ -78,7 +83,7 @@ public class Permissions implements Serializable {
     }
 
     public boolean canTeleport(OfflinePlayer player, APEntity relativeTo) {
-        return hasPermission(player, relativeTo, teleport);
+        return hasPermission(player, relativeTo, teleport, adminBypassTeleport);
     }
 
     public List<Permission> getCanManage() {
@@ -86,7 +91,7 @@ public class Permissions implements Serializable {
     }
 
     public boolean canManage(OfflinePlayer player, APEntity relativeTo) {
-        return hasPermission(player, relativeTo, manage);
+        return hasPermission(player, relativeTo, manage, null);
     }
 
     public List<Permission> getCanContainer() {
@@ -94,7 +99,7 @@ public class Permissions implements Serializable {
     }
 
     public boolean canContainer(OfflinePlayer player, APEntity relativeTo) {
-        return hasPermission(player, relativeTo, container);
+        return hasPermission(player, relativeTo, container, adminBypassContainer);
     }
 
     public List<Permission> getPermissions(String name) {
@@ -133,7 +138,10 @@ public class Permissions implements Serializable {
         return perm;
     }
 
-    public static boolean hasPermission(OfflinePlayer player, APEntity relativeTo, List<Permission> permissions) {
+    public static boolean hasPermission(OfflinePlayer player, APEntity relativeTo, List<Permission> permissions, String bypassPermission) {
+        if (bypassPermission != null && player.isOnline() && player.getPlayer().hasPermission(bypassPermission)) {
+            return true;
+        }
         if (relativeTo.isTown()) {
             APTown town;
             if (relativeTo instanceof APTown) {

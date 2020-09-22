@@ -13,6 +13,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -79,7 +80,7 @@ public class PermissionListener implements Listener {
             return;
         }
         onBuild(event, event.getClickedBlock(), event.getPlayer());
-        if (event.isCancelled()) {
+        if (event.useInteractedBlock() == Event.Result.DENY) {
             event.getPlayer().sendBlockChange(fire.getLocation(), fire.getBlockData());
         }
     }

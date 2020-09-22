@@ -11,21 +11,18 @@ plugins {
 
 repositories {
     mavenCentral()
+    enginehub()
 
     maven {
         url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/'
     }
-
-    maven {
-        url = 'https://maven.enginehub.org/repo/'
-    }
 }
 
 dependencies {
-    compileOnly spigot()
+    compileOnly spigot('1.15.2')
+    compileOnly worldguard('7.0.0')
+    compileOnly worldedit('7.1.0')
     compileOnly 'me.clip:placeholderapi:2.10.6'
-    compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.0'
-    compileOnly 'com.sk89q.worldedit:worldedit-bukkit:7.1.0'
 }
 
 def getVersionName = { ->
@@ -68,6 +65,29 @@ spigot {
             usage = '/aap <sub command> [args...]'
             permission = 'AngelProtect.Admin'
             permissionMessage = '§7[§4§l!§7] Only admins can use that command!'
+        }
+    }
+    permissions {
+        'AngelProtect.Admin.Build' {
+            description = 'Permission to build in any claim.'
+        }
+        'AngelProtect.Admin.Container' {
+            description = 'Permission open containers in any claim.'
+        }
+        'AngelProtect.Admin.Switches' {
+            description = 'Permission to use switches in any claim.'
+        }
+        'AngelProtect.Admin.Teleport' {
+            description = 'Permission to teleport into any claim.'
+        }
+        'AngelProtect.Admin' {
+            description = 'Give permission to all sub admin permissions.'
+            children = [
+                    'AngelProtect.Admin.Build'    : true,
+                    'AngelProtect.Admin.Container': true,
+                    'AngelProtect.Admin.Switches' : true,
+                    'AngelProtect.Admin.Teleport' : true
+            ]
         }
     }
     authors = ['kristianvld', 'VergilPrime']
