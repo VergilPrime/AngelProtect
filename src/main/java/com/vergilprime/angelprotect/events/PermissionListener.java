@@ -129,7 +129,7 @@ public class PermissionListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onEntityUsePressurePlate(EntityInteractEvent event) {
-        if (event.getBlock().getType() != Material.STONE_PRESSURE_PLATE) {
+        if (event.getBlock().getType() != Material.STONE_PRESSURE_PLATE && event.getBlock().getType() != Material.POLISHED_BLACKSTONE_PRESSURE_PLATE) {
             return;
         }
         APClaim claim = AngelProtect.getInstance().getStorageManager().getClaim(new APChunk(event.getBlock()));
@@ -153,7 +153,13 @@ public class PermissionListener implements Listener {
             return;
         }
         Material type = event.getClickedBlock().getType();
-        if (type != Material.STONE_PRESSURE_PLATE && type != Material.STONE_BUTTON && type != Material.LEVER) {
+        if (
+            type != Material.STONE_PRESSURE_PLATE &&
+            type != Material.STONE_BUTTON &&
+            type != Material.POLISHED_BLACKSTONE_PRESSURE_PLATE &&
+            type != Material.POLISHED_BLACKSTONE_BUTTON &&
+            type != Material.LEVER
+        ) {
             return;
         }
         APClaim claim = AngelProtect.getInstance().getStorageManager().getClaim(new APChunk(event.getClickedBlock()));

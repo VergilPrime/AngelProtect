@@ -155,7 +155,7 @@ public class ProtectionListener implements Listener {
     public void onEndermanPickupBlock(EntityChangeBlockEvent event) {
         if (event.getEntity() instanceof Enderman) {
             APClaim claim = AngelProtect.getInstance().getStorageManager().getClaim(new APChunk(event.getBlock()));
-            if (claim != null && claim.getProtections().isMob()) {
+            if (claim != null) {
                 event.setCancelled(true);
             }
         }
