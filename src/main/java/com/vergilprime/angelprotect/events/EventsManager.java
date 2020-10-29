@@ -12,6 +12,9 @@ public class EventsManager {
         if (APConfig.get().preventTramplingCropsGlobally) {
             new CropTrampleListener(plugin);
         }
+        if (APConfig.get().creeperRegenWorlds.size() > 0) {
+            new CreeperRegenListener();
+        }
         new ProtectionListener(plugin);
     }
 

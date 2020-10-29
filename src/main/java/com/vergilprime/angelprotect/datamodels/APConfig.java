@@ -9,7 +9,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Serializable;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class APConfig implements Serializable {
@@ -35,6 +37,10 @@ public class APConfig implements Serializable {
      * Set to 0 to disable.
      */
     public double preventTeleportExitTimeout = 5.0;
+    /**
+     * A list of worlds that should regen blocks from creeper explosions
+     */
+    public List<String> creeperRegenWorlds = new ArrayList<>();
 
     // Debugging stuff
     public boolean doTimings = true;
