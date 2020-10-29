@@ -6,6 +6,7 @@ import com.vergilprime.angelprotect.datamodels.APClaim;
 import com.vergilprime.angelprotect.datamodels.APConfig;
 import com.vergilprime.angelprotect.utils.C;
 import com.vergilprime.angelprotect.utils.UtilEntity;
+import com.vergilprime.angelprotect.utils.UtilPlayer;
 import com.vergilprime.angelprotect.utils.UtilTimer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -22,8 +23,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityInteractEvent;
+import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
@@ -91,6 +94,26 @@ public class PermissionListener implements Listener {
         }
     }
 
+    @EventHandler(ignoreCancelled = true)
+    public void onEntityDamage(EntityDamageByEntityEvent event) {
+        if (UtilEntity.isBuildProtectedEntity(event.getEntity())) {
+            Player src = UtilPlayer.getDamageSource(event.getDamager());
+            if (src == null) {
+                return;
+            }
+            onBuild(event, event.getEntity().getLocation().getBlock(), src);
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onBreakHanging(HangingBreakByEntityEvent event) {
+        Player src = UtilPlayer.getDamageSource(event.getRemover());
+        if (src == null) {
+            return;
+        }
+        onBuild(event, event.getEntity().getLocation().getBlock(), src);
+    }
+
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onDamage(EntityDamageEvent event) {
         if (event.getEntity() instanceof Player) {
@@ -154,11 +177,11 @@ public class PermissionListener implements Listener {
         }
         Material type = event.getClickedBlock().getType();
         if (
-            type != Material.STONE_PRESSURE_PLATE &&
-            type != Material.STONE_BUTTON &&
-            type != Material.POLISHED_BLACKSTONE_PRESSURE_PLATE &&
-            type != Material.POLISHED_BLACKSTONE_BUTTON &&
-            type != Material.LEVER
+                type != Material.STONE_PRESSURE_PLATE &&
+                        type != Material.STONE_BUTTON &&
+                        type != Material.POLISHED_BLACKSTONE_PRESSURE_PLATE &&
+                        type != Material.POLISHED_BLACKSTONE_BUTTON &&
+                        type != Material.LEVER
         ) {
             return;
         }

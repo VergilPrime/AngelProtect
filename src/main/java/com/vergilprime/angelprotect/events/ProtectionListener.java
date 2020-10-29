@@ -5,6 +5,8 @@ import com.vergilprime.angelprotect.datamodels.APChunk;
 import com.vergilprime.angelprotect.datamodels.APClaim;
 import com.vergilprime.angelprotect.datamodels.APEntity;
 import com.vergilprime.angelprotect.utils.C;
+import com.vergilprime.angelprotect.utils.UtilEntity;
+import com.vergilprime.angelprotect.utils.UtilPlayer;
 import com.vergilprime.angelprotect.utils.UtilTimer;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
@@ -16,8 +18,6 @@ import org.bukkit.block.data.type.Fire;
 import org.bukkit.entity.Enderman;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
-import org.bukkit.entity.Tameable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBurnEvent;
@@ -31,7 +31,9 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityBreakDoorEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Arrays;
@@ -119,6 +121,32 @@ public class ProtectionListener implements Listener {
         onExplode(event.blockList());
     }
 
+    @EventHandler(ignoreCancelled = true)
+    public void onExplosionDamage(EntityDamageEvent event) {
+        if (!UtilEntity.isBuildProtectedEntity(event.getEntity())) {
+            return;
+        }
+        EntityDamageEvent.DamageCause cause = event.getCause();
+        if (cause != EntityDamageEvent.DamageCause.BLOCK_EXPLOSION &&
+                cause != EntityDamageEvent.DamageCause.ENTITY_EXPLOSION) {
+            return;
+        }
+        APClaim claim = AngelProtect.getInstance().getStorageManager().getClaim(new APChunk(event.getEntity()));
+        if (claim != null && claim.getProtections().isTnt()) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onBreakHanging(HangingBreakEvent event) {
+        if (event.getCause() == HangingBreakEvent.RemoveCause.EXPLOSION) {
+            APClaim claim = AngelProtect.getInstance().getStorageManager().getClaim(new APChunk(event.getEntity()));
+            if (claim != null && claim.getProtections().isTnt()) {
+                event.setCancelled(true);
+            }
+        }
+    }
+
 
     @EventHandler(ignoreCancelled = true)
     public void onMonsterSpawn(CreatureSpawnEvent event) {
@@ -161,24 +189,14 @@ public class ProtectionListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPVP(EntityDamageByEntityEvent event) {
-        Player src;
-        Player target;
-        if (event.getEntity() instanceof Player) {
-            target = (Player) event.getEntity();
-        } else if (event.getEntity() instanceof Tameable && ((Tameable) event.getEntity()).getOwner() instanceof Player) {
-            target = (Player) ((Tameable) event.getEntity()).getOwner();
-        } else {
+        Player target = UtilPlayer.getDamageTarget(event.getEntity());
+        if (target == null) {
             return;
         }
-        if (event.getDamager() instanceof Player) {
-            src = (Player) event.getDamager();
-        } else if (event.getDamager() instanceof Projectile && ((Projectile) event.getDamager()).getShooter() instanceof Player) {
-            src = (Player) ((Projectile) event.getDamager()).getShooter();
-        } else if (event.getDamager() instanceof Tameable && ((Tameable) event.getDamager()).getOwner() instanceof Player) {
-            src = (Player) ((Tameable) event.getDamager()).getOwner();
-        } else {
+        Player src = UtilPlayer.getDamageSource(event.getDamager());
+        if (src == null) {
             return;
         }
         if (src.equals(target)) {
