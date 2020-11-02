@@ -15,33 +15,15 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.type.Fire;
-import org.bukkit.entity.Enderman;
-import org.bukkit.entity.Monster;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBurnEvent;
-import org.bukkit.event.block.BlockExplodeEvent;
-import org.bukkit.event.block.BlockIgniteEvent;
-import org.bukkit.event.block.BlockPistonEvent;
-import org.bukkit.event.block.BlockPistonExtendEvent;
-import org.bukkit.event.block.BlockPistonRetractEvent;
-import org.bukkit.event.block.BlockSpreadEvent;
-import org.bukkit.event.entity.CreatureSpawnEvent;
-import org.bukkit.event.entity.EntityBreakDoorEvent;
-import org.bukkit.event.entity.EntityChangeBlockEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.block.*;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class ProtectionListener implements Listener {
 
@@ -111,6 +93,17 @@ public class ProtectionListener implements Listener {
         }
     }
 
+    private void onExplode(Entity entity, List<Block> blockList) {
+        for (Iterator<Block> it = blockList.iterator(); it.hasNext(); ) {
+            APClaim claim = AngelProtect.getInstance().getStorageManager().getClaim(new APChunk(it.next()));
+            if (claim != null) {
+                if (claim.getProtections().isTnt() || entity.getType() == EntityType.CREEPER) {
+                    it.remove();
+                }
+            }
+        }
+    }
+
     @EventHandler(ignoreCancelled = true)
     public void onExplode(BlockExplodeEvent event) {
         onExplode(event.blockList());
@@ -118,7 +111,7 @@ public class ProtectionListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onExplode(EntityExplodeEvent event) {
-        onExplode(event.blockList());
+        onExplode(event.getEntity(), event.blockList());
     }
 
     @EventHandler(ignoreCancelled = true)
