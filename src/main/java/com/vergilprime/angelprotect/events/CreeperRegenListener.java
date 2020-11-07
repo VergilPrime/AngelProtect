@@ -17,6 +17,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -36,8 +37,8 @@ public class CreeperRegenListener implements Listener {
 
     private Set<Block> blocks = new HashSet<>();
 
-    public CreeperRegenListener() {
-        Bukkit.getPluginManager().registerEvents(this, AngelProtect.getInstance());
+    public CreeperRegenListener(JavaPlugin plugin) {
+        Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
     private void sendBlockUpdate(Location loc, BlockData data, boolean particle, boolean sound) {

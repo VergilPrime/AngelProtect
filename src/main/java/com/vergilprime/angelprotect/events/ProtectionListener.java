@@ -15,15 +15,34 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.type.Fire;
-import org.bukkit.entity.*;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Monster;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.*;
-import org.bukkit.event.entity.*;
+import org.bukkit.event.block.BlockBurnEvent;
+import org.bukkit.event.block.BlockExplodeEvent;
+import org.bukkit.event.block.BlockIgniteEvent;
+import org.bukkit.event.block.BlockPistonEvent;
+import org.bukkit.event.block.BlockPistonExtendEvent;
+import org.bukkit.event.block.BlockPistonRetractEvent;
+import org.bukkit.event.block.BlockSpreadEvent;
+import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.event.entity.EntityBreakDoorEvent;
+import org.bukkit.event.entity.EntityChangeBlockEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 public class ProtectionListener implements Listener {
 
@@ -82,36 +101,25 @@ public class ProtectionListener implements Listener {
         }
     }
 
-    private void onExplode(List<Block> blockList) {
+    private void onExplode(List<Block> blockList, boolean mob) {
         for (Iterator<Block> it = blockList.iterator(); it.hasNext(); ) {
             APClaim claim = AngelProtect.getInstance().getStorageManager().getClaim(new APChunk(it.next()));
             if (claim != null) {
-                if (claim.getProtections().isTnt()) {
+                if (claim.getProtections().isTnt() || mob) {
                     it.remove();
                 }
             }
         }
-    }
-
-    private void onExplode(Entity entity, List<Block> blockList) {
-        for (Iterator<Block> it = blockList.iterator(); it.hasNext(); ) {
-            APClaim claim = AngelProtect.getInstance().getStorageManager().getClaim(new APChunk(it.next()));
-            if (claim != null) {
-                if (claim.getProtections().isTnt() || entity.getType() == EntityType.CREEPER) {
-                    it.remove();
-                }
-            }
-        }
-    }
-
-    @EventHandler(ignoreCancelled = true)
-    public void onExplode(BlockExplodeEvent event) {
-        onExplode(event.blockList());
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onExplode(EntityExplodeEvent event) {
-        onExplode(event.getEntity(), event.blockList());
+        onExplode(event.blockList(), UtilEntity.isMobExplosion(event.getEntity()));
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onExplode(BlockExplodeEvent event) {
+        onExplode(event.blockList(), false);
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -120,13 +128,40 @@ public class ProtectionListener implements Listener {
             return;
         }
         EntityDamageEvent.DamageCause cause = event.getCause();
-        if (cause != EntityDamageEvent.DamageCause.BLOCK_EXPLOSION &&
-                cause != EntityDamageEvent.DamageCause.ENTITY_EXPLOSION) {
+        if (cause != EntityDamageEvent.DamageCause.BLOCK_EXPLOSION && cause != EntityDamageEvent.DamageCause.ENTITY_EXPLOSION) {
             return;
         }
         APClaim claim = AngelProtect.getInstance().getStorageManager().getClaim(new APChunk(event.getEntity()));
         if (claim != null && claim.getProtections().isTnt()) {
             event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onExplosionDamage(EntityDamageByEntityEvent event) {
+        if (!UtilEntity.isBuildProtectedEntity(event.getEntity())) {
+            return;
+        }
+        EntityDamageEvent.DamageCause cause = event.getCause();
+        if (cause != EntityDamageEvent.DamageCause.ENTITY_EXPLOSION) {
+            return;
+        }
+        if (!UtilEntity.isMobExplosion(event.getDamager())) {
+            return;
+        }
+        APClaim claim = AngelProtect.getInstance().getStorageManager().getClaim(new APChunk(event.getEntity()));
+        if (claim != null) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onBreakHanging(HangingBreakByEntityEvent event) {
+        if (UtilEntity.isMobExplosion(event.getRemover())) {
+            APClaim claim = AngelProtect.getInstance().getStorageManager().getClaim(new APChunk(event.getEntity()));
+            if (claim != null) {
+                event.setCancelled(true);
+            }
         }
     }
 
@@ -167,14 +202,14 @@ public class ProtectionListener implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onZombieBreakDoor(EntityBreakDoorEvent event) {
         APClaim claim = AngelProtect.getInstance().getStorageManager().getClaim(new APChunk(event.getBlock()));
-        if (claim != null && claim.getProtections().isMob()) {
+        if (claim != null) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onEndermanPickupBlock(EntityChangeBlockEvent event) {
-        if (event.getEntity() instanceof Enderman) {
+        if (event.getEntity().getType() == EntityType.ENDERMAN || event.getEntity().getType() == EntityType.ENDER_DRAGON) {
             APClaim claim = AngelProtect.getInstance().getStorageManager().getClaim(new APChunk(event.getBlock()));
             if (claim != null) {
                 event.setCancelled(true);
