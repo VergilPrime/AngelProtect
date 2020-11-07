@@ -209,7 +209,8 @@ public class ProtectionListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onEndermanPickupBlock(EntityChangeBlockEvent event) {
-        if (event.getEntity().getType() == EntityType.ENDERMAN || event.getEntity().getType() == EntityType.ENDER_DRAGON) {
+        EntityType type = event.getEntityType();
+        if (type == EntityType.ENDERMAN || type == EntityType.ENDER_DRAGON || type == EntityType.WITHER) {
             APClaim claim = AngelProtect.getInstance().getStorageManager().getClaim(new APChunk(event.getBlock()));
             if (claim != null) {
                 event.setCancelled(true);
