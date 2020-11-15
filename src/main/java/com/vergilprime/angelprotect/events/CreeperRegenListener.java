@@ -100,6 +100,7 @@ public class CreeperRegenListener implements Listener {
                         if (b.getLocation().distanceSquared(p.getLocation()) <= FIX_PLAYER_RADIUS) {
                             remove(b, false);
                             it.remove();
+                            break;
                         }
                     }
                 }
