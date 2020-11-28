@@ -10,6 +10,7 @@ import com.vergilprime.angelprotect.commands.common.ListClaimsCommand;
 import com.vergilprime.angelprotect.commands.common.MapCommand;
 import com.vergilprime.angelprotect.commands.common.PermissionsCommand;
 import com.vergilprime.angelprotect.commands.common.ProtectionCommand;
+import com.vergilprime.angelprotect.commands.common.TopCommand;
 import com.vergilprime.angelprotect.datamodels.APPlayer;
 import com.vergilprime.angelprotect.utils.C;
 import com.vergilprime.angelprotect.utils.UtilBook;
@@ -24,6 +25,7 @@ public class AngelProtectCommand extends RootCommand {
         super("AngelProtect", "AngelProtect");
         List<CommandHandler> subCommands = new ArrayList<>();
         subCommands.add(new InfoCommand(false));
+        subCommands.add(new TopCommand(false));
         subCommands.add(new ClaimChunkCommand(false, false));
         subCommands.add(new ClaimChunkCommand(false, true));
         subCommands.add(new ClaimInfoCommand());

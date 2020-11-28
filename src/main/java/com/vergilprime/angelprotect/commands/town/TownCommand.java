@@ -10,6 +10,7 @@ import com.vergilprime.angelprotect.commands.common.ListClaimsCommand;
 import com.vergilprime.angelprotect.commands.common.MapCommand;
 import com.vergilprime.angelprotect.commands.common.PermissionsCommand;
 import com.vergilprime.angelprotect.commands.common.ProtectionCommand;
+import com.vergilprime.angelprotect.commands.common.TopCommand;
 import com.vergilprime.angelprotect.datamodels.APPlayer;
 import com.vergilprime.angelprotect.datamodels.APTown;
 import com.vergilprime.angelprotect.utils.C;
@@ -26,6 +27,7 @@ public class TownCommand extends RootCommand {
         List<CommandHandler> subCommands = new ArrayList<>();
         // player
         subCommands.add(new InfoCommand(true));
+        subCommands.add(new TopCommand(true));
         subCommands.add(new InviteResponseCommand(true));
         subCommands.add(new InviteResponseCommand(false));
         subCommands.add(new LeaveCommand());

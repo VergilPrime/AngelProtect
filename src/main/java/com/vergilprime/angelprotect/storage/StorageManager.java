@@ -155,6 +155,10 @@ public abstract class StorageManager {
         return towns.values().parallelStream();
     }
 
+    public Stream<APPlayer> getPlayers() {
+        return players.values().parallelStream();
+    }
+
     protected abstract APPlayer doLoadPlayer(UUID player);
 
     protected abstract boolean doSavePlayer(APPlayer apPlayer);
