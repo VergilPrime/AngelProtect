@@ -3,7 +3,7 @@ package com.vergilprime.angelprotect.utils;
 import com.vergilprime.angelprotect.datamodels.APEntity;
 import com.vergilprime.angelprotect.datamodels.APPlayer;
 import com.vergilprime.angelprotect.datamodels.APTown;
-import jdk.internal.joptsimple.internal.Strings;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -167,7 +167,7 @@ public class C {
     }
 
     public static String number(Number num, int places, boolean strict) {
-        String format = strict ? "0." + Strings.repeat('0', places) : "#." + Strings.repeat('#', places);
+        String format = strict ? "0." + StringUtils.repeat("0", places) : "#." + StringUtils.repeat("#", places);
         return new DecimalFormat(format).format(num);
     }
 
