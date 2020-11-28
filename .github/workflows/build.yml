@@ -18,6 +18,7 @@ jobs:
         uses: actions/checkout@v2
       - name: Extract version to env
         run: echo ::set-env name=version::${GITHUB_REF#refs/*/}
+        run: echo "name=version::${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
       - name: Gradle build
         uses: eskatos/gradle-command-action@v1
         with:
