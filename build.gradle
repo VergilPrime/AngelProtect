@@ -6,7 +6,7 @@ plugins {
     id 'java'
     id 'idea'
     id 'kr.entree.spigradle' version '1.2.4'
-    id 'maven-publish'
+    id 'maven'
 }
 
 
