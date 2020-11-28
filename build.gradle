@@ -81,13 +81,17 @@ spigot {
         'AngelProtect.Admin.Teleport' {
             description = 'Permission to teleport into any claim.'
         }
+        'AngelProtect.Admin.ExtendedInfo' {
+            description = 'Permission to view extended info with the info command.'
+        }
         'AngelProtect.Admin' {
             description = 'Give permission to all sub admin permissions.'
             children = [
-                    'AngelProtect.Admin.Build'    : true,
-                    'AngelProtect.Admin.Container': true,
-                    'AngelProtect.Admin.Switches' : true,
-                    'AngelProtect.Admin.Teleport' : true
+                    'AngelProtect.Admin.Build'       : true,
+                    'AngelProtect.Admin.Container'   : true,
+                    'AngelProtect.Admin.Switches'    : true,
+                    'AngelProtect.Admin.Teleport'    : true,
+                    'AngelProtect.Admin.ExtendedInfo': true
             ]
         }
     }

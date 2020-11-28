@@ -11,6 +11,7 @@ import com.vergilprime.angelprotect.utils.UtilTiming;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 public abstract class StorageManager {
 
@@ -150,6 +151,9 @@ public abstract class StorageManager {
         return success;
     }
 
+    public Stream<APTown> getTowns() {
+        return towns.values().parallelStream();
+    }
 
     protected abstract APPlayer doLoadPlayer(UUID player);
 
