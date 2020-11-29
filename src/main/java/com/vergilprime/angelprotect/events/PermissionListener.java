@@ -123,11 +123,19 @@ public class PermissionListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onTeleport(PlayerTeleportEvent event) {
+        switch (event.getCause()) {
+            case CHORUS_FRUIT:
+            case COMMAND:
+            case PLUGIN:
+                break;
+            default:
+                return;
+        }
         Player player = event.getPlayer();
-        Location lfrom = event.getFrom();
-        Location lto = event.getTo();
-        APClaim from = lfrom == null ? null : AngelProtect.getInstance().getStorageManager().getClaim(new APChunk(lfrom));
-        APClaim to = lto == null ? null : AngelProtect.getInstance().getStorageManager().getClaim(new APChunk(lto));
+        Location lFrom = event.getFrom();
+        Location lTo = event.getTo();
+        APClaim from = lFrom == null ? null : AngelProtect.getInstance().getStorageManager().getClaim(new APChunk(lFrom));
+        APClaim to = lTo == null ? null : AngelProtect.getInstance().getStorageManager().getClaim(new APChunk(lTo));
         if (from != null) {
             if (!from.canTeleport(player)) {
                 double seconds = UtilTimer.getSecondsLeft(player, playerLastDamageTimer);
