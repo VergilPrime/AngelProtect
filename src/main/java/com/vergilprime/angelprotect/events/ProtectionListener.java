@@ -124,7 +124,7 @@ public class ProtectionListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onExplosionDamage(EntityDamageEvent event) {
-        if (!UtilEntity.isBuildProtectedEntity(event.getEntity())) {
+        if (!UtilEntity.isBuildProtectedEntity(event.getEntity(), null)) {
             return;
         }
         EntityDamageEvent.DamageCause cause = event.getCause();
@@ -139,7 +139,7 @@ public class ProtectionListener implements Listener {
 
     @EventHandler
     public void onExplosionDamage(EntityDamageByEntityEvent event) {
-        if (!UtilEntity.isBuildProtectedEntity(event.getEntity())) {
+        if (!UtilEntity.isBuildProtectedEntity(event.getEntity(), UtilPlayer.getDamageSource(event.getEntity()))) {
             return;
         }
         EntityDamageEvent.DamageCause cause = event.getCause();

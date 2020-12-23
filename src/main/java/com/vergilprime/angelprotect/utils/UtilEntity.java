@@ -1,13 +1,6 @@
 package com.vergilprime.angelprotect.utils;
 
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.EnderDragon;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Ghast;
-import org.bukkit.entity.Hanging;
-import org.bukkit.entity.Projectile;
-import org.bukkit.entity.Wither;
+import org.bukkit.entity.*;
 import org.bukkit.projectiles.ProjectileSource;
 
 import java.util.HashSet;
@@ -29,8 +22,8 @@ public class UtilEntity {
     /**
      * Return true for entities that are under the build permission, e.g. ArmorStands, Hanging etc
      */
-    public static boolean isBuildProtectedEntity(Entity entity) {
-        return entity instanceof ArmorStand || entity instanceof Hanging;
+    public static boolean isBuildProtectedEntity(Entity entity, Player builder) {
+        return entity instanceof ArmorStand || entity instanceof Hanging || (entity instanceof Breedable && ((Breedable) entity).getTarget() != builder);
     }
 
     /**

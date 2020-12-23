@@ -96,11 +96,11 @@ public class PermissionListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onEntityDamage(EntityDamageByEntityEvent event) {
-        if (UtilEntity.isBuildProtectedEntity(event.getEntity())) {
-            Player src = UtilPlayer.getDamageSource(event.getDamager());
-            if (src == null) {
-                return;
-            }
+        Player src = UtilPlayer.getDamageSource(event.getDamager());
+        if (src == null) {
+            return;
+        }
+        if (UtilEntity.isBuildProtectedEntity(event.getEntity(), src)) {
             onBuild(event, event.getEntity().getLocation().getBlock(), src);
         }
     }
