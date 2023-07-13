@@ -1,0 +1,7 @@
+name: AngelProtect
+version: 0.2
+api-version: 1.19
+author: VergilPrime, Null
+main: com.vergilprime.angelprotect.AngelProtect
+
+softdepend: [ WorldGuard, WorldEdit, PlaceholderAPI, Vault ]
