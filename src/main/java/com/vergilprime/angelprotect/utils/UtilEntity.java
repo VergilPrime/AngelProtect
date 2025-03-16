@@ -31,7 +31,7 @@ public class UtilEntity {
      */
     public static boolean isMobExplosion(Entity explosionSource) {
         EntityType type = explosionSource.getType();
-        if (type == EntityType.CREEPER || type == EntityType.WITHER || type == EntityType.ENDER_CRYSTAL) {
+        if (type == EntityType.CREEPER || type == EntityType.WITHER || type == EntityType.END_CRYSTAL) {
             return true;
         } else if (explosionSource instanceof Projectile) {
             ProjectileSource shooter = ((Projectile) explosionSource).getShooter();

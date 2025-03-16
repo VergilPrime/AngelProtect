@@ -1,7 +1,21 @@
 name: AngelProtect
-version: 0.2
-api-version: 1.19
+version: 0.3
+api-version: 1.21
 author: VergilPrime, Null
 main: com.vergilprime.angelprotect.AngelProtect
 
 softdepend: [ WorldGuard, WorldEdit, PlaceholderAPI, Vault ]
+
+commands:
+  angelprotect:
+    description: Main command for AngelProtect
+    usage: /<command> [args]
+    aliases: [ ap ]
+  aptown:
+    description: Manage towns in AngelProtect
+    usage: /<command> [args]
+    aliases: [ town ]
+  angelprotectadmin:
+    description: Admin commands for AngelProtect
+    usage: /<command> [args]
+    aliases: [ apa, apadmin ]

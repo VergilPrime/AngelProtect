@@ -51,7 +51,7 @@ public class CreeperRegenListener implements Listener {
                 p.sendBlockChange(loc, data);
                 boolean inEffectDist = loc.distanceSquared(p.getLocation()) <= EFFECT_RADIUS;
                 if (particle && inEffectDist) {
-                    p.spawnParticle(Particle.VILLAGER_HAPPY, effectLoc, 5, 0.5, 0.5, 0.5);
+                    p.spawnParticle(Particle.HAPPY_VILLAGER, effectLoc, 5, 0.5, 0.5, 0.5);
                 }
                 if (sound && inEffectDist) {
                     float pitch = random.nextFloat() * 0.5f + 0.8f;
