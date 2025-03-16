@@ -9,7 +9,7 @@ import java.util.List;
 public class AdminCommand extends RootCommand {
 
     public AdminCommand() {
-        super("AdminAngelProtect", "Admin AngelProtect");
+        super("AngelProtectAdmin", "AngelProtect Admin");
         List<CommandHandler> subCommands = new ArrayList<>();
         subCommands.add(new AdminRunesCommand());
         subCommands.add(new TimingsCommand());
