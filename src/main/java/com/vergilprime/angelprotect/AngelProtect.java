@@ -56,6 +56,6 @@ public class AngelProtect extends JavaPlugin {
     @Override
     public void onDisable() {
         UtilTiming.dumpFiles();
-        APConfig.get().save();
+        /*APConfig.get().save();*/
     }
 }
