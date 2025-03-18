@@ -100,9 +100,9 @@ public class ProtectionCommand extends APEntityCommandHandler {
 					((APTown) entity).broadcastAssistants(C.player(sender.getName()) + " changed the " + C.main(C.item(fieldName) + " for " + C.item(claim.getChunk() + "") + " to " + C.item(newBoolValue ? "Enabled" : "Disabled") + " ."));
 				}
 
-				sender.sendMessage(C.main(C.item(fieldName) + " has been " + C.item(newBoolValue ? "Enabled" : "Disabled") + " for this piece of land."));
+				sender.sendMessage(C.main(C.item(fieldName) + " protection has been " + C.item(newBoolValue ? "Enabled" : "Disabled") + " for this piece of land."));
 			} else {
-				sender.sendMessage(C.error("Unable to change " + C.item(fieldName) + " for this piece of land."));
+				sender.sendMessage(C.error("Unable to change " + C.item(fieldName) + " protection for this piece of land."));
 			}
 		}
 	}
